@@ -28,7 +28,7 @@ const Sidebar = function () {
                     <div className={styles.menuSection}>
                         <ul>
                             <li>
-                                <Link to="/" className={styles.menuLink}>
+                                <Link to="/home" className={styles.menuLink}>
                                     <FaHome className={styles.menuIcon} /> 홈
                                 </Link>
                             </li>
@@ -37,10 +37,6 @@ const Sidebar = function () {
                                     <FaCalendarAlt className={styles.menuIcon} /> 캘린더
                                 </Link>
                             </li>
-                        </ul>
-                    </div>
-                    <div className={styles.menuSection}>
-                        <ul>
                             <li>
                                 <Link to="/todo" className={styles.menuLink}>
                                     <FaClipboardList className={styles.menuIcon} /> 할 일
