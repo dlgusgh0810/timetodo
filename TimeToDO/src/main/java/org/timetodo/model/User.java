@@ -34,9 +34,18 @@ public class User {
     private String email; // 사용자 이메일
 
     // 외래 키를 통한 Preferences와의 관계 설정
+    @Setter
+    @Getter
     @OneToOne(cascade = CascadeType.ALL) // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
     @JoinColumn(name = "preferences_id", referencedColumnName = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
     private Preferences preferences; // Foreign Key (외래 키)
 
+    public User() {}
 
+    public User(String username, String password, String email, Preferences preferences) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.preferences = preferences;
+    }
 }
