@@ -13,7 +13,18 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // 모든 사용자 조회
+    // 사용자 생성 (회원가입)
+    public User registerUser(User user) {
+        // 비밀번호 암호화, 데이터 검증 등의 로직을 추가 가능
+        return userRepository.save(user);
+    }
+
+    // 사용자 이름으로 검색
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    /*// 모든 사용자 조회
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -31,5 +42,5 @@ public class UserService {
                     user.setEmail(updatedUser.getEmail());
                     return userRepository.save(user);
                 }).orElse(null);
-    }
+    }*/
 }
