@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate를 가져옵니다.
 import './Login.css';
 
-function Login() {
-    const [email, setEmail] = useState('');
+function Login({ onLoginSuccess }) {
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // 로그인 로직을 여기에서 처리합니다.
-        console.log('Email:', email);
-        console.log('Password:', password);
-
-        // 로그인 성공 시 메인 페이지로 리다이렉트
-        navigate('/home'); // 이 경로는 리다이렉트할 페이지 경로입니다.
+        // 로그인 로직 처리 (여기서는 간단하게 로그인 성공 처리)
+        if (username === 'admin' && password === '1234') {
+            onLoginSuccess(); // 로그인 성공 시 부모 컴포넌트로 콜백 호출
+            navigate('/home'); // 홈 페이지로 리다이렉트
+        } else {
+            alert('로그인 정보가 올바르지 않습니다.');
+        }
     };
 
     return (
@@ -23,12 +24,12 @@ function Login() {
             <form onSubmit={handleSubmit} className="login-form">
                 <h2>로그인</h2>
                 <div className="form-group">
-                    <label htmlFor="email">이메일</label>
+                    <label htmlFor="username">아이디</label>
                     <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </div>

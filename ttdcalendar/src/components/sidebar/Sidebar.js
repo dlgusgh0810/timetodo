@@ -1,8 +1,11 @@
 import { FaHome, FaCalendarAlt, FaClipboardList, FaChartBar, FaPlus, FaBell, FaChevronDown } from 'react-icons/fa';
-import { Link } from 'react-router-dom'; // react-router-dom에서 Link 가져오기
+import {Link, useNavigate} from 'react-router-dom'; // react-router-dom에서 Link 가져오기
 import styles from './Sidebar.module.css';
 
 const Sidebar = function () {
+    const navigate = useNavigate();
+    const handleLogout = () => {navigate("/login"); };
+
     return (
         <>
             <div className={styles.sidebar}>
@@ -11,7 +14,7 @@ const Sidebar = function () {
                     <img src="<https://via.placeholder.com/50>" alt="profile" className={styles.profileImage} />
                     <div className={styles.profileInfo}>
                         <span className={styles.username}>kimdiyong</span>
-                        <FaChevronDown className={styles.dropdownIcon} />
+                        <FaChevronDown className={styles.dropdownIcon} onClick={handleLogout} /> {/* 클릭하면 로그아웃 */}
                         <FaBell className={styles.notificationIcon} />
                     </div>
                 </div>
