@@ -1,0 +1,63 @@
+/* 로그인 컨테이너가 화면 전체를 차지하도록 */
+.login-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+}
+
+/* 로그인 폼 */
+.login-form {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+/* 제목 */
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 폼 그룹 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* 폼 라벨 */
+.form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* 폼 인풋 */
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 로그인 버튼 */
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* 로그인 버튼 호버 */
+.login-button:hover {
+    background-color: #0056b3;
+}

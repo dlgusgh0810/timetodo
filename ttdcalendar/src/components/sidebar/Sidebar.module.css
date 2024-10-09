@@ -1,0 +1,124 @@
+/* 사이드바 전체 스타일 */
+.sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* 사용자 프로필 섹션 */
+.profileSection {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profileInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.username {
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.dropdownIcon {
+    margin-left: auto;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.notificationIcon {
+    margin-left: 10px;
+    font-size: 18px;
+    color: gray;
+    cursor: pointer;
+}
+
+/* 추가하기 버튼 */
+.addSection {
+    margin-bottom: 20px;
+}
+
+.addButton {
+    width: 100%;
+    background-color: #D9EFFF;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007BFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.addButton:hover {
+    background-color: #c9dfff;
+}
+
+.addIcon {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+/* 네비게이션 메뉴 */
+.menu {
+    margin-top: 20px;
+}
+
+.menuSection {
+    margin-bottom: 20px;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.menuLink {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    margin: 0px 0;
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+
+
+.menuLink:hover {
+    background-color: #e0e0e0;
+    color: #007BFF;
+}
+
+.menuIcon {
+    margin-right: 10px;
+    font-size: 20px;
+    color: gray;
+    transition: color 0.3s;
+}
+
+.menuLink:hover .menuIcon {
+    color: #007BFF;
+}
