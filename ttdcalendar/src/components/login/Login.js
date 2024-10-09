@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate를 가져옵니다.
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login({ onLoginSuccess }) {
@@ -10,10 +10,9 @@ function Login({ onLoginSuccess }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // 로그인 로직 처리 (여기서는 간단하게 로그인 성공 처리)
         if (username === 'admin' && password === '1234') {
-            onLoginSuccess(); // 로그인 성공 시 부모 컴포넌트로 콜백 호출
-            navigate('/home'); // 홈 페이지로 리다이렉트
+            onLoginSuccess(); // 로그인 성공 콜백 호출
+            navigate('/home'); // 메인 페이지로 리다이렉트
         } else {
             alert('로그인 정보가 올바르지 않습니다.');
         }
