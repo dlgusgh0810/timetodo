@@ -6,6 +6,8 @@ import Calendar from './components/calendar/Calendar';
 import Todo from './components/todo/Todo';
 import Stats from './components/stats/Stats';
 import Login from './components/login/Login';
+import Signup from './components/signup/Signup';
+
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);  // 로그인 여부를 관리
@@ -39,6 +41,7 @@ function App() {
                 ) : (
                     <Route path="*" element={<Login onLoginSuccess={handleLoginSuccess} />} />
                 )}
+                <Route path="/signup" element={<Signup />} />
             </Routes>
         </Router>
     );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
 function Login({ onLoginSuccess }) {
@@ -47,6 +47,11 @@ function Login({ onLoginSuccess }) {
                 <button type="submit" className="login-button">
                     로그인
                 </button>
+
+                {/* 회원가입 페이지로 이동하는 텍스트 링크 */}
+                <p className="signup-link">
+                    아직 계정이 없으신가요? <Link to="/signup">회원가입</Link>
+                </p>
             </form>
         </div>
     );
