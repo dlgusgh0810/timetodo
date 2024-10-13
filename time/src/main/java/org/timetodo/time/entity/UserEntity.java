@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity(name = "users")
 @Data
 //@NoArgsConstructor
@@ -11,7 +13,7 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId", unique = true, nullable = false)
+    @Column(name = "user_id", unique = true, nullable = false)
     private Long userId;
 
 //    @Column(nullable = false, unique = true, length = 50)
@@ -24,8 +26,17 @@ public class UserEntity {
     private String email; // 사용자 이메일
 
     @OneToOne(cascade = CascadeType.ALL) // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
-    @JoinColumn(name = "preferencesId") // Preferences의 기본 키를 외래 키로 설정
+    @JoinColumn(name = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
     private PreferencesEntity preferences; // Foreign Key (외래 키)
+
+    @OneToMany(mappedBy = "userManyToOne")
+    private List<TaskEntity> tasks;
+
+    @OneToMany(mappedBy = "userManyToOne")
+    private List<CategoryEntity> categorys;
+
+    @OneToMany(mappedBy = "userManyToOne")
+    private List<CalenderEntity> calenders;
 
     public UserEntity(){}
 

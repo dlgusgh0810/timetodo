@@ -4,24 +4,18 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Entity(name = "calenders")
+@Entity(name = "calender")
 @NoArgsConstructor
 public class CalenderEntity {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "calendarId", unique = true, nullable = false)
-    private Long calendarId; // 캘린더 고유 ID (Primary Key)
-
-    @ManyToOne // 여러 Calendar가 하나의 User와 연관 (N:1 관계)
-    @JoinColumn(name = "userId")
-    private UserEntity user; // 사용자 ID (Foreign Key)
+    @Column(name = "calender_id", unique = true, nullable = false)
+    private Long calenderId; // 캘린더 고유 ID (Primary Key)
 
     //@Column(nullable = false, length = 100)
     private String title; // 일정 제목
@@ -41,9 +35,14 @@ public class CalenderEntity {
     //@Column(nullable = true)
     private String repeatType; // 반복 일정 유형 (예: daily, weekly)
 
-    @ManyToOne // 여러 Calendar가 하나의 Category와 연관 (N:1 관계)
-    @JoinColumn(name = "categoryId" )
+    @ManyToOne // 여러 Calender가 하나의 Category와 연관 (N:1 관계)
+    @JoinColumn(name = "category_id" )
     private CategoryEntity category; // Foreign Key (외래 키) - Category 클래스와 연관
 
+    @ManyToOne // 여러 Calender가 하나의 User와 연관 (N:1 관계)
+    @JoinColumn(name = "user_id")
+    private UserEntity userManyToOne; // 사용자 ID (Foreign Key)
 
+    @OneToMany(mappedBy = "calender")
+    private List<ReminderEntity> reminders;
 }

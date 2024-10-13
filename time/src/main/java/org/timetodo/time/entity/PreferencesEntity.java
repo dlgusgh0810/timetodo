@@ -11,7 +11,7 @@ public class PreferencesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 생성 전략 설정
-    @Column(name = "preferencesId", unique = true, nullable = false)
+    @Column(name = "preferences_id", unique = true, nullable = false)
     private Long preferencesId; // 선호 설정의 고유 ID (Primary Key)
 
     @OneToOne(mappedBy = "preferences") // User와의 양방향 관계 설정
