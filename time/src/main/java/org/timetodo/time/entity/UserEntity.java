@@ -1,0 +1,49 @@
+package org.timetodo.time.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity(name = "users")
+@Data
+//@NoArgsConstructor
+public class UserEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userId", unique = true, nullable = false)
+    private Long userId;
+
+//    @Column(nullable = false, unique = true, length = 50)
+    private String username;
+
+//    @Column(nullable = false)
+    private String password;
+
+//    @Column(nullable = false, unique = true)
+    private String email; // 사용자 이메일
+
+    @OneToOne(cascade = CascadeType.ALL) // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
+    @JoinColumn(name = "preferencesId") // Preferences의 기본 키를 외래 키로 설정
+    private PreferencesEntity preferences; // Foreign Key (외래 키)
+
+    public UserEntity(){}
+
+    public UserEntity(String username, String password, String email, PreferencesEntity preferences) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.preferences = preferences;
+    }
+
+//    //test
+//    private String createAt;
+//    public UserEntity(UserEntity dto) {
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        this.username = dto.getUsername();
+//        this.password = dto.getPassword();
+//        this.createAt = now.toString();
+//
+//    }
+}

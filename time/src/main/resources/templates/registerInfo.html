@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>로그인 결과</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<form action="/api/users/registerInfo" method="post" th:object="${user}">
+    <h1>회원가입 성공</h1>
+    <p>아이디: <span th:text="${user.username}"></span></p>
+    <p>비밀번호: <span th:text="${user.password}"></span></p>
+</form>
+
+</body>
+</html>
