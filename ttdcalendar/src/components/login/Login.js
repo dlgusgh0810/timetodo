@@ -10,7 +10,7 @@ function Login({ onLoginSuccess }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (username === 'admin' && password === '1234') {
+        if (username === 'kimdiyong' && password === '1234') {
             onLoginSuccess(); // 로그인 성공 콜백 호출
             navigate('/home'); // 메인 페이지로 리다이렉트
         } else {
@@ -19,7 +19,7 @@ function Login({ onLoginSuccess }) {
     };
 
     return (
-        <div className="login-container">
+        <div className="login-container">s
             <form onSubmit={handleSubmit} className="login-form">
                 <h2>로그인</h2>
                 <div className="form-group">

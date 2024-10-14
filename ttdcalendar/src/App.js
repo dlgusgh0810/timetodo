@@ -7,6 +7,7 @@ import Todo from './components/todo/Todo';
 import Stats from './components/stats/Stats';
 import Login from './components/login/Login';
 import Signup from './components/signup/Signup';
+import Profile from "./components/sidebar/Profile";
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
                     <Route path="*" element={<Login onLoginSuccess={handleLoginSuccess} />} />
                 )}
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/profile" element={<Profile />} />
             </Routes>
         </Router>
     );

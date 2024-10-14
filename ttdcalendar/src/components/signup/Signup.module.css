@@ -1,6 +1,6 @@
 .signup-container {
-    width: 500px;
-    height: 500px;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,6 +13,8 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
+    max-width: 90%; /* 화면에 꽉 차지 않도록 최대 너비 설정 */
+    margin: 20px; /* 화면 가장자리에서 여백 추가 */
 }
 
 .signup-form h2 {
