@@ -8,11 +8,11 @@
         <version>3.3.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.timetodo</groupId>
-    <artifactId>time</artifactId>
+    <groupId>org.test</groupId>
+    <artifactId>testTime</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>time</name>
-    <description>time</description>
+    <name>testTime</name>
+    <description>testTime</description>
     <url/>
     <licenses>
         <license/>

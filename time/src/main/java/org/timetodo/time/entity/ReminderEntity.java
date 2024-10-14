@@ -19,7 +19,7 @@ public class ReminderEntity {
 
     @ManyToOne // 여러 Reminder가 하나의 Task와 연관 (N:1 관계)
     @JoinColumn(name = "task_id")
-    @JsonIgnore
+//    @JsonIgnore
     private TaskEntity task; // Foreign Key (외래 키)
 
     @ManyToOne // 여러 Reminder가  하나의 Calendar와 연관 (N:1 관계)

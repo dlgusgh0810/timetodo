@@ -2,13 +2,16 @@ package org.timetodo.time.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.timetodo.time.dto.RequestUserDto;
 
 import java.util.List;
 
 @Entity(name = "users")
-@Data
-//@NoArgsConstructor
+@Getter
+@Setter
 public class UserEntity {
 
     @Id
@@ -38,23 +41,22 @@ public class UserEntity {
     @OneToMany(mappedBy = "userManyToOne")
     private List<CalenderEntity> calenders;
 
-    public UserEntity(){}
-
-    public UserEntity(String username, String password, String email, PreferencesEntity preferences) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.preferences = preferences;
+    public static UserEntity toSaveEntity(RequestUserDto requestUserDto){
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(requestUserDto.getUsername());
+        userEntity.setPassword(requestUserDto.getPassword());
+        userEntity.setEmail(requestUserDto.getEmail());
+        return userEntity;
     }
 
-//    //test
-//    private String createAt;
-//    public UserEntity(UserEntity dto) {
-//        LocalDateTime now = LocalDateTime.now();
-//
-//        this.username = dto.getUsername();
-//        this.password = dto.getPassword();
-//        this.createAt = now.toString();
-//
-//    }
+    /*//test
+    private String createAt;
+    public UserEntity(UserEntity dto) {
+        LocalDateTime now = LocalDateTime.now();
+
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+        this.createAt = now.toString();
+
+    }*/
 }
