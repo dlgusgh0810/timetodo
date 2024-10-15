@@ -41,17 +41,5 @@ public class UserController {
         return "registerInfo";
     }
 
-    /*@PostMapping("/register")
-    public ResponseEntity<UserEntity> registerUser(@RequestBody RequestUserDto requestUserDto) {
-        UserEntity newUser = new UserEntity(requestUserDto.getUsername(), requestUserDto.getPassword(), requestUserDto.getEmail(), null);
-        UserEntity savedUser = userService.registerUser(newUser);
-        return ResponseEntity.ok(savedUser);
-    }*/
-
-//    @PostMapping("/register")
-//    public String registerUser(RequestUserDto requestUserDto) {
-//        System.out.println("Registering user: " + requestUserDto);
-//        return "registerInfo";
-//    }
 }
 

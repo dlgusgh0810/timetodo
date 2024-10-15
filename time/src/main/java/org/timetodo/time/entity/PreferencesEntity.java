@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "preferences")
+@Entity(name = "preferencesEntity")
 @Data
 @NoArgsConstructor
 public class PreferencesEntity {
@@ -14,9 +14,6 @@ public class PreferencesEntity {
     @Column(name = "preferences_id", unique = true, nullable = false)
     private Long preferencesId; // 선호 설정의 고유 ID (Primary Key)
 
-    @OneToOne(mappedBy = "preferences") // User와의 양방향 관계 설정
-    private UserEntity userId; // Foreign Key (외래 키) - User 클래스에서 참조
-
 //    @Column(nullable = false)
     private boolean notificationsEnabled; // 알림 설정 여부 (True/False)
 
@@ -25,4 +22,7 @@ public class PreferencesEntity {
 
 //    @Column(nullable = false, length = 50)
     private String viewFormat; // 일정/할일 보기 형식 (예: 일간, 주간, 월간)
+
+    @OneToOne(mappedBy = "preferencesOTOuser") // User와의 양방향 관계 설정
+    private UserEntity user; // Foreign Key (외래 키) - User 클래스에서 참조
 }

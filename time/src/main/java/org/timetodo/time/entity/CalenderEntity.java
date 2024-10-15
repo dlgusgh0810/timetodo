@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Entity(name = "calender")
+@Entity(name = "calenderEntity")
 @NoArgsConstructor
 public class CalenderEntity {
 
@@ -37,12 +37,12 @@ public class CalenderEntity {
 
     @ManyToOne // 여러 Calender가 하나의 Category와 연관 (N:1 관계)
     @JoinColumn(name = "category_id" )
-    private CategoryEntity category; // Foreign Key (외래 키) - Category 클래스와 연관
+    private CategoryEntity categoryMTOcalender; // Foreign Key (외래 키) - Category 클래스와 연관
 
     @ManyToOne // 여러 Calender가 하나의 User와 연관 (N:1 관계)
     @JoinColumn(name = "user_id")
-    private UserEntity userManyToOne; // 사용자 ID (Foreign Key)
+    private UserEntity userMTOcalender; // 사용자 ID (Foreign Key)
 
-    @OneToMany(mappedBy = "calender")
+    @OneToMany(mappedBy = "calenderMTOreminder")
     private List<ReminderEntity> reminders;
 }

@@ -9,7 +9,7 @@ import org.timetodo.time.dto.RequestUserDto;
 
 import java.util.List;
 
-@Entity(name = "users")
+@Entity(name = "userEntity")
 @Getter
 @Setter
 public class UserEntity {
@@ -28,17 +28,17 @@ public class UserEntity {
 //    @Column(nullable = false, unique = true)
     private String email; // 사용자 이메일
 
-    @OneToOne(cascade = CascadeType.ALL) // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
+    @OneToOne // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
     @JoinColumn(name = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
-    private PreferencesEntity preferences; // Foreign Key (외래 키)
+    private PreferencesEntity preferencesOTOuser; // Foreign Key (외래 키)
 
-    @OneToMany(mappedBy = "userManyToOne")
+    @OneToMany(mappedBy = "userMTOtask")
     private List<TaskEntity> tasks;
 
-    @OneToMany(mappedBy = "userManyToOne")
+    @OneToMany(mappedBy = "userMTOcatecory")
     private List<CategoryEntity> categorys;
 
-    @OneToMany(mappedBy = "userManyToOne")
+    @OneToMany(mappedBy = "userMTOcalender")
     private List<CalenderEntity> calenders;
 
     public static UserEntity toSaveEntity(RequestUserDto requestUserDto){

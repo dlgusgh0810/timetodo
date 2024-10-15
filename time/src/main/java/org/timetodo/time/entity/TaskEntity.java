@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Entity(name = "task")
+@Entity(name = "taskEntity")
 @NoArgsConstructor
 public class TaskEntity {
 
@@ -21,26 +21,27 @@ public class TaskEntity {
     private String title; // 할 일 제목
 
 //    @Column(nullable = false)
-    private LocalDateTime dueDate; // 할 일 마감 기한
+    private LocalDateTime dueDate;
+//    @Column(nullable = false) // 할 일 마    감 기한
 
-//    @Column(nullable = false, length = 10)
+    //    @Column(nullable = false, length = 10)
     private String priority; // 우선순위 (높음, 중간, 낮음)
 
-//    @Column(nullable = false, length = 10)
+    //    @Column(nullable = false, length = 10)
     private String status; // 진행 상태 (진행 중, 완료, 미완료)
 
-//    @Column(nullable = true)
+    //    @Column(nullable = true)
     private String repeatType; // 반복 일정 여부
 
     @ManyToOne //여러 Task가 하나의 User와 연관 (N:1 관계)
     @JoinColumn(name = "user_id")
-    private UserEntity userManyToOne; //Foreign Key (외래 키)
+    private UserEntity userMTOtask; //Foreign Key (외래 키)
 
     @ManyToOne // 여러 Task가 하나의 Category와 연관 (N:1 관계)
     @JoinColumn(name = "category_id")
-    private CategoryEntity category; // Foreign Key (외래 키)
+    private CategoryEntity categoryMTOtask; // Foreign Key (외래 키)
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "taskMTOreminder")
     private List<ReminderEntity> reminders;
 }
 
