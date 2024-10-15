@@ -2,14 +2,10 @@ package org.timetodo.time.controller;
 
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.timetodo.time.dto.RequestUserDto;
-import org.timetodo.time.entity.UserEntity;
 import org.timetodo.time.service.UserService;
-import org.timetodo.time.service.UserServiceImpl;
 
 import java.util.List;
 

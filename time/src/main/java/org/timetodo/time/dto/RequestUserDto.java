@@ -4,8 +4,6 @@ import lombok.*;
 import org.timetodo.time.entity.UserEntity;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestUserDto {

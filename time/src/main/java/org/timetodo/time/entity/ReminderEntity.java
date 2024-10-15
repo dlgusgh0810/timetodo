@@ -1,15 +1,12 @@
 package org.timetodo.time.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@Entity(name = "reminderEntity")
 @NoArgsConstructor
+@Entity(name = "reminder_entity")
 public class ReminderEntity {
 
     @Id
@@ -19,15 +16,14 @@ public class ReminderEntity {
 
     private int timeBefore; // 알림 시작 시간 (분 단위)
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private boolean repeat; // 알림 반복 여부
 
-    //    @JsonIgnore
     @ManyToOne // 여러 Reminder가 하나의 Task와 연관 (N:1 관계)
     @JoinColumn(name = "task_id")
     private TaskEntity taskMTOreminder; // Foreign Key (외래 키)
 
     @ManyToOne // 여러 Reminder가  하나의 Calendar와 연관 (N:1 관계)
-    @JoinColumn(name = "calender_id")
-    private CalenderEntity calenderMTOreminder; // Foreign Key (외래 키)
+    @JoinColumn(name = "calendar_id")
+    private CalendarEntity calendarMTOreminder; // Foreign Key (외래 키)
 }

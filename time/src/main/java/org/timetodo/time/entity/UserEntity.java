@@ -9,23 +9,25 @@ import org.timetodo.time.dto.RequestUserDto;
 
 import java.util.List;
 
-@Entity(name = "userEntity")
-@Getter
-@Setter
+@Entity(name = "user_entity")
+@Data
+@NoArgsConstructor
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", unique = true, nullable = false)
+//    @Column(name = "user_id", unique = true, nullable = false)
     private Long userId;
 
 //    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false)
     private String username;
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private String password;
 
 //    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email; // 사용자 이메일
 
     @OneToOne // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
@@ -35,11 +37,11 @@ public class UserEntity {
     @OneToMany(mappedBy = "userMTOtask")
     private List<TaskEntity> tasks;
 
-    @OneToMany(mappedBy = "userMTOcatecory")
-    private List<CategoryEntity> categorys;
+    @OneToMany(mappedBy = "userMTOcategory")
+    private List<CategoryEntity> categories;
 
-    @OneToMany(mappedBy = "userMTOcalender")
-    private List<CalenderEntity> calenders;
+    @OneToMany(mappedBy = "userMTOcalendar")
+    private List<CalendarEntity> calendars;
 
     public static UserEntity toSaveEntity(RequestUserDto requestUserDto){
         UserEntity userEntity = new UserEntity();

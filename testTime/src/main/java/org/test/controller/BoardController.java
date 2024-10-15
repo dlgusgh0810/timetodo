@@ -22,6 +22,7 @@ public class BoardController {
         return "save";
     }
 
+    //게시글 작성
     @PostMapping("/save")
     public String save(@ModelAttribute BoardDTO boardDTO) {
         System.out.println("boardDTO = " + boardDTO);
@@ -29,12 +30,18 @@ public class BoardController {
         return "index";
     }
 
+    //DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다
     @GetMapping("/")
     public String findAll(Model model) {
-        //DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다
         List<BoardDTO> boardDTOList = boardService.findAll();
         model.addAttribute("boardList",boardDTOList);
         return "list";
-
     }
+
+//    //게시글 상세조회
+//    @GetMapping("/{id}")
+//    public String findById(@PathVariable Long id, Model model) {
+//
+//    }
+
 }
