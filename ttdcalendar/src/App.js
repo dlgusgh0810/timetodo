@@ -6,7 +6,7 @@ import Calendar from './components/calendar/Calendar';
 import Todo from './components/todo/Todo';
 import Stats from './components/stats/Stats';
 import Login from './components/login/Login';
-import Signup from './components/signup/Signup';
+import SignUp from "./components/signup/SignUp";
 import Profile from "./components/sidebar/Profile";
 
 
@@ -42,7 +42,7 @@ function App() {
                 ) : (
                     <Route path="*" element={<Login onLoginSuccess={handleLoginSuccess} />} />
                 )}
-                <Route path="/signup" element={<Signup />} />
+                <Route path="/signup" element={<SignUp/>} />
                 <Route path="/profile" element={<Profile />} />
             </Routes>
         </Router>
