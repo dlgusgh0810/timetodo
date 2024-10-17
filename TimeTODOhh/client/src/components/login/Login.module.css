@@ -13,7 +13,7 @@
     width: 500px;
     height: 500px;
     top: -100px;
-    left: -100px;
+    left: -200px;
 }
 
 /* 두 번째 원 */
@@ -21,7 +21,7 @@
     width: 800px;
     height: 800px;
     bottom: -300px;
-    right: -300px;
+    right: -500px;
 }
 
 
