@@ -1,0 +1,111 @@
+/* 배경 원 스타일 */
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    background-color: #a5a5ff;
+    z-index: -1; /* 원을 배경에 배치 */
+}
+
+.circle1 {
+    width: 50vw; /* 화면 너비의 50% */
+    height: 50vw; /* 화면 너비의 50% */
+    top: -25vw; /* 화면 위에서 원의 25% 위치 */
+    left: -25vw; /* 화면 왼쪽에서 원의 25% 위치 */
+}
+
+.circle2 {
+    width: 40vw;
+    height: 40vw;
+    bottom: -20vw;
+    right: -20vw;
+}
+
+.loginPage {
+    height: 100vh; /* 전체 화면 높이 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; /* 스크롤바 제거 */
+    position: relative;
+}
+
+.loginContainer {
+    width: 350px;
+    background-color: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.loginText {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #3a3a3a;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d1d1;
+    border-radius: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #fafafa;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.loginButton {
+    width: 100%;
+    padding: 14px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.loginButton:hover {
+    background-color: #0056b3;
+}
+
+.signupLink {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.signupLink a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signupLink a:hover {
+    text-decoration: underline;
+}

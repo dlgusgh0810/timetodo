@@ -1,0 +1,84 @@
+/* 배경 원 스타일 */
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.2;
+    background-color: #007bff;
+    z-index: -1;
+}
+
+.circle-1 {
+    width: 350px;
+    height: 350px;
+    top: -100px;
+    left: -100px;
+}
+
+.circle-2 {
+    width: 350px;
+    height: 350px;
+    bottom: -50px;
+    right: -50px;
+}
+
+/* 전체 화면에 딱 맞도록 페이지 설정 */
+.body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* 회원가입 컨테이너 */
+.signup-page {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-container {
+    position: relative;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.signup-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.signup-button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.signup-button:hover {
+    background-color: #0056b3;
+}

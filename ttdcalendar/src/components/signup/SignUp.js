@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // axios를 사용하여 서버로 데이터를 보냅니다.
+import axios from 'axios';
+import styles from './SignUp.module.css'; // CSS 모듈 임포트
 
 function SignUp() {
     const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ function SignUp() {
         try {
             // 백엔드로 POST 요청을 보내는 코드
             const response = await axios.post('http://localhost:8080/api/signup', formData);
-            console.log(response.data); // 성공 시 백엔드에서의 응답 확인
+            console.log(response.data);
             alert('회원가입이 성공적으로 완료되었습니다.');
         } catch (error) {
             console.error("회원가입 중 오류 발생:", error);
@@ -29,41 +30,50 @@ function SignUp() {
     };
 
     return (
-        <div>
-            <h2>Sign Up</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <button type="submit">Sign Up</button>
-            </form>
+        <div className={styles.signupPage}>
+            <div className={`${styles.circle} ${styles.circle1}`}></div>
+            <div className={`${styles.circle} ${styles.circle2}`}></div>
+
+            <div className={styles.signupContainer}>
+                <form onSubmit={handleSubmit} className={styles.signupForm}>
+                    <h2 className={styles.signupText}>회원가입</h2>
+
+                    <div className={styles.formGroup}>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="아이디"
+                            value={formData.username}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="이메일"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="비밀번호"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className={styles.signupButton}>회원가입</button>
+                </form>
+            </div>
         </div>
     );
 }
