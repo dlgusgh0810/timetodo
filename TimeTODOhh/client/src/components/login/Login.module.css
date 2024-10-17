@@ -1,0 +1,129 @@
+/* 배경 원 스타일 */
+.circle {
+    position: relative;
+    border-radius: 50%;
+    opacity: 0.2; /* 투명도 */
+    background-color: #ffffff; /* 원 색상 */
+    z-index: 10; /* 원을 배경에 배치 */
+}
+
+.circle1 {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    top: 50px;
+    left: 50px;
+    z-index: 3;
+}
+
+.circle2 {
+    width: 350px;
+    height: 350px;
+    bottom: -50px;
+    right: -50px;
+}
+
+
+
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 스크롤바 제거 */
+}
+
+
+
+
+
+/* 로그인 컨테이너 */
+.loginPage {
+    height: 100vh; /* 전체 화면 높이 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #2f62bd 100%);
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; /* 스크롤바 제거 */
+    position: relative;
+}
+
+
+.loginContainer {
+    width: 350px;
+    background-color: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1;
+    position: fixed;
+}
+
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.loginText {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #3a3a3a;
+}
+
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+
+/* 로그인 버튼 */
+.loginButton {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.loginButton:hover {
+    background-color: #0056b3;
+}
+
+/* 회원가입 링크 */
+
+.signupLink {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.signupLink a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signupLink a:hover {
+    text-decoration: underline;
+}

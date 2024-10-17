@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import './Login.css';
+import styles from './Login.module.css';
 
 function Login({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
@@ -19,15 +19,15 @@ function Login({ onLoginSuccess }) {
     };
 
     return (
-        <div className="login-page">
-            <div className="circle circle-1"></div> {/* 배경 원 추가 */}
-            <div className="circle circle-2"></div> {/* 배경 원 추가 */}
+        <div className={styles.loginPage}>
+            <div className={styles.circle1}></div> {/* 배경 원 추가 */}
+            <div className={styles.circle2}></div> {/* 배경 원 추가 */}
 
-            <div className="login-container">
-                <form onSubmit={handleSubmit} className="login-form">
+            <div className={styles.loginContainer}>
+                <form onSubmit={handleSubmit} className={styles.loginForm}>
                     <h2 className="login-text">로그인</h2>
-                    <div className="form-group">
-                        <input
+                    <div className={styles.formGroup}>
+                        <input className={styles.loginText}
                             type="text"
                             id="username"
                             placeholder="아이디"
@@ -37,8 +37,8 @@ function Login({ onLoginSuccess }) {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <input
+                    <div className={styles.formGroup}>
+                        <input className={styles.loginText}
                             type="password"
                             id="password"
                             placeholder="비밀번호"
@@ -48,11 +48,11 @@ function Login({ onLoginSuccess }) {
                         />
                     </div>
 
-                    <button type="submit" className="login-button">
+                    <button type="submit" className={styles.loginButton}>
                         로그인
                     </button>
 
-                    <p className="signup-link">
+                    <p className={styles.signupLink}>
                         아직 계정이 없으신가요? <Link to="/signup">회원가입</Link>
                     </p>
                 </form>
