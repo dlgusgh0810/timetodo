@@ -1,7 +1,6 @@
 package org.timetodo.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +8,9 @@ import jakarta.validation.constraints.Size;
 
 @Getter
 @Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     // 사용자 이름: 비어 있을 수 없고, 최대 50자 제한
@@ -29,9 +31,6 @@ public class UserDTO {
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
-
-    // 기본 생성자
-    public UserDTO() {}
 
     // 비밀번호 일치 여부 확인 메소드 (서비스에서 활용 가능)
     public boolean isPasswordMatching() {

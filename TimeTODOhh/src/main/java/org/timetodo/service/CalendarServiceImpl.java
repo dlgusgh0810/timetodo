@@ -1,12 +1,13 @@
-package org.timetodo.time.service;
-
-import org.timetodo.time.dto.CalendarRequestDto;
-import org.timetodo.time.entity.CalendarEntity;
-import org.timetodo.time.repository.CalendarRepository;
+package org.timetodo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.timetodo.dto.CalendarRequestDto;
+import org.timetodo.entity.CalendarEntity;
+import org.timetodo.repository.CalendarRepository;
+
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor

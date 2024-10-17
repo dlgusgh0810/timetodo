@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute RequestUserDto requestUserDto) {
-        System.out.println("requestUserDto: " + requestUserDto);
+//        System.out.println("requestUserDto: " + requestUserDto);
         userService.registerUser(requestUserDto);
         return "index";
     }

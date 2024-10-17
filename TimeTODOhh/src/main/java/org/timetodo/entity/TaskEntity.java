@@ -1,8 +1,9 @@
-package org.timetodo.time.entity;
+package org.timetodo.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.timetodo.entity.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
