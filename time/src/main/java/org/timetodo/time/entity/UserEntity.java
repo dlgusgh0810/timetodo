@@ -31,16 +31,16 @@ public class UserEntity {
     private String email; // 사용자 이메일
 
     @OneToOne // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
-    @JoinColumn(name = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
-    private PreferencesEntity preferencesOTOuser; // Foreign Key (외래 키)
+    //@JoinColumn(name = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
+    private PreferencesEntity preferences; // Foreign Key (외래 키)
 
-    @OneToMany(mappedBy = "userMTOtask")
+    @OneToMany(mappedBy = "users")
     private List<TaskEntity> tasks;
 
-    @OneToMany(mappedBy = "userMTOcategory")
+    @OneToMany(mappedBy = "users")
     private List<CategoryEntity> categories;
 
-    @OneToMany(mappedBy = "userMTOcalendar")
+    @OneToMany(mappedBy = "users")
     private List<CalendarEntity> calendars;
 
     public static UserEntity toSaveEntity(RequestUserDto requestUserDto){

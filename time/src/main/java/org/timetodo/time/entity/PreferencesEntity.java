@@ -27,6 +27,6 @@ public class PreferencesEntity {
     @Column(nullable = false)
     private String viewFormat; // 일정/할일 보기 형식 (예: 일간, 주간, 월간)
 
-    @OneToOne(mappedBy = "preferencesOTOuser") // User와의 양방향 관계 설정
+    @OneToOne(mappedBy = "preferences") // User와의 양방향 관계 설정
     private UserEntity user; // Foreign Key (외래 키) - User 클래스에서 참조
 }

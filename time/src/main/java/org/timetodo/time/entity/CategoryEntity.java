@@ -29,12 +29,12 @@ public class CategoryEntity {
 
 //    @ManyToOne //여러 Category가 하나의 User와 연관 (N:1 관계)
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity userMTOcategory; //사용자 ID (Foreign Key)
+    //@JoinColumn(name = "user_id")
+    private UserEntity users; //사용자 ID (Foreign Key)
 
-    @OneToMany(mappedBy = "categoryMTOcalendar")
+    @OneToMany(mappedBy = "categories")
     private List<CalendarEntity> calendar;
 
-    @OneToMany(mappedBy = "categoryMTOtask")
+    @OneToMany(mappedBy = "categories")
     private List<TaskEntity> tasks;
 }

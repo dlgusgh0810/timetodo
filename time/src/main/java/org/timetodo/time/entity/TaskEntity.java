@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,14 +15,14 @@ public class TaskEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "task_id", unique = true, nullable = false)
+    //@Column( unique = true, nullable = false)
     private Long taskId; //Primary Key (기본키)
 
     //    @Column(nullable = false, length = 100)
     @Column(nullable = false)
     private String title; // 할 일 제목
 
-        @Column(nullable = false)
+    @Column(nullable = false)
     private LocalDateTime dueDate; // 할 일 마감 기한
 
     //    @Column(nullable = false, length = 10)
@@ -36,15 +37,15 @@ public class TaskEntity {
     private String repeatType; // 반복 일정 여부
 
     @ManyToOne //여러 Task가 하나의 User와 연관 (N:1 관계)
-    @JoinColumn(name = "user_id")
-    private UserEntity userMTOtask; //Foreign Key (외래 키)
+    //@JoinColumn(name = "user_id")
+    private UserEntity users; //Foreign Key (외래 키)
 
     @ManyToOne // 여러 Task가 하나의 Category와 연관 (N:1 관계)
-    @JoinColumn(name = "category_id")
-    private CategoryEntity categoryMTOtask; // Foreign Key (외래 키)
+    //@JoinColumn(name = "category_id")
+    private CategoryEntity categories;//categoryMTOtask; // Foreign Key (외래 키)
 
-    @OneToMany(mappedBy = "taskMTOreminder")
-    private List<ReminderEntity> reminders;
+    @OneToMany(mappedBy = "tasks")
+    private List<ReminderEntity> reminders = new ArrayList<>();
 }
 
 
