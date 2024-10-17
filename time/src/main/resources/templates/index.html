@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>index</title>
+</head>
+<body>
+<button onclick="lodeRegister()">회원가입</button>
+<button onclick="lodeRegisterInfo()">회원 목록</button>
+<button onclick="lodecalendarForm()">캘린더 만들기</button>
+<button onclick="lodetaskForm()">할 일 만들기</button>
+<button onclick="lodecalendarTaskList()">캘린더 및 할 일 목록</button>
+
+
+<script>
+  const lodeRegister = () => {
+    location.href = "/users/register";
+  }
+  const lodeRegisterInfo = () =>{
+    location.href = "/users/registerInfo";
+  }
+  const lodecalendarForm = () =>{
+    location.href = "/calendar/add" ;
+  }
+  const lodetaskForm = () =>{
+    location.href = "/task/add"
+  }
+  const lodecalendarTaskList = () =>{
+    location.href = "/calendar/all"
+  }
+
+</script>
+
+</body>
+</html>
