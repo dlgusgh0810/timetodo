@@ -1,26 +1,27 @@
 /* 배경 원 스타일 */
-.circle {
-    position: relative;
+.circle1,
+.circle2 {
+    position: absolute;
     border-radius: 50%;
     opacity: 0.2; /* 투명도 */
     background-color: #ffffff; /* 원 색상 */
-    z-index: 10; /* 원을 배경에 배치 */
+    z-index: -1; /* 원을 배경에 배치 */
 }
 
+/* 첫 번째 원 */
 .circle1 {
-    position: absolute;
-    width: 350px;
-    height: 350px;
-    top: 50px;
-    left: 50px;
-    z-index: 3;
+    width: 500px;
+    height: 500px;
+    top: -100px;
+    left: -100px;
 }
 
+/* 두 번째 원 */
 .circle2 {
-    width: 350px;
-    height: 350px;
-    bottom: -50px;
-    right: -50px;
+    width: 800px;
+    height: 800px;
+    bottom: -300px;
+    right: -300px;
 }
 
 
@@ -48,6 +49,7 @@ body {
     font-family: 'Arial', sans-serif;
     overflow: hidden; /* 스크롤바 제거 */
     position: relative;
+    z-index: 0;
 }
 
 
@@ -78,16 +80,54 @@ body {
 }
 
 
+
+
+
+
+
 .formGroup {
-    margin-bottom: 20px;
+    margin-bottom: 3px;
 }
 
 
+/* 일반 input 스타일 */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: all 0.3s ease; /* 애니메이션 추가 */
+}
+
+/* 포커스 시 스타일 */
 input[type="text"]:focus,
 input[type="password"]:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #007bff; /* 파란색 테두리 */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* 블루 음영 */
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
 }
+
+/* Placeholder 스타일 */
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* 입력 중일 때 (focus 상태 유지) */
+input[type="text"]:focus::placeholder,
+input[type="password"]:focus::placeholder {
+    color: transparent; /* 포커스 중일 때 placeholder 숨기기 */
+}
+
+
+
+
+
 
 
 /* 로그인 버튼 */
