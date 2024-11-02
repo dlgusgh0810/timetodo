@@ -1,67 +1,60 @@
 import React, { useState } from 'react';
-import Calendar from 'react-calendar';
-import "react-calendar/dist/Calendar.css";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
 
-function Calendar() {
-    const [value, onChange] = useState(new Date());
+function Calendar_month() {
+    const [events, setEvents] = useState([
+        { title: '추석 연휴', date: '2024-09-15', color: '#4caf50' },
+        { title: '친구 생일', date: '2024-09-25', color: '#3f51b5' },
+        { title: '국군의 날', date: '2024-10-01', color: '#4caf50' },
+    ]);
+
+    // 뷰 상태 관리
+    const [view, setView] = useState('dayGridMonth');
+
+    // 날짜 클릭 이벤트 핸들러
+    const handleDateClick = (arg) => {
+        const title = prompt('일정을 입력하세요:');
+        if (title) {
+            setEvents([...events, { title, date: arg.dateStr }]);
+        }
+    };
+
+    // 뷰 변경 핸들러
+    const handleViewChange = (event) => {
+        setView(event.target.value);
+    };
+
     return (
-        <div>
-            <h1>캘린더</h1>
+        <div className="calendar-container">
+            {/* 드롭다운으로 뷰 선택 */}
+            <div className="view-selector">
+                <label htmlFor="view-select">보기: </label>
+                <select id="view-select" onChange={handleViewChange} value={view}>
+                    <option value="dayGridMonth">월간 보기</option>
+                    <option value="dayGridWeek">주간 보기</option>
+                    <option value="timeGridDay">일간 보기</option>
+                </select>
+            </div>
 
-            <Calendar onChange={onChange} value={value} />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            {/*<p*/}
-            {/*    style={{*/}
-            {/*        whiteSpace: "pre",*/}
-            {/*        fontFamily: "monospace",*/}
-            {/*    }}>*/}
-            {/*    +----------------------------------+<br/>*/}
-            {/*    |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;October&nbsp;2024&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br/>*/}
-            {/*    +----------------------------------+<br/>*/}
-            {/*    |&nbsp;Mo&nbsp;|&nbsp;Tu&nbsp;|&nbsp;We&nbsp;|&nbsp;Th&nbsp;|&nbsp;Fr&nbsp;|&nbsp;Sa&nbsp;|&nbsp;Su&nbsp;|<br/>*/}
-            {/*    +----+----+----+----+----+----+----+<br/>*/}
-            {/*    |&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;1&nbsp;&nbsp;|&nbsp;2&nbsp;&nbsp;|&nbsp;3&nbsp;&nbsp;|&nbsp;4&nbsp;&nbsp;|&nbsp;5&nbsp;&nbsp;|<br/>*/}
-            {/*    +----+----+----+----+----+----+----+<br/>*/}
-            {/*    |&nbsp;6&nbsp;&nbsp;|&nbsp;7&nbsp;&nbsp;|&nbsp;8&nbsp;&nbsp;|&nbsp;9&nbsp;&nbsp;|10&nbsp;&nbsp;|11&nbsp;&nbsp;|12&nbsp;&nbsp;|<br/>*/}
-            {/*    +----+----+----+----+----+----+----+<br/>*/}
-            {/*    |13&nbsp;&nbsp;|14&nbsp;&nbsp;|15&nbsp;&nbsp;|16&nbsp;&nbsp;|17&nbsp;&nbsp;|18&nbsp;&nbsp;|19&nbsp;&nbsp;|<br/>*/}
-            {/*    +----+----+----+----+----+----+----+<br/>*/}
-            {/*    |20&nbsp;&nbsp;|21&nbsp;&nbsp;|22&nbsp;&nbsp;|23&nbsp;&nbsp;|24&nbsp;&nbsp;|25&nbsp;&nbsp;|26&nbsp;&nbsp;|<br/>*/}
-            {/*    +----+----+----+----+----+----+----+<br/>*/}
-            {/*    |27&nbsp;&nbsp;|28&nbsp;&nbsp;|29&nbsp;&nbsp;|30&nbsp;&nbsp;|31&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br/>*/}
-            {/*    +----+----+----+----+----+----+----+<br/>*/}
-            {/*    <p></p>*/}
-            {/*    <p></p>*/}
-            {/*    프론트 빡세네 이거*/}
-            {/*</p>*/}
-
+            <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                initialView={view}  // 드롭다운에서 선택된 뷰를 적용
+                events={events}
+                dateClick={handleDateClick}
+                headerToolbar={{
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: '' // 드롭다운으로 대체하므로 빈 값으로 설정
+                }}
+                locale="ko"
+                editable={true}
+                selectable={true}
+            />
         </div>
     );
 }
 
-export default Calendar;
+export default Calendar_month;
