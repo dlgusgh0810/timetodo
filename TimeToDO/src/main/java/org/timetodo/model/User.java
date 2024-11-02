@@ -2,9 +2,8 @@ package org.timetodo.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -18,16 +17,19 @@ public class User {
     @Column(name = "user_id") // 기본 키 컬럼 이름 설정
     private Long userId; // 사용자 고유 ID (Primary Key)
 
+    @NonNull
     @Setter
     @Getter
     @Column(nullable = false, unique = true, length = 50)
     private String username; // 사용자 이름
 
+    @NonNull
     @Setter
     @Getter
     @Column(nullable = false)
     private String password; // 사용자 비밀번호
 
+    @NonNull
     @Setter
     @Getter
     @Column(nullable = false, unique = true)
@@ -40,7 +42,7 @@ public class User {
     @JoinColumn(name = "preferences_id", referencedColumnName = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
     private Preferences preferences; // Foreign Key (외래 키)
 
-    public User() {}
+    public User() {};
 
     public User(String username, String password, String email, Preferences preferences) {
         this.username = username;

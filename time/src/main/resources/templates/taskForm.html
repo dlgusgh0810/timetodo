@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>할 일 추가</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+<h1>할 일 추가</h1>
+
+<form action="/task/add" method="post">
+  <label>제목:</label>
+  <input type="text" name="title" required><br>
+
+  <label>마감 기한:</label>
+  <input type="datetime-local" name="dueDate" required><br>
+
+  <label>우선순위:</label>
+  <select name="priority">
+    <option value="높음">높음</option>
+    <option value="중간">중간</option>
+    <option value="낮음">낮음</option>
+  </select><br>
+
+  <label>상태:</label>
+  <select name="status">
+    <option value="진행 중">진행 중</option>
+    <option value="완료">완료</option>
+    <option value="미완료">미완료</option>
+  </select><br>
+
+  <label>반복 유형:</label>
+  <input type="text" name="repeatType" placeholder="예: daily, weekly"><br>
+
+  <button type="submit">할 일 추가</button>
+</form>
+
+<a href="/">메인 페이지로 돌아가기</a>
+</body>
+</html>

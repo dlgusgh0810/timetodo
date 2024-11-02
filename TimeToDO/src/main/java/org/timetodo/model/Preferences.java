@@ -42,6 +42,7 @@ public class Preferences {
         this.notificationsEnabled = notificationsEnabled;
         this.theme = theme;
         this.viewFormat = viewFormat;
+
     }
 
 }

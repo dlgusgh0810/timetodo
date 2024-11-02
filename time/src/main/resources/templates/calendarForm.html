@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>일정 추가</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+<h1>일정 추가</h1>
+
+<form action="/calendar/add" method="post">
+  <label>제목:</label>
+  <input type="text" name="title" required><br>
+
+  <label>설명:</label>
+  <input type="text" name="description"><br>
+
+  <label>시작 시간:</label>
+  <input type="datetime-local" name="startTime" required><br>
+
+  <label>종료 시간:</label>
+  <input type="datetime-local" name="endTime" required><br>
+
+  <label>장소:</label>
+  <input type="text" name="location"><br>
+
+  <label>반복 유형:</label>
+  <input type="text" name="repeatType" placeholder="예: daily, weekly"><br>
+
+  <button type="submit">일정 추가</button>
+</form>
+
+<a href="/">메인 페이지로 돌아가기</a>
+</body>
+</html>
