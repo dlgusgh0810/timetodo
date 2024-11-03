@@ -27,8 +27,8 @@ public class CategoryEntity {
     private String color;
 
 //    @ManyToOne //여러 Category가 하나의 User와 연관 (N:1 관계)
-    @ManyToOne
     //@JoinColumn(name = "user_id")
+    @ManyToOne
     private UserEntity users; //사용자 ID (Foreign Key)
 
     @OneToMany(mappedBy = "categories")

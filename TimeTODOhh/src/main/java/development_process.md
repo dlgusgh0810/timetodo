@@ -33,10 +33,16 @@
 3. 모든 일정 조회
 4. 특정 일정을 업데이트
 5. 특정 일정을 삭제
+6. 반복 일정을 추가 _(11/3)_
+7. 제목, 설명, 카테고리 ID, 시작 시간으로 일정을 검색, 클라이언트에서 입력받은 검색조건을 바탕으로 일정목록을 필터링하여 변환. _(11/3)_
+8. 기타 : 기능확인용 html페이지 만듦 (resources > test_Calendar.html) , WebConfig에서 (.allowedOriginPatterns("*") 써서 로컬파일로 확인함) _(11/3)_
+
+확인해볼사항 : 새로운 일정 추가 기능이랑 반복 일정 추가 기능이랑 겹쳐서 그냥 합쳐야될듯?
 
 #### CalendarController 흐름 요약
 - 일정 추가: POST /calendar/add → 사용자가 보낸 일정을 추가.
 - 모든 일정 조회: GET /calendar/all → 모든 일정을 조회하고 반환.
 - 일정 업데이트: PUT /calendar/update/{id} → 특정 일정을 수정하고 업데이트.
 - 일정 삭제: DELETE /calendar/delete/{id} → 특정 일정을 삭제.
-
+- 반복 일정 추가 : GET /calendar/search  _(11/3)_
+- 일정 검색 : POST /calendar/addRepeatingEvent _(11/3)_

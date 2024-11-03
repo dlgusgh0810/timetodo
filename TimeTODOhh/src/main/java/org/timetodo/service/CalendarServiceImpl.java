@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
+import org.timetodo.entity.CategoryEntity;
 import org.timetodo.repository.CalendarRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -57,4 +59,47 @@ public class CalendarServiceImpl implements CalendarService {
         // 특정 일정 삭제
         calendarRepository.deleteById(id);
     }
+
+    @Override
+    public CalendarEntity addRepeatingEvent(CalendarRequestDto request) {
+        CalendarEntity event = new CalendarEntity();
+        event.setTitle(request.getTitle());
+        event.setDescription(request.getDescription());
+        event.setLocation(request.getLocation());
+        event.setStartTime(request.getStartTime());
+        event.setEndTime(request.getEndTime());
+        event.setRepeatType(request.getRepeatType());
+
+        // 반복 일정 로직 예시
+        switch (request.getRepeatType()) {
+            case "NONE":
+                //반복없음
+                break;
+            case "DAILY":
+                // 매일 반복 설정 로직 (예: 매일 일정 생성)
+                break;
+            case "WEEKLY":
+                // 매주 반복 설정 로직
+                break;
+            case "MONTHLY":
+                // 매월 반복 설정 로직
+                break;
+            case "YEARLY":
+                // 매년 반복 설정 로직
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid repeat type: " + request.getRepeatType());
+        }
+
+        return calendarRepository.save(event);
+    }
+
+    @Override
+    public List<CalendarEntity> searchEvents(String title, String description, Long categoryId, LocalDateTime startTime) {
+        return calendarRepository.findByTitleContainingAndDescriptionContainingAndCategories_CategoryIdAndStartTime(
+                title, description, categoryId, startTime
+        );
+    }
+
+
 }
