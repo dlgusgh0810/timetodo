@@ -1,12 +1,12 @@
-/* EventModal.css */
-.event-modal-overlay {
+/*AddModal.module.css*/
+.eventModalOverlay {
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.event-modal {
+.eventModal {
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -14,7 +14,7 @@
     width: 100%;
 }
 
-.modal-header {
+.modalHeader {
     display: flex;
     justify-content: space-around;
     margin-bottom: 15px;

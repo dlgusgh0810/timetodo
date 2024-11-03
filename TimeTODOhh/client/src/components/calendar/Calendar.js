@@ -3,21 +3,36 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import AddModal from '../add/AddModal'; // 모달 컴포넌트 임포트
 
 function Calendar() {
     const [view, setView] = useState('dayGridMonth');
     const [events, setEvents] = useState([
-        // 예시로 만듬
         { title: '김민서', date: '2024-11-13', color: '#4caf50' },
         { title: '이현호', date: '2024-11-01', color: '#3f51b5' },
         { title: '황스일', date: '2024-11-02', color: '#4caf50' },
     ]);
 
+    const [isModalOpen, setModalOpen] = useState(false); // 모달 열림 상태
+    const [selectedDate, setSelectedDate] = useState(''); // 선택된 날짜
+
     const handleDateClick = (arg) => {
-        const title = prompt('일정을 입력하세요:');
-        if (title) {
-            setEvents([...events, { title, date: arg.dateStr }]);
-        }
+        setSelectedDate(arg.dateStr); // 선택된 날짜 설정
+        setModalOpen(true); // 모달 열기
+    };
+
+    const closeModal = () => {
+        setModalOpen(false); // 모달 닫기
+    };
+
+    const handleSaveEvent = (eventData) => {
+        // 새로운 일정을 events에 추가
+        const newEvent = {
+            title: eventData.title,
+            start: `${eventData.date}T${eventData.time}`, // 날짜와 시간
+        };
+        setEvents([...events, newEvent]); // 기존 events 배열에 추가
+        closeModal(); // 모달 닫기
     };
 
     const handleViewChange = (event) => {
@@ -37,9 +52,9 @@ function Calendar() {
 
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                view={view}  // initialView 대신 view 사용
+                initialView={view}
                 events={events}
-                dateClick={handleDateClick}
+                dateClick={handleDateClick} // 날짜 클릭 시 모달 열기
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
@@ -49,70 +64,16 @@ function Calendar() {
                 editable={true}
                 selectable={true}
             />
+
+            {/* AddModal 컴포넌트 */}
+            <AddModal
+                isOpen={isModalOpen}
+                onRequestClose={closeModal}
+                onSave={handleSaveEvent}
+                selectedDate={selectedDate}
+            />
         </div>
     );
 }
 
 export default Calendar;
-
-
-// import React, { useState } from 'react';
-// import FullCalendar from '@fullcalendar/react';
-// import dayGridPlugin from '@fullcalendar/daygrid';
-// import interactionPlugin from '@fullcalendar/interaction';
-// import timeGridPlugin from '@fullcalendar/timegrid';
-//
-// function Calendar_month() {
-//     const [events, setEvents] = useState([
-//         { title: '추석 연휴', date: '2024-09-15', color: '#4caf50' },
-//         { title: '친구 생일', date: '2024-09-25', color: '#3f51b5' },
-//         { title: '국군의 날', date: '2024-10-01', color: '#4caf50' },
-//     ]);
-//
-//     // 뷰 상태 관리
-//     const [view, setView] = useState('dayGridMonth');
-//
-//     // 날짜 클릭 이벤트 핸들러
-//     const handleDateClick = (arg) => {
-//         const title = prompt('일정을 입력하세요:');
-//         if (title) {
-//             setEvents([...events, { title, date: arg.dateStr }]);
-//         }
-//     };
-//
-//     // 뷰 변경 핸들러
-//     const handleViewChange = (event) => {
-//         setView(event.target.value);
-//     };
-//
-//     return (
-//         <div className="calendar-container">
-//             {/* 드롭다운으로 뷰 선택 */}
-//             <div className="view-selector">
-//                 <label htmlFor="view-select">보기: </label>
-//                 <select id="view-select" onChange={handleViewChange} value={view}>
-//                     <option value="dayGridMonth">월간 보기</option>
-//                     <option value="dayGridWeek">주간 보기</option>
-//                     <option value="timeGridDay">일간 보기</option>
-//                 </select>
-//             </div>
-//
-//             <FullCalendar
-//                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-//                 initialView={view}  // 드롭다운에서 선택된 뷰를 적용
-//                 events={events}
-//                 dateClick={handleDateClick}
-//                 headerToolbar={{
-//                     left: 'prev,next today',
-//                     center: 'title',
-//                     right: '' // 드롭다운으로 대체하므로 빈 값으로 설정
-//                 }}
-//                 locale="ko"
-//                 editable={true}
-//                 selectable={true}
-//             />
-//         </div>
-//     );
-// }
-//
-// export default Calendar_month;
