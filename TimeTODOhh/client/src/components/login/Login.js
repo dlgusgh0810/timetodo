@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-<<<<<<< HEAD:ttdcalendar/src/components/login/Login.js
-import styles from './Login.module.css';  // CSS 모듈 임포트
-=======
 import styles from './Login.module.css';
->>>>>>> FollowingHyenho:TimeTODOhh/client/src/components/login/Login.js
 
 function Login({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
@@ -23,17 +19,7 @@ function Login({ onLoginSuccess }) {
     };
 
     return (
-<<<<<<< HEAD:ttdcalendar/src/components/login/Login.js
-        <div className={styles.loginPage}> {/* className 수정 */}
-            <div className={`${styles.circle} ${styles.circle1}`}></div> {/* 배경 원 추가 */}
-            <div className={`${styles.circle} ${styles.circle2}`}></div> {/* 배경 원 추가 */}
 
-            <div className={styles.loginContainer}> {/* className 수정 */}
-                <form onSubmit={handleSubmit} className={styles.loginForm}> {/* className 수정 */}
-                    <h2 className={styles.loginText}>로그인</h2> {/* className 수정 */}
-                    <div className={styles.formGroup}> {/* className 수정 */}
-                        <input
-=======
         <div className={styles.loginPage}>
             <div className={styles.circle1}></div> {/* 배경 원 추가 */}
             <div className={styles.circle2}></div> {/* 배경 원 추가 */}
@@ -43,7 +29,6 @@ function Login({ onLoginSuccess }) {
                     <h2 className="login-text">로그인</h2>
                     <div className={styles.formGroup}>
                         <input className={styles.loginText}
->>>>>>> FollowingHyenho:TimeTODOhh/client/src/components/login/Login.js
                             type="text"
                             id="username"
                             placeholder="아이디"
@@ -53,13 +38,9 @@ function Login({ onLoginSuccess }) {
                         />
                     </div>
 
-<<<<<<< HEAD:ttdcalendar/src/components/login/Login.js
-                    <div className={styles.formGroup}> {/* className 수정 */}
-                        <input
-=======
+
                     <div className={styles.formGroup}>
                         <input className={styles.loginText}
->>>>>>> FollowingHyenho:TimeTODOhh/client/src/components/login/Login.js
                             type="password"
                             id="password"
                             placeholder="비밀번호"

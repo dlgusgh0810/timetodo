@@ -5,6 +5,7 @@ const Profile = function(){
     const navigate = useNavigate();
     return (
         <div>
+            <button>로그아웃</button>
             
         </div>
     )

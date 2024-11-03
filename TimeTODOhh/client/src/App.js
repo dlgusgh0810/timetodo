@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/home/Home';
-import Calendar from './components/calendar/Calendar_month';
+import Calendar from './components/calendar/Calendar';
 import Todo from './components/todo/Todo';
 import Stats from './components/stats/Stats';
 import Login from './components/login/Login';
 import SignUp from './components/signup/SignUp';
 import Profile from './components/sidebar/Profile';
+import AddModal from './components/add/AddModal';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);  // 로그인 여부를 관리
@@ -24,7 +25,7 @@ function App() {
                 <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
                 <Route path="/signup" element={<SignUp />} />
 
-                {/* 로그인 후에만 접근 가능한 페이지들 */}
+                {/* 로그인 */}
                 {isAuthenticated ? (
                     <>
                         <Route
