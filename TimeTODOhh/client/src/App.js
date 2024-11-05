@@ -29,19 +29,17 @@ function App() {
     return (
         <Router>
             <Routes>
-                {/* 기본 경로 처리 */}
                 <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />} />
                 <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
                 <Route path="/signup" element={<SignUp />} />
 
-                {/* 로그인 후 접근 가능한 페이지들 */}
                 {isAuthenticated ? (
                     <>
                         <Route
                             path="/home"
                             element={
                                 <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} /> {/* onAddEvent 전달 */}
+                                    <Sidebar onAddEvent={addEvent} />
                                     <div style={{ flex: 1, padding: '20px' }}>
                                         <Home />
                                     </div>
@@ -52,9 +50,9 @@ function App() {
                             path="/calendar"
                             element={
                                 <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} /> {/* onAddEvent 전달 */}
+                                    <Sidebar onAddEvent={addEvent} />
                                     <div style={{ flex: 1, padding: '20px' }}>
-                                        <Calendar events={events} /> {/* events 전달 */}
+                                        <Calendar events={events} />
                                     </div>
                                 </div>
                             }
@@ -63,7 +61,7 @@ function App() {
                             path="/todo"
                             element={
                                 <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} /> {/* onAddEvent 전달 */}
+                                    <Sidebar onAddEvent={addEvent} />
                                     <div style={{ flex: 1, padding: '20px' }}>
                                         <Todo />
                                     </div>
@@ -74,7 +72,7 @@ function App() {
                             path="/stats"
                             element={
                                 <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} /> {/* onAddEvent 전달 */}
+                                    <Sidebar onAddEvent={addEvent} />
                                     <div style={{ flex: 1, padding: '20px' }}>
                                         <Stats />
                                     </div>

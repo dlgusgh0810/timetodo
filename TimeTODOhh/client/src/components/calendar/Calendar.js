@@ -1,9 +1,11 @@
+// Calendar.js
 import React, { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal'; // 모달 컴포넌트 임포트
+import styles from './Calendar.module.css'; // 모듈 CSS 임포트
 
 function Calendar() {
     const [view, setView] = useState('dayGridMonth');
@@ -13,26 +15,25 @@ function Calendar() {
         { title: '황스일', date: '2024-11-02', color: '#4caf50' },
     ]);
 
-    const [isModalOpen, setModalOpen] = useState(false); // 모달 열림 상태
-    const [selectedDate, setSelectedDate] = useState(''); // 선택된 날짜
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedDate, setSelectedDate] = useState('');
 
     const handleDateClick = (arg) => {
-        setSelectedDate(arg.dateStr); // 선택된 날짜 설정
-        setModalOpen(true); // 모달 열기
+        setSelectedDate(arg.dateStr);
+        setModalOpen(true);
     };
 
     const closeModal = () => {
-        setModalOpen(false); // 모달 닫기
+        setModalOpen(false);
     };
 
     const handleSaveEvent = (eventData) => {
-        // 새로운 일정을 events에 추가
         const newEvent = {
             title: eventData.title,
-            start: `${eventData.date}T${eventData.time}`, // 날짜와 시간
+            start: `${eventData.date}T${eventData.time}`,
         };
-        setEvents([...events, newEvent]); // 기존 events 배열에 추가
-        closeModal(); // 모달 닫기
+        setEvents([...events, newEvent]);
+        closeModal();
     };
 
     const handleViewChange = (event) => {
@@ -40,8 +41,8 @@ function Calendar() {
     };
 
     return (
-        <div className="calendar-container">
-            <div className="view-selector">
+        <div className={styles.calendarContainer}>
+            <div className={styles.viewSelector}>
                 <label htmlFor="view-select">보기: </label>
                 <select id="view-select" onChange={handleViewChange} value={view}>
                     <option value="dayGridMonth">월간 보기</option>
@@ -54,18 +55,18 @@ function Calendar() {
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView={view}
                 events={events}
-                dateClick={handleDateClick} // 날짜 클릭 시 모달 열기
+                dateClick={handleDateClick}
                 headerToolbar={{
-                    left: 'prev,next today',
+                    left: '',
                     center: 'title',
-                    right: '' // 드롭다운으로 대체
+                    right: 'prev,next today'
                 }}
                 locale="ko"
                 editable={true}
                 selectable={true}
+                height="100%" /* 높이 100% 설정 */
             />
 
-            {/* AddModal 컴포넌트 */}
             <AddModal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
