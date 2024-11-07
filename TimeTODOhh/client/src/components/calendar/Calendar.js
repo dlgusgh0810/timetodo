@@ -4,17 +4,11 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import AddModal from '../add/AddModal'; // 모달 컴포넌트 임포트
-import styles from './Calendar.module.css'; // 모듈 CSS 임포트
+import AddModal from '../add/AddModal';
+import styles from './Calendar.module.css';
 
-function Calendar() {
+function Calendar({ events }) {
     const [view, setView] = useState('dayGridMonth');
-    const [events, setEvents] = useState([
-        { title: '김민서', date: '2024-11-13', color: '#4caf50' },
-        { title: '이현호', date: '2024-11-01', color: '#3f51b5' },
-        { title: '황스일', date: '2024-11-02', color: '#4caf50' },
-    ]);
-
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
 
@@ -25,15 +19,6 @@ function Calendar() {
 
     const closeModal = () => {
         setModalOpen(false);
-    };
-
-    const handleSaveEvent = (eventData) => {
-        const newEvent = {
-            title: eventData.title,
-            start: `${eventData.date}T${eventData.time}`,
-        };
-        setEvents([...events, newEvent]);
-        closeModal();
     };
 
     const handleViewChange = (event) => {
@@ -57,20 +42,19 @@ function Calendar() {
                 events={events}
                 dateClick={handleDateClick}
                 headerToolbar={{
-                    left: '',
+                    left: 'prev,next today',
                     center: 'title',
-                    right: 'prev,next today'
+                    right: ''
                 }}
                 locale="ko"
                 editable={true}
                 selectable={true}
-                height="100%" /* 높이 100% 설정 */
+                height="100%" /* 높이를 100%로 설정 */
             />
 
             <AddModal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
-                onSave={handleSaveEvent}
                 selectedDate={selectedDate}
             />
         </div>
