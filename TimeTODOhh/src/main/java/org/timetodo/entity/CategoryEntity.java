@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.timetodo.entity.UserEntity;
+
+
 import java.util.List;
 
 @Entity(name = "category_entity")
@@ -14,6 +17,7 @@ public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long categoryId;
 
     // 카테고리 이름 중복 방지를 위해 unique 제약 조건 추가
