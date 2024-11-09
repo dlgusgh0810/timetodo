@@ -1,23 +1,11 @@
 package org.timetodo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.timetodo.model.User;
-import org.timetodo.repository.UserRepository;
+import org.timetodo.entity.UserEntity;
 
-@Service
-public class UserService {
+public interface UserService {
 
-    private final UserRepository userRepository;
+    void saveUser(UserEntity userEntity);
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    UserEntity authenticateUser(String username, String password);
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
-
-    // 추가 기능들: 사용자 검색, 삭제 등
 }
