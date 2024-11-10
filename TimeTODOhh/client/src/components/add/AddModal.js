@@ -49,7 +49,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate }) {
             overlayClassName={styles.eventModalOverlay}
         >
             <div className={styles.modalHeader}>
-                <h2 className={h2}>일정 추가</h2>
+                <h2 className={styles.h2}>일정 추가</h2>
                 <FaTimes className={styles.closeIcon} onClick={onRequestClose} /> {/* X 아이콘 */}
             </div>
             <form>

@@ -8,6 +8,7 @@
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
+    overflow: hidden; /* 스크롤 문제 해결 */
 }
 
 .fc {
