@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Category Management</h1>
+
+<!-- 카테고리 생성 -->
+<h2>Create Category</h2>
+<form id="createForm">
+  <label>Category Name:</label>
+  <input type="text" id="categoryName" required><br>
+  <label>Color:</label>
+  <input type="text" id="color" required><br>
+  <label>User ID:</label>
+  <input type="number" id="userId" required><br>
+  <button type="submit">Create Category</button>
+</form>
+
+<hr>
+
+<!-- 모든 카테고리 조회 -->
+<h2>View Categories</h2>
+<label>User ID:</label>
+<input type="number" id="viewUserId">
+<button onclick="getCategories()">View Categories</button>
+<ul id="categoryList"></ul>
+
+<script>
+  // 카테고리 생성 함수
+  document.getElementById('createForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const categoryName = document.getElementById('categoryName').value;
+    const color = document.getElementById('color').value;
+    const userId = document.getElementById('userId').value;
+
+    const response = await fetch(`http://localhost:8080/api/categories/add?userId=${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ categoryName, color })
+    });
+
+    if (response.ok) {
+      alert('Category created successfully!');
+    } else {
+      alert('Failed to create category.');
+    }
+  });
+
+  // 모든 카테고리 조회 함수
+  async function getCategories() {
+    const userId = document.getElementById('viewUserId').value;
+    const response = await fetch(`http://localhost:8080/api/categories/all?userId=${userId}`, {
+      method: 'GET'
+    });
+
+    const categoryList = document.getElementById('categoryList');
+    categoryList.innerHTML = '';
+
+    if (response.ok) {
+      const categories = await response.json();
+      categories.forEach(category => {
+        const li = document.createElement('li');
+        li.textContent = `ID: ${category.categoryId}, Name: ${category.categoryName}, Color: ${category.color}`;
+        categoryList.appendChild(li);
+      });
+    } else {
+      alert('Failed to fetch categories.');
+    }
+  }
+
+</script>
+
+</body>
+</html>
