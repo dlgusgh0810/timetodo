@@ -2,6 +2,7 @@ package org.timetodo.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.timetodo.entity.UserEntity;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity(name = "category_entity")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CategoryEntity {
 
     @Id

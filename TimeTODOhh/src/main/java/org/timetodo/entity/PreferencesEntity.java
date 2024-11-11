@@ -1,6 +1,7 @@
 package org.timetodo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.timetodo.entity.UserEntity;
@@ -8,6 +9,7 @@ import org.timetodo.entity.UserEntity;
 @Entity(name = "preferences_entity")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class PreferencesEntity {
 
     @Id
