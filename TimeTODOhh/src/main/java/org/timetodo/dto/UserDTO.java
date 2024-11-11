@@ -6,12 +6,17 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
+
+    //PK
+    private Long userId;
 
     // 사용자 이름: 비어 있을 수 없고, 최대 50자 제한
     @NotBlank(message = "Username is required")
@@ -36,4 +41,9 @@ public class UserDTO {
     public boolean isPasswordMatching() {
         return this.password.equals(this.confirmPassword);
     }*/
+
+    private Long preferencesId;        // PreferencesEntity의 ID (외래 키 대신 ID 참조)
+    private List<Long> taskIds;        // TaskEntity의 ID 리스트
+    private List<Long> categoryIds;    // CategoryEntity의 ID 리스트
+    private List<Long> calendarIds;    // CalendarEntity의 ID 리스트
 }

@@ -24,6 +24,7 @@ function Login({ onLoginSuccess }) {
                 // 로그인 성공
                 onLoginSuccess(); // 로그인 성공 콜백 호출
                 navigate('/home'); // 메인 페이지로 리다이렉트
+                alert('로그인이 성공적으로 이루어졌습니다');
             }
         } catch (error) {
             // 로그인 실패 시 에러 메시지 설정

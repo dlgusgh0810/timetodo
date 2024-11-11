@@ -70,6 +70,7 @@ public class CalendarServiceImpl implements CalendarService {
         event.setEndTime(request.getEndTime());
         event.setRepeatType(request.getRepeatType());
 
+
         // 반복 일정 로직 예시
         switch (request.getRepeatType()) {
             case "NONE":

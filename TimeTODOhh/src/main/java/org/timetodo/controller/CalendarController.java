@@ -1,6 +1,7 @@
 package org.timetodo.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 //@RestController // 이 클래스는 REST API 요청을 처리하는 컨트롤러임을 나타냅니다.
+@Slf4j
 @RestController // HTML 템플릿을 렌더링
 @RequiredArgsConstructor // final 필드로 선언된 의존성(서비스)을 자동으로 주입하는 생성자를 생성해줍니다.
 @RequestMapping("/api/calendar") // 이 컨트롤러의 모든 엔드포인트는 "/calendar" 경로로 시작됩니다.
@@ -35,6 +37,7 @@ public class CalendarController {
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
     public ResponseEntity<CalendarEntity> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto) {
+        log.info("add calendar: {}", calendarRequestDto); //로그
         // 사용자가 보낸 일정 데이터를 CalendarService로 넘겨 새로운 일정을 추가하고,
         // 그 결과를 응답으로 반환합니다.
         CalendarEntity newCalendar = calendarService.addCalendar(calendarRequestDto);

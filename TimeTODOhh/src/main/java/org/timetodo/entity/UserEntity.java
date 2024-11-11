@@ -1,16 +1,17 @@
 package org.timetodo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.prefs.Preferences;
 
 @Entity
 @Table(name = "user_entity")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
 
     // Constructors, Getters and Setters
@@ -46,10 +47,4 @@ public class UserEntity {
     @OneToMany(mappedBy = "users")
     private List<CalendarEntity> calendars;
 
-    public UserEntity(String username, String password, String email, PreferencesEntity preferences) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.preferences = preferences;
-    }
 }
