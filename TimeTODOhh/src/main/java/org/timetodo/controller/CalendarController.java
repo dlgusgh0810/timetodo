@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
 import org.timetodo.service.CalendarService;
@@ -22,12 +22,6 @@ public class CalendarController {
 
     private final CalendarService calendarService; // CalendarService를 주입받아 사용합니다.
 
-    /*// 기본 확인용 엔드포인트 (홈 페이지와 연동)
-    @GetMapping
-    public ResponseEntity<String> home() {
-        return ResponseEntity.ok("Calendar API Home");
-    }*/
-
     // 일정 추가 페이지를 GET 요청으로 렌더링
     @GetMapping("/add")
     public String showAddCalendarForm() {
@@ -36,11 +30,11 @@ public class CalendarController {
 
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<CalendarEntity> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto) {
+    public ResponseEntity<CalendarDTO> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto) {
         log.info("add calendar: {}", calendarRequestDto); //로그
         // 사용자가 보낸 일정 데이터를 CalendarService로 넘겨 새로운 일정을 추가하고,
         // 그 결과를 응답으로 반환합니다.
-        CalendarEntity newCalendar = calendarService.addCalendar(calendarRequestDto);
+        CalendarDTO newCalendar = calendarService.addCalendar(calendarRequestDto);
         return ResponseEntity.ok(newCalendar); // 성공 시 추가된 일정을 반환
     }
 
@@ -81,12 +75,12 @@ public class CalendarController {
         return ResponseEntity.ok(events);
     }
 
-    // 반복 일정 추가 엔드포인트
+    /*// 반복 일정 추가 엔드포인트
     @PostMapping("/addRepeatingEvent")
     public ResponseEntity<CalendarEntity> addRepeatingEvent(@RequestBody CalendarRequestDto request) {
         CalendarEntity event = calendarService.addRepeatingEvent(request);
         return ResponseEntity.ok(event);
-    }
+    }*/
 
 }
 

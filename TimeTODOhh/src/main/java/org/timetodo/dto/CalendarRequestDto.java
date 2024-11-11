@@ -24,3 +24,8 @@ public class CalendarRequestDto {
 
     private List<Long> reminderIds;   // Reminder 엔티티의 ID 리스트
 }
+
+/*
+CalendarRequestDto: 클라이언트 → 서버 (요청 데이터 전달)
+CalendarDTO: 서버 → 클라이언트 (응답 데이터 전달)
+*/
