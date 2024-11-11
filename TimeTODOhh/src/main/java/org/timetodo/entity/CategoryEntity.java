@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.timetodo.entity.UserEntity;
+
 
 import java.util.List;
 
@@ -17,25 +19,27 @@ public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "category_id", unique = true, nullable = false)
+
     private Long categoryId;
 
-//    @Column(nullable = false, length = 50)
-    @Column(nullable = false)
+    // 카테고리 이름 중복 방지를 위해 unique 제약 조건 추가
+    @Column(nullable = false, unique = true)
     private String categoryName;
 
-//    @Column(nullable = false, length = 20)
+    // 카테고리 색상 (필수)
     @Column(nullable = false)
     private String color;
 
-//    @ManyToOne //여러 Category가 하나의 User와 연관 (N:1 관계)
-    //@JoinColumn(name = "user_id")
-    @ManyToOne
-    private UserEntity users; //사용자 ID (Foreign Key)
+    // N:1 관계 설정 및 외래 키 명시
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity users;
 
-    @OneToMany(mappedBy = "categories")
+
+    @OneToMany(mappedBy = "categories", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<CalendarEntity> calendar;
 
-    @OneToMany(mappedBy = "categories")
+    @OneToMany(mappedBy = "categories", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<TaskEntity> tasks;
+
 }
