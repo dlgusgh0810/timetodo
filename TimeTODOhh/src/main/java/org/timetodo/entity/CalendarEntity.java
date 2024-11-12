@@ -39,12 +39,12 @@ public class CalendarEntity {
     //@Column(nullable = true)
     private String repeatType; // 반복 일정 유형 (예: daily, weekly)
 
-    @ManyToOne // 여러 Calendar가 하나의 Category와 연관 (N:1 관계)
     //@JoinColumn(name = "category_id" )
+    @ManyToOne // 여러 Calendar가 하나의 Category와 연관 (N:1 관계)
     private CategoryEntity categories;//categoryMTOcalendar; // Foreign Key (외래 키) - Category 클래스와 연관
 
-    @ManyToOne // 여러 Calendar가 하나의 User와 연관 (N:1 관계)
-    //@JoinColumn(name = "user_id")
+//    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.EAGER) // 여러 Calendar가 하나의 User와 연관 (N:1 관계)
     private UserEntity users;//userMTOcalendar; // 사용자 ID (Foreign Key)
 
     @OneToMany(mappedBy = "calenders")

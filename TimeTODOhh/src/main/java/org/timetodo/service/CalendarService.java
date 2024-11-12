@@ -1,6 +1,7 @@
 package org.timetodo.service;
 
 
+import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public interface CalendarService {
 
     // 새로운 일정 추가
-    CalendarEntity addCalendar(CalendarRequestDto calendarRequestDto);
+    CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto);
 
     // 모든 일정 조회
     List<CalendarEntity> getAllCalendars();
@@ -22,7 +23,7 @@ public interface CalendarService {
     void deleteCalendar(Long id);
 
     // 반복 일정 추가
-    CalendarEntity addRepeatingEvent(CalendarRequestDto request);
+//    CalendarEntity addRepeatingEvent(CalendarRequestDto request);
 
     // 일정 검색
     List<CalendarEntity> searchEvents(String title, String description, Long categoryId, LocalDateTime startTime);

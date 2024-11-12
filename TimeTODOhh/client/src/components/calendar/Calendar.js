@@ -25,6 +25,7 @@ function CalendarApp() {
             location: e.target.location.value,
             startTime: e.target.startTime.value,
             endTime: e.target.endTime.value,
+            repeatType: e.target.repeatType.value,
             categoryId: e.target.categoryId.value
         };
         await handleFetch(`${baseUrl}/add`, {
@@ -64,7 +65,7 @@ function CalendarApp() {
         showPage('home');
     };
 
-    const addRepeatingEvent = async (e) => {
+    /*const addRepeatingEvent = async (e) => {
         e.preventDefault();
         const data = {
             title: e.target.repeatTitle.value,
@@ -81,7 +82,7 @@ function CalendarApp() {
             body: JSON.stringify(data),
         });
         showPage('home');
-    };
+    };*/
 
     const searchEvents = async (e) => {
         e.preventDefault();
@@ -113,12 +114,21 @@ function CalendarApp() {
                 <div>
                     <h2>Add New Event</h2>
                     <form onSubmit={addEvent}>
-                        <label>Title: <input type="text" name="title" required /></label><br />
-                        <label>Description: <input type="text" name="description" /></label><br />
-                        <label>Location: <input type="text" name="location" required /></label><br />
-                        <label>Start Time: <input type="datetime-local" name="startTime" required /></label><br />
-                        <label>End Time: <input type="datetime-local" name="endTime" required /></label><br />
-                        <label>Category ID: <input type="number" name="categoryId" /></label><br />
+                        <label>Title: <input type="text" name="title" required/></label><br/>
+                        <label>Description: <input type="text" name="description"/></label><br/>
+                        <label>Location: <input type="text" name="location" required/></label><br/>
+                        <label>Start Time: <input type="datetime-local" name="startTime" required/></label><br/>
+                        <label>End Time: <input type="datetime-local" name="endTime" required/></label><br/>
+                        <label>Category ID: <input type="number" name="categoryId"/></label><br/>
+                        <label>Repeat Type:
+                            <select name="repeatType" required>
+                                <option value="NONE">None</option>
+                                <option value="DAILY">Daily</option>
+                                <option value="WEEKLY">Weekly</option>
+                                <option value="MONTHLY">Monthly</option>
+                                <option value="YEARLY">Yearly</option>
+                            </select>
+                        </label><br/>
                         <button type="submit">Add Event</button>
                     </form>
                     <button onClick={() => showPage('home')}>Back to Home</button>
@@ -161,7 +171,7 @@ function CalendarApp() {
                 </div>
             )}
 
-            {page === 'addRepeatingEvent' && (
+            {/*{page === 'addRepeatingEvent' && (
                 <div>
                     <h2>Add Repeating Event</h2>
                     <form onSubmit={addRepeatingEvent}>
@@ -184,7 +194,7 @@ function CalendarApp() {
                     </form>
                     <button onClick={() => showPage('home')}>Back to Home</button>
                 </div>
-            )}
+            )}*/}
 
             {page === 'searchEvent' && (
                 <div>
