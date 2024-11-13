@@ -1,8 +1,10 @@
 package org.timetodo.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.timetodo.dto.CalendarDTO;
@@ -22,16 +24,24 @@ public class CalendarController {
 
     private final CalendarService calendarService; // CalendarService를 주입받아 사용합니다.
 
-    // 일정 추가 페이지를 GET 요청으로 렌더링
+    /*// 일정 추가 페이지를 GET 요청으로 렌더링
     @GetMapping("/add")
     public String showAddCalendarForm() {
         return "calendarForm"; // calendarForm.html을 반환
-    }
+    }*/
 
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<CalendarDTO> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto) {
-        log.info("add calendar: {}", calendarRequestDto); //로그
+    public ResponseEntity<CalendarDTO> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpSession session) {
+//        log.info("캘린더 정보, add calendar: {}", calendarRequestDto); //로그
+
+        Long userId = (Long) session.getAttribute("userId"); // 세션에서 userId 가져오기
+        log.info("세션에서 가져온 UserId : {}", session.getAttribute("userId"));
+        if(userId == null) {
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(null);
+        }
+        calendarRequestDto.setUserId(userId);
+
         // 사용자가 보낸 일정 데이터를 CalendarService로 넘겨 새로운 일정을 추가하고,
         // 그 결과를 응답으로 반환합니다.
         CalendarDTO newCalendar = calendarService.addCalendar(calendarRequestDto);
