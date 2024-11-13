@@ -12,7 +12,7 @@ import java.util.List;
 public interface CalendarService {
 
     // 새로운 일정을 추가 (반복일정 로직추가 11/11)
-    CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto);
+    CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId);
 
     // 모든 일정 조회
     List<CalendarEntity> getAllCalendars();

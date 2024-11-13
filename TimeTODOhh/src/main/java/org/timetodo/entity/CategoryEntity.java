@@ -19,7 +19,6 @@ public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long categoryId;
 
     // 카테고리 이름 중복 방지를 위해 unique 제약 조건 추가
@@ -34,7 +33,6 @@ public class CategoryEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity users;
-
 
     @OneToMany(mappedBy = "categories", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<CalendarEntity> calendar;

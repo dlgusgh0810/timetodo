@@ -32,20 +32,21 @@ public class CalendarController {
 
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<CalendarDTO> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpSession session) {
-//        log.info("캘린더 정보, add calendar: {}", calendarRequestDto); //로그
-
+    public ResponseEntity<String> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpSession session/*, @RequestParam Long userId*/) {
         Long userId = (Long) session.getAttribute("userId"); // 세션에서 userId 가져오기
         log.info("세션에서 가져온 UserId : {}", session.getAttribute("userId"));
         if(userId == null) {
-            return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(null);
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS).body("userid가 Null입니다"); //userId가 Null일 경우에 에러
         }
         calendarRequestDto.setUserId(userId);
+        calendarService.addCalendar(calendarRequestDto,userId);
+        return ResponseEntity.ok("캘린더 생성 성공");
+       /* try {
 
-        // 사용자가 보낸 일정 데이터를 CalendarService로 넘겨 새로운 일정을 추가하고,
-        // 그 결과를 응답으로 반환합니다.
-        CalendarDTO newCalendar = calendarService.addCalendar(calendarRequestDto);
-        return ResponseEntity.ok(newCalendar); // 성공 시 추가된 일정을 반환
+        } catch (Exception e) {
+            log.error("캘린더 에러, Error adding calendar", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }*/
     }
 
     // 모든 일정을 조회하는 엔드포인트

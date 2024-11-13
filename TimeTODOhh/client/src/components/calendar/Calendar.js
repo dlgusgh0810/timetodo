@@ -17,8 +17,13 @@ function CalendarApp() {
             const errorText = await response.text();
             throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
         }
-        const data = await response.json();
-        setResult(JSON.stringify(data, null, 2));
+        try {
+            const data = await response.json();
+            setResult(JSON.stringify(data, null, 2));
+        } catch (error) {
+            console.error("Failed to parse JSON:", error);
+            setResult("Failed to parse JSON response.");
+        }
     };
 
     const addEvent = async (e) => {

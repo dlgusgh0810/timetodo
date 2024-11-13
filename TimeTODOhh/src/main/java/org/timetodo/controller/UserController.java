@@ -49,7 +49,6 @@ public class UserController {
     // 로그인 엔드포인트 추가
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserDTO userDTO, HttpSession session) {
-        log.info("로그인 정보, UserDto: {}", userDTO); //로그
         UserEntity authenticatedUser = userService.authenticateUser(userDTO.getUsername(), userDTO.getPassword());
 
         if (authenticatedUser != null) {

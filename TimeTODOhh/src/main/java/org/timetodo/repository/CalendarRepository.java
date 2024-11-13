@@ -11,6 +11,9 @@ import java.util.List;
 @Repository
 public interface CalendarRepository extends JpaRepository<CalendarEntity, Long> {
 
+    // 특정 사용자의 일정만 조회
+    List<CalendarEntity> findByUsers_UserId(Long userId);
+
     // 제목, 설명, 카테고리 ID, 날짜로 일정 검색
     List<CalendarEntity> findByTitleContainingAndDescriptionContainingAndCategories_CategoryIdAndStartTime(
             String title, String description, Long categoryId, LocalDateTime startTime
