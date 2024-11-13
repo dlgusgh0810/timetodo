@@ -1,8 +1,8 @@
 /* Calendar.module.css */
 
 /* 전체 캘린더 컨테이너 */
-.calendar-container {
-    width: 100%;
+.calendarContainer {
+    width: 10000vh;
     height: 100vh;
     max-width: 1000px;
     margin: 0 auto;
@@ -11,25 +11,20 @@
     overflow: hidden; /* 스크롤 문제 해결 */
 }
 
-.fc {
-    width: 100%;
-    height: 100%;
-}
-
 /* 보기 선택 드롭다운 스타일 */
-.view-selector {
+.viewSelector {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
     font-size: 16px;
 }
 
-.view-selector label {
+.viewSelector label {
     margin-right: 10px;
     font-weight: bold;
 }
 
-.view-selector select {
+.viewSelector select {
     padding: 5px 10px;
     font-size: 16px;
     border: 1px solid #ddd;
@@ -38,7 +33,7 @@
     transition: all 0.3s ease;
 }
 
-.view-selector select:hover {
+.viewSelector select:hover {
     border-color: #6200ea;
 }
 
@@ -133,7 +128,7 @@
 }
 
 /* 저장 버튼 스타일 */
-button[type="button"] {
+.saveButton {
     margin-top: 15px;
     padding: 10px;
     font-size: 16px;

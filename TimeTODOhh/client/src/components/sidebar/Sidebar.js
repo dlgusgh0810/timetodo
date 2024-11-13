@@ -10,12 +10,14 @@ const Sidebar = ({ onAddEvent }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const navigate = useNavigate();
 
+    // 프로필 토글 함수
     const toggleProfile = () => {
         setProfileVisible(!isProfileVisible);
     };
 
+    // 로그아웃 함수
     const handleLogout = () => {
-        navigate("/login");
+        navigate("/login"); // 로그인 페이지로 이동
     };
 
     const openModal = () => {
@@ -27,8 +29,8 @@ const Sidebar = ({ onAddEvent }) => {
     };
 
     const handleSaveEvent = (eventData) => {
-        onAddEvent(eventData); // 부모 컴포넌트로 일정 데이터 전달
-        closeModal(); // 모달 닫기
+        onAddEvent(eventData);
+        closeModal();
     };
 
     return (
@@ -49,7 +51,8 @@ const Sidebar = ({ onAddEvent }) => {
                 </div>
             </div>
 
-            {isProfileVisible && <Profile />}
+            {/* 프로필 컴포넌트 표시 */}
+            {isProfileVisible && <Profile handleLogout={handleLogout} />}
 
             {/* 네비게이션 메뉴 */}
             <nav className={styles.menu}>
@@ -77,7 +80,7 @@ const Sidebar = ({ onAddEvent }) => {
                 </ul>
             </nav>
 
-            {/* AddModal - 모달 열림 여부에 따라 표시 */}
+            {/* AddModal */}
             <AddModal isOpen={isModalOpen} onRequestClose={closeModal} onSave={handleSaveEvent} />
         </div>
     );

@@ -1,44 +1,48 @@
-// AddModal.js
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { FaTimes } from 'react-icons/fa'; // X 아이콘 추가
+import { FaTimes, FaCalendarAlt, FaBell, FaTag, FaExclamationCircle, FaSyncAlt, FaPen, FaClipboardList } from 'react-icons/fa';
 import styles from './AddModal.module.css';
 
 Modal.setAppElement('#root');
 
-function AddModal({ isOpen, onRequestClose, onSave, selectedDate }) {
+function AddModal({ isOpen, onRequestClose, onSave }) {
+    const [activeTab, setActiveTab] = useState('할 일');
     const [title, setTitle] = useState('');
-    const [date, setDate] = useState(selectedDate || '');
-    const [time, setTime] = useState('');
-    const [deadline, setDeadline] = useState('');
-    const [notification, setNotification] = useState('30분 전');
+    const [date, setDate] = useState('');
     const [label, setLabel] = useState('');
-    const [priority, setPriority] = useState('일반');
+    const [priority, setPriority] = useState('우선순위 없음');
     const [description, setDescription] = useState('');
     const [repeat, setRepeat] = useState('반복 없음');
+    const [reminder, setReminder] = useState('30분 전');
 
     const handleSave = () => {
-        onSave({
+        if (title.trim() === '') {
+            alert('제목을 입력해주세요.');
+            return;
+        }
+        const newTodo = {
+            type: activeTab,
             title,
             date,
-            time,
-            deadline,
-            notification,
             label,
             priority,
             description,
             repeat,
-        });
+            reminder: activeTab === '일정' ? reminder : undefined,
+        };
+        onSave(newTodo);
+        resetForm();
+        onRequestClose();
+    };
+
+    const resetForm = () => {
         setTitle('');
         setDate('');
-        setTime('');
-        setDeadline('');
-        setNotification('30분 전');
         setLabel('');
         setPriority('일반');
         setDescription('');
         setRepeat('반복 없음');
-        onRequestClose();
+        setReminder('30분 전');
     };
 
     return (
@@ -49,55 +53,71 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate }) {
             overlayClassName={styles.eventModalOverlay}
         >
             <div className={styles.modalHeader}>
-                <h2 className={styles.h2}>일정 추가</h2>
-                <FaTimes className={styles.closeIcon} onClick={onRequestClose} /> {/* X 아이콘 */}
+                {/*<h2>{activeTab} 추가</h2>*/}
+                <FaTimes className={styles.closeIcon} onClick={onRequestClose} />
             </div>
-            <form>
+
+            {/* 탭 전환 버튼 */}
+            <div className={styles.tabContainer}>
+                <button
+                    className={activeTab === '할 일' ? styles.activeTab : styles.inactiveTab}
+                    onClick={() => setActiveTab('할 일')}
+                >
+                    할 일
+                </button>
+                <button
+                    className={activeTab === '일정' ? styles.activeTab : styles.inactiveTab}
+                    onClick={() => setActiveTab('일정')}
+                >
+                    일정
+                </button>
+            </div>
+
+            <form className={styles.form}>
                 {/* 제목 */}
-                <label>제목</label>
+                <label>
+                    {/*<FaPen className={styles.icon} />*/}
+                    {/*제목*/}
+                </label>
                 <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="일정 제목을 입력하세요"
+                    placeholder="할 일 제목을 입력하세요"
                 />
 
                 {/* 날짜 */}
-                <label>날짜</label>
+                <label>
+                    <FaCalendarAlt className={styles.icon} />
+                    {/*날짜*/}
+                </label>
                 <input
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                 />
 
-                {/* 시간 */}
-                <label>시간</label>
-                <input
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                />
+                {/* 알림 설정 - 일정 전용 */}
+                {activeTab === '일정' && (
+                    <>
+                        <label>
+                            <FaBell className={styles.icon} />
+                            {/*알림 설정*/}
+                        </label>
+                        <select value={reminder} onChange={(e) => setReminder(e.target.value)}>
+                            <option value="알림 없음">알림 없음</option>
+                            <option value="30분 전">30분 전</option>
+                            <option value="1시간 전">1시간 전</option>
+                            <option value="1일 전">1일 전</option>
+                        </select>
+                    </>
+                )}
 
-                {/* 마감 기한 */}
-                <label>마감 기한</label>
-                <input
-                    type="text"
-                    value={deadline}
-                    onChange={(e) => setDeadline(e.target.value)}
-                    placeholder="마감 기한 없음"
-                />
-
-                {/* 알림 설정 */}
-                <label>알림 설정</label>
-                <select value={notification} onChange={(e) => setNotification(e.target.value)}>
-                    <option value="없음">없음</option>
-                    <option value="10분 전">10분 전</option>
-                    <option value="30분 전">30분 전</option>
-                    <option value="1시간 전">1시간 전</option>
-                </select>
-
-                {/* 라벨 선택 */}
-                <label>라벨 선택</label>
+                {/* 라벨 */}
+                <label>
+                    <FaTag className={styles.icon} />
+                    {/*라벨*/}
+                </label>
                 <input
                     type="text"
                     value={label}
@@ -106,7 +126,10 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate }) {
                 />
 
                 {/* 우선순위 */}
-                <label>우선순위</label>
+                <label>
+                    <FaExclamationCircle className={styles.icon} />
+                    {/*우선순위*/}
+                </label>
                 <select value={priority} onChange={(e) => setPriority(e.target.value)}>
                     <option value="중요">중요</option>
                     <option value="일반">일반</option>
@@ -114,15 +137,21 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate }) {
                 </select>
 
                 {/* 설명 */}
-                <label>설명</label>
+                <label>
+                    <FaClipboardList className={styles.icon} />
+                    {/*설명*/}
+                </label>
                 <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="설명 추가..."
+                    placeholder="설명을 입력하세요"
                 />
 
                 {/* 반복 설정 */}
-                <label>반복</label>
+                <label>
+                    <FaSyncAlt className={styles.icon} />
+                    {/*반복*/}
+                </label>
                 <select value={repeat} onChange={(e) => setRepeat(e.target.value)}>
                     <option value="반복 없음">반복 없음</option>
                     <option value="매일">매일</option>
@@ -131,7 +160,9 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate }) {
                 </select>
 
                 {/* 저장 버튼 */}
-                <button type="button" onClick={handleSave}>저장</button>
+                <button type="button" onClick={handleSave} className={styles.saveButton}>
+                    저장
+                </button>
             </form>
         </Modal>
     );
