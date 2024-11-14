@@ -1,5 +1,6 @@
 package org.timetodo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,8 +46,10 @@ public class CalendarEntity {
 
 //    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.EAGER) // 여러 Calendar가 하나의 User와 연관 (N:1 관계)
+    @JsonIgnore
     private UserEntity users;//userMTOcalendar; // 사용자 ID (Foreign Key)
 
     @OneToMany(mappedBy = "calenders")
+    @JsonIgnore
     private List<ReminderEntity> reminders;
 }

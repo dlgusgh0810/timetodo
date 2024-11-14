@@ -1,5 +1,7 @@
 package org.timetodo.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +13,8 @@ import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
 import org.timetodo.service.CalendarService;
-
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 //@RestController // 이 클래스는 REST API 요청을 처리하는 컨트롤러임을 나타냅니다.
@@ -24,38 +26,37 @@ public class CalendarController {
 
     private final CalendarService calendarService; // CalendarService를 주입받아 사용합니다.
 
-    /*// 일정 추가 페이지를 GET 요청으로 렌더링
-    @GetMapping("/add")
-    public String showAddCalendarForm() {
-        return "calendarForm"; // calendarForm.html을 반환
-    }*/
-
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<String> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpSession session/*, @RequestParam Long userId*/) {
-        Long userId = (Long) session.getAttribute("userId"); // 세션에서 userId 가져오기
-        log.info("세션에서 가져온 UserId : {}", session.getAttribute("userId"));
-        if(userId == null) {
-            return ResponseEntity.status(HttpStatus.MULTI_STATUS).body("userid가 Null입니다"); //userId가 Null일 경우에 에러
+    public ResponseEntity<String> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpServletRequest request) {
+        Long userId = 0L;
+        try{
+            Cookie userCookie = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals("userId"))
+                    .findAny()
+                    .orElse(null);
+            userId = Long.valueOf(userCookie.getValue());
+            log.info("세션에서 가져온 UserId : {}", userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            calendarRequestDto.setUserId(userId);
+            calendarService.addCalendar(calendarRequestDto,userId);
+            return ResponseEntity.ok("캘린더 생성 성공");
         }
-        calendarRequestDto.setUserId(userId);
-        calendarService.addCalendar(calendarRequestDto,userId);
-        return ResponseEntity.ok("캘린더 생성 성공");
-       /* try {
-
-        } catch (Exception e) {
-            log.error("캘린더 에러, Error adding calendar", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }*/
     }
 
-    // 모든 일정을 조회하는 엔드포인트
+    // 로그인한 유저의 일정을 전체 조회하는 엔드포인트
     @GetMapping("/all")
-    public ResponseEntity<List<CalendarEntity>> getAllCalendars() {
-        // CalendarService를 통해 저장된 모든 일정을 조회하고,
-        // 그 결과를 응답으로 반환합니다.
-        List<CalendarEntity> calendars = calendarService.getAllCalendars();
-        return ResponseEntity.ok(calendars); // 성공 시 일정 목록을 반환
+    public List<CalendarEntity> getUserCalendars(HttpServletRequest request) {
+        Long userId = 0L;
+        Cookie userCookie = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("userId"))
+                .findAny()
+                .orElse(null);
+        userId = Long.valueOf(userCookie.getValue());
+        // userId에 해당하는 일정만 조회
+        return calendarService.getCalendarsByUserId(userId); // 성공 시 일정 목록을 반환
     }
 
     // 특정 일정을 업데이트하는 엔드포인트

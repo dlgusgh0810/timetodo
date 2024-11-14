@@ -15,7 +15,7 @@ public interface CalendarService {
     CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId);
 
     // 모든 일정 조회
-    List<CalendarEntity> getAllCalendars();
+    List<CalendarEntity> getCalendarsByUserId(Long userId);
 
     // 특정 일정 업데이트
     CalendarEntity updateCalendar(Long id, CalendarRequestDto calendarRequestDto);
