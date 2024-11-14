@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { FaTimes, FaCalendarAlt, FaBell, FaTag, FaExclamationCircle, FaSyncAlt, FaPen, FaClipboardList } from 'react-icons/fa';
+import { FaTimes, FaCalendarAlt, FaBell, FaTag, FaExclamationCircle, FaSyncAlt, FaClipboardList } from 'react-icons/fa';
 import styles from './AddModal.module.css';
 
 Modal.setAppElement('#root');
 
 function AddModal({ isOpen, onRequestClose, onSave }) {
-    const [activeTab, setActiveTab] = useState('할 일');
+    const [activeTab, setActiveTab] = useState('일정');
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [label, setLabel] = useState('');
@@ -57,34 +57,37 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
                 <FaTimes className={styles.closeIcon} onClick={onRequestClose} />
             </div>
 
-            {/* 탭 전환 버튼 */}
-            <div className={styles.tabContainer}>
-                <button
-                    className={activeTab === '할 일' ? styles.activeTab : styles.inactiveTab}
-                    onClick={() => setActiveTab('할 일')}
-                >
-                    할 일
-                </button>
-                <button
-                    className={activeTab === '일정' ? styles.activeTab : styles.inactiveTab}
-                    onClick={() => setActiveTab('일정')}
-                >
-                    일정
-                </button>
-            </div>
+
 
             <form className={styles.form}>
                 {/* 제목 */}
                 <label>
-                    {/*<FaPen className={styles.icon} />*/}
                     {/*제목*/}
                 </label>
                 <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="할 일 제목을 입력하세요"
+                    placeholder="제목을 입력하세요"
                 />
+
+                {/* 탭 전환 버튼 */}
+                <div className={styles.tabContainer}>
+                    <button
+                        type="button"
+                        className={activeTab === '할 일' ? styles.activeTab : styles.inactiveTab}
+                        onClick={() => setActiveTab('할 일')}
+                    >
+                        할 일
+                    </button>
+                    <button
+                        type="button"
+                        className={activeTab === '일정' ? styles.activeTab : styles.inactiveTab}
+                        onClick={() => setActiveTab('일정')}
+                    >
+                        일정
+                    </button>
+                </div>
 
                 {/* 날짜 */}
                 <label>

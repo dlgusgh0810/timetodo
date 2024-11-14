@@ -9,10 +9,10 @@
     background-color: #ff4b4b;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 5px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .logoutButton:hover {
