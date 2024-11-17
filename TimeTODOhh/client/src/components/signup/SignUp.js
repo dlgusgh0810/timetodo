@@ -30,7 +30,7 @@ function SignUp() {
 
     return (
         <div>
-            <h2>Sign Up</h2>
+            <h2>회원가입</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Username:</label>

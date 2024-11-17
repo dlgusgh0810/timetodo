@@ -1,15 +1,14 @@
-import {useNavigate} from "react-router-dom";
-import Sidebar from "./Sidebar";
+import React from 'react';
+import styles from './Profile.module.css';
 
-const Profile = function(){
-    const navigate = useNavigate();
+const Profile = ({ handleLogout }) => {
     return (
-        <div>
-            
+        <div className={styles.profileContainer}>
+            <button onClick={handleLogout} className={styles.logoutButton}>
+                로그아웃
+            </button>
         </div>
-    )
-
-
+    );
 };
 
 export default Profile;
