@@ -2,32 +2,35 @@ package org.timetodo.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
-import org.timetodo.entity.CategoryEntity;
 import org.timetodo.entity.ReminderEntity;
 import org.timetodo.entity.UserEntity;
 import org.timetodo.repository.CalendarRepository;
 import org.timetodo.repository.UserRepository;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service
 public class CalendarServiceImpl implements CalendarService {
 
+    @Autowired
     private final CalendarRepository calendarRepository; // CalendarRepository 주입
+    @Autowired
     private final UserRepository userRepository;  // UserRepository 주입
 
     // 새로운 일정을 추가 (반복일정 로직추가 11/11)
     @Override
-    public CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto) {
-        log.info("Calendar Service _ add calendar: {}", calendarRequestDto); //로그
+    public CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        log.info("CalendarSeviceImpl > addCalendar메소드 > userId 정보 : " + userId); //로그
 
         // 1. CalendarRequestDto를 CalendarEntity로 변환
         CalendarEntity calendar = new CalendarEntity();
@@ -58,20 +61,13 @@ public class CalendarServiceImpl implements CalendarService {
         }
 
         // 2. userId를 사용하여 UserEntity 조회 후 설정
-        if (calendarRequestDto.getUserId() != null) {
-            UserEntity user = userRepository.findById(calendarRequestDto.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + calendarRequestDto.getUserId()));
-            calendar.setUsers(user);  // 조회된 UserEntity를 CalendarEntity에 설정
-        } else {
-            log.warn("User ID is null in CalendarRequestDto.");
-        }
+        calendar.setUsers(user);
 
         // 3. CalendarEntity 저장
         CalendarEntity savedCalendar = calendarRepository.save(calendar);
 
         // 4. 저장된 CalendarEntity를 CalendarDTO로 변환
         return convertToDto(savedCalendar);
-//        return calendarRepository.save(calendar); // 저장 후 반환
     }
 
     // CalendarEntity를 CalendarDTO로 변환하는 메서드
@@ -108,9 +104,9 @@ public class CalendarServiceImpl implements CalendarService {
 
     // 모든 일정을 조회
     @Override
-    public List<CalendarEntity> getAllCalendars() {
+    public List<CalendarEntity> getCalendarsByUserId(Long userId) {
         // 저장된 모든 일정 조회
-        return calendarRepository.findAll();
+        return calendarRepository.findAllByUsers_UserId(userId);
     }
 
     // 특정 일정을 업데이트

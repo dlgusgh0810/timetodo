@@ -1,6 +1,7 @@
 package org.timetodo.service;
 
 
+import jakarta.servlet.http.HttpSession;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
@@ -10,11 +11,11 @@ import java.util.List;
 
 public interface CalendarService {
 
-    // 새로운 일정 추가
-    CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto);
+    // 새로운 일정을 추가 (반복일정 로직추가 11/11)
+    CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId);
 
     // 모든 일정 조회
-    List<CalendarEntity> getAllCalendars();
+    List<CalendarEntity> getCalendarsByUserId(Long userId);
 
     // 특정 일정 업데이트
     CalendarEntity updateCalendar(Long id, CalendarRequestDto calendarRequestDto);
