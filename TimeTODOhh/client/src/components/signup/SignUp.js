@@ -19,7 +19,7 @@ function SignUp() {
         e.preventDefault();
         try {
             // 백엔드로 POST 요청을 보내는 코드
-            const response = await axios.post('http://localhost:8080/api/signup', formData);
+            const response = await axios.post('/api/user/signup', formData);
             console.log(response.data); // 성공 시 백엔드에서의 응답 확인
             alert('회원가입이 성공적으로 완료되었습니다.');
         } catch (error) {

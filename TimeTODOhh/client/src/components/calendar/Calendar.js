@@ -1,3 +1,4 @@
+
 // Calendar.js
 import React, { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
@@ -57,8 +58,9 @@ function Calendar({ events }) {
                 onRequestClose={closeModal}
                 selectedDate={selectedDate}
             />
+
         </div>
     );
 }
 
-export default Calendar;
+export default CalendarApp;

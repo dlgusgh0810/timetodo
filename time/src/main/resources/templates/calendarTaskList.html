@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>일정 및 할 일 목록</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+<h1>일정 및 할 일 목록</h1>
+
+<!-- 캘린더 일정 목록 -->
+<h2>일정 목록</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>제목</th>
+    <th>설명</th>
+    <th>시작 시간</th>
+    <th>종료 시간</th>
+    <th>장소</th>
+    <th>반복 유형</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="calendar : ${calendars}">
+    <td th:text="${calendar.title}"></td>
+    <td th:text="${calendar.description}"></td>
+    <td th:text="${calendar.startTime}"></td>
+    <td th:text="${calendar.endTime}"></td>
+    <td th:text="${calendar.location}"></td>
+    <td th:text="${calendar.repeatType}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- 할 일 목록 -->
+<h2>할 일 목록</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>제목</th>
+    <th>마감 기한</th>
+    <th>우선순위</th>
+    <th>상태</th>
+    <th>반복 유형</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="task : ${tasks}">
+    <td th:text="${task.title}"></td>
+    <td th:text="${task.dueDate}"></td>
+    <td th:text="${task.priority}"></td>
+    <td th:text="${task.status}"></td>
+    <td th:text="${task.repeatType}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/">메인 페이지로 돌아가기</a>
+</body>
+</html>

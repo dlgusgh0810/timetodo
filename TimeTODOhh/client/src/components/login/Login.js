@@ -1,20 +1,37 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+
 import styles from './Login.module.css';
+
+import axios from 'axios';
+
+
 
 function Login({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null); // 에러 메시지 상태 추가
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (username === 'kimdiyong' && password === '1234') {
-            onLoginSuccess(); // 로그인 성공 콜백 호출
-            navigate('/home'); // 메인 페이지로 리다이렉트
-        } else {
-            alert('로그인 정보가 올바르지 않습니다.');
+        try {
+            // 백엔드로 로그인 요청 보내기
+            const response = await axios.post('/api/user/login', {
+                username,
+                password,
+            });
+
+            if (response.status === 200) {
+                // 로그인 성공
+                onLoginSuccess(); // 로그인 성공 콜백 호출
+                navigate('/home'); // 메인 페이지로 리다이렉트
+                alert('로그인이 성공적으로 이루어졌습니다');
+            }
+        } catch (error) {
+            // 로그인 실패 시 에러 메시지 설정
+            setError("로그인 정보가 올바르지 않습니다.");
         }
     };
 

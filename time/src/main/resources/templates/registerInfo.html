@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원목록</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<table>
+    <tr>
+        <th>username</th>
+        <th>password</th>
+        <th>email</th>
+
+    </tr>
+    <tr th:each="user: ${requestUserDtoList}">
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.password}"></td>
+        <td th:text="${user.email}"></td>
+    </tr>
+</table>
+
+<a href="/">메인 페이지로 돌아가기</a>
+
+</body>
+</html>
