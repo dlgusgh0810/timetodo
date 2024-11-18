@@ -38,7 +38,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.39</version> <!-- 버전 명시 -->
+            <version>8.0.33</version> <!-- 버전 명시 -->
             <scope>runtime</scope>
         </dependency>
 
@@ -76,6 +76,14 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+        </dependency>
+
 
     </dependencies>
 
