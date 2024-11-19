@@ -29,7 +29,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("User not found with ID(캘린더서비스) : " + userId));
         log.info("CalendarSeviceImpl > addCalendar메소드 > userId 정보 : " + userId); //로그
 
         // 1. CalendarRequestDto를 CalendarEntity로 변환
@@ -92,8 +92,8 @@ public class CalendarServiceImpl implements CalendarService {
         }
 
         // ReminderEntity 리스트의 ID들을 설정
-        if (calendar.getReminders() != null) {
-            List<Long> reminderIds = calendar.getReminders().stream()
+        if (calendar.getReminderId() != null) {
+            List<Long> reminderIds = calendar.getReminderId().stream()
                     .map(ReminderEntity::getReminderId)
                     .collect(Collectors.toList());
             dto.setReminderIds(reminderIds);

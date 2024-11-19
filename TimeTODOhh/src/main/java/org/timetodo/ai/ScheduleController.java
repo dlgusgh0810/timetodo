@@ -3,6 +3,7 @@ package org.timetodo.ai;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/schedule")
 public class ScheduleController {
 
+    @Autowired
     private final OpenAIService openAIService;
+
+    @Autowired
     private final ScheduleService scheduleService;
 
     @PostMapping("/add")
@@ -36,5 +40,11 @@ public class ScheduleController {
 
         return ResponseEntity.ok("일정이 추가되었습니다.");
     }
-
 }
+
+/*
+이 코드가 하는 일
+OpenAIService를 호출하여 자연어로 입력된 일정을 해석합니다.
+응답(JSON)을 파싱하여 필요한 데이터(예: 제목, 날짜, 시간)를 추출합니다.
+추출된 데이터를 Schedule 객체로 변환하여 DB에 저장합니다.
+ */
