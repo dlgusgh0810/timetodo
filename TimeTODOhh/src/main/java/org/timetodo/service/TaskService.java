@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.TaskDto;
 import org.timetodo.dto.TaskRequestDto;
-import org.timetodo.entity.CalendarEntity;
 import org.timetodo.entity.ReminderEntity;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.entity.UserEntity;
@@ -28,7 +26,7 @@ public class TaskService{
     @Autowired
     private final UserRepository userRepository;  // UserRepository 주입
 
-    public TaskEntity addTask(TaskRequestDto taskRequestDto, Long userId) {
+    public TaskDto addTask(TaskRequestDto taskRequestDto, Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID(테스크서비스) : " + userId));
         log.info("TaskSevice > addTask메소드 > userId 정보 : " + userId); //로그
@@ -66,7 +64,7 @@ public class TaskService{
         TaskEntity saveTask = taskRepository.save(task);
 
         // Category 및 User는 따로 설정 필요
-        return taskRepository.save(task); // 저장 후 반환
+        return convertToDto(saveTask); // 저장 후 반환
     }
 
     private TaskDto convertToDto(TaskEntity task) {
