@@ -6,9 +6,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
 import styles from './Calendar.module.css';
 
-function Calendar({ events }) {
+function Calendar({ initialEvents }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
+    const [events, setEvents] = useState(initialEvents); // 이벤트 상태 관리
     const calendarRef = useRef(null); // FullCalendar의 ref 생성
 
     // 날짜 클릭 이벤트
@@ -20,6 +21,17 @@ function Calendar({ events }) {
     // 모달 닫기
     const closeModal = () => {
         setModalOpen(false);
+    };
+
+    // 이벤트 저장 함수
+    const handleSave = (newEvent) => {
+        // 기존 이벤트에 새 이벤트 추가
+        setEvents((prevEvents) => [
+            ...prevEvents,
+            { title: newEvent.title, start: newEvent.date, ...newEvent }
+        ]);
+
+        closeModal(); // 모달 닫기
     };
 
     // 보기 전환 이벤트
@@ -46,7 +58,7 @@ function Calendar({ events }) {
                 ref={calendarRef} // FullCalendar에 ref 연결
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth" // 초기 보기는 월간으로 설정
-                events={events}
+                events={events} // 상태로 관리되는 이벤트 전달
                 dateClick={handleDateClick}
                 headerToolbar={{
                     left: 'prev,next today',
@@ -63,6 +75,7 @@ function Calendar({ events }) {
             <AddModal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
+                onSave={handleSave} // 이벤트 저장 함수 전달
                 selectedDate={selectedDate}
             />
         </div>
