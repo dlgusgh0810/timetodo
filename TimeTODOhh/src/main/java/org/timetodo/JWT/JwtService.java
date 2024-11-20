@@ -20,7 +20,7 @@ public class JwtService {
                 .compact();
     }
 
-    public Long extractId(String token) {
+    public Long extractId(String token, String key) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()

@@ -37,7 +37,7 @@ public class ReminderController {
             @RequestHeader("Authorization") String token) {
 
         // TaskId JWT에서 추출
-        Long taskId = jwtService.extractId(token);
+        Long taskId = jwtService.extractId(token, "taskId");
 
         // Reminder 생성
         reminderService.createTaskReminder(reminderRequestDto, taskId);
@@ -51,7 +51,7 @@ public class ReminderController {
             @RequestHeader("Authorization") String token) {
 
         // CalendarId JWT에서 추출
-        Long calendarId = jwtService.extractId(token);
+        Long calendarId = jwtService.extractId(token, "calendarId");
 
         // Reminder 생성
         reminderService.createCalendarReminder(reminderRequestDto, calendarId);
@@ -66,14 +66,14 @@ public class ReminderController {
      */
     @GetMapping("/findTask")
     public List<ReminderEntity> getTaskReminders(@RequestHeader("Authorization") String token) {
-        Long taskId = jwtService.extractId(token);
+        Long taskId = jwtService.extractId(token,"taskId");
         return reminderService.getReminderByTaskId(taskId);
     }
 
     @GetMapping("/findCalendar")
     public List<ReminderEntity> getCalendarsReminders(@RequestHeader("Authorization") String token) {
-        Long calendarId = jwtService.extractId(token);
-        return reminderService.getReminderByTaskId(calendarId);
+        Long calendarId = jwtService.extractId(token,"calendarId");
+        return reminderService.getReminderByCalendarId(calendarId);
     }
 
     /**
