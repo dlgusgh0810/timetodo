@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.timetodo.JWT.JwtService;
+//import org.timetodo.JWT.JwtService;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
@@ -26,14 +26,13 @@ import java.util.List;
 public class CalendarController {
 
     private final CalendarService calendarService; // CalendarService를 주입받아 사용합니다.
-    private final JwtService jwtService;
+    //private final JwtService jwtService;
 
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
     public ResponseEntity<String> addCalendar(
             @RequestBody CalendarRequestDto calendarRequestDto,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletRequest request) {
         Long userId = 0L;
         try {
             Cookie userCookie = Arrays.stream(request.getCookies())
@@ -50,11 +49,13 @@ public class CalendarController {
         calendarRequestDto.setUserId(userId);
         CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId);
 
-        // JWT 생성
+        /*// JWT 생성
         String token = jwtService.createToken("calendarId", calendar.getCalendarId());
+        log.info("calendarId 토큰 : {}", token);
+        log.info("calendarId : {}", calendar.getCalendarId());
 
         // 클라이언트로 JWT 응답
-        response.setHeader("Authorization", "Bearer " + token);
+        response.setHeader("Authorization", "Bearer " + token);*/
 
         return ResponseEntity.ok("캘린더 생성 성공");
 

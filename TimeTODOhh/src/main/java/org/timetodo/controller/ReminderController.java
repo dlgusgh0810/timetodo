@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.timetodo.JWT.JwtService;
+//import org.timetodo.JWT.JwtService;
 import org.timetodo.dto.ReminderRequestDto;
 import org.timetodo.entity.ReminderEntity;
 import org.timetodo.service.ReminderService;
@@ -24,7 +24,7 @@ import java.util.List;
 public class ReminderController {
 
     private final ReminderService reminderService;
-    private final JwtService jwtService;
+    //private final JwtService jwtService;
 
     /**
      * 알림 생성 또는 업데이트
@@ -33,11 +33,15 @@ public class ReminderController {
      */
     @PostMapping("/addTask")
     public ResponseEntity<String> createTaskReminder(
-            @RequestBody ReminderRequestDto reminderRequestDto,
-            @RequestHeader("Authorization") String token) {
+            @RequestBody ReminderRequestDto reminderRequestDto/*,
+            @RequestHeader("Authorization") String token*/) {
 
         // TaskId JWT에서 추출
-        Long taskId = jwtService.extractId(token, "taskId");
+        //Long taskId = jwtService.extractId(token, "taskId");
+
+        Long taskId = reminderRequestDto.getTaskId();
+
+        log.info("createTaskReminder 메소드의 taskId : {} ", taskId);
 
         // Reminder 생성
         reminderService.createTaskReminder(reminderRequestDto, taskId);
@@ -47,11 +51,16 @@ public class ReminderController {
 
     @PostMapping("/addCalendar")
     public ResponseEntity<String> createCalendarReminder(
-            @RequestBody ReminderRequestDto reminderRequestDto,
-            @RequestHeader("Authorization") String token) {
+            @RequestBody ReminderRequestDto reminderRequestDto/*,
+            @RequestHeader(value = "Authorization", required = false) String token*/) {
 
+        /*log.info("createCalendarReminder 메소드 , Authorization Token : " + token);
         // CalendarId JWT에서 추출
-        Long calendarId = jwtService.extractId(token, "calendarId");
+        Long calendarId = jwtService.extractId(token, "calendarId");*/
+
+        Long calendarId = reminderRequestDto.getCalendarId();
+
+        log.info("createCalendarReminder 메소드의 calendarId: {}", calendarId);
 
         // Reminder 생성
         reminderService.createCalendarReminder(reminderRequestDto, calendarId);
@@ -65,14 +74,16 @@ public class ReminderController {
      * @return 알림 목록
      */
     @GetMapping("/findTask")
-    public List<ReminderEntity> getTaskReminders(@RequestHeader("Authorization") String token) {
-        Long taskId = jwtService.extractId(token,"taskId");
+    public List<ReminderEntity> getTaskReminders(@RequestBody ReminderRequestDto reminderRequestDto/*@RequestHeader("Authorization") String token*/) {
+        //Long taskId = jwtService.extractId(token,"taskId");
+        Long taskId = reminderRequestDto.getTaskId();
         return reminderService.getReminderByTaskId(taskId);
     }
 
     @GetMapping("/findCalendar")
-    public List<ReminderEntity> getCalendarsReminders(@RequestHeader("Authorization") String token) {
-        Long calendarId = jwtService.extractId(token,"calendarId");
+    public List<ReminderEntity> getCalendarsReminders(@RequestBody ReminderRequestDto reminderRequestDto/*@RequestHeader("Authorization") String token*/) {
+        //Long calendarId = jwtService.extractId(token,"calendarId");
+        Long calendarId = reminderRequestDto.getCalendarId();
         return reminderService.getReminderByCalendarId(calendarId);
     }
 

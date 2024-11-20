@@ -1,3 +1,4 @@
+/*
 package org.timetodo.JWT;
 
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,14 @@ public class JwtController {
 
     private final JwtService jwtService;
 
-    /**
+    */
+/**
      * JWT 생성용 엔드포인트
      * @param key JWT의 claim key
      * @param value JWT의 claim value
      * @return 생성된 JWT
-     */
+     *//*
+
     @GetMapping("/create")
     public ResponseEntity<String> createJwt(
             @RequestParam String key,
@@ -40,3 +43,4 @@ public class JwtController {
     }
 
 }
+*/
