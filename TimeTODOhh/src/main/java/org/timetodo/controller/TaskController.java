@@ -49,11 +49,6 @@ public class TaskController {
         taskRequestDto.setUserId(userId);
         TaskEntity task = taskService.addTask(taskRequestDto, userId);
 
-       /* // JWT 생성
-        String token = jwtService.createToken("taskId", task.getTaskId());
-
-        // 클라이언트로 JWT 응답
-        response.setHeader("Authorization", "Bearer " + token);*/
 
         return ResponseEntity.ok("할 일 생성 성공");
 

@@ -23,9 +23,11 @@ public class ReminderEntity {
     private boolean repeats; // 알림 반복 여부
 
     @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가 하나의 Task와 연관 (N:1 관계)
+    @JoinColumn(name = "task_id")
     private TaskEntity taskId;//taskMTOreminder; // Foreign Key (외래 키)
 
     @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가  하나의 Calendar와 연관 (N:1 관계)
+    @JoinColumn(name = "calendar_id")
     private CalendarEntity calendarId; //calendarMTOreminder; // Foreign Key (외래 키)
 
 
