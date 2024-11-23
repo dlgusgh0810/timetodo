@@ -22,11 +22,15 @@ public class ReminderEntity {
     @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가 하나의 Task와 연관 (N:1 관계)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     private TaskEntity tasks;//taskMTOreminder; // Foreign Key (외래 키)
 
     @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가  하나의 Calendar와 연관 (N:1 관계)
     private CalendarEntity calenders;//calendarMTOreminder; // Foreign Key (외래 키)
 =======
+=======
+    @JoinColumn(name = "task_id")
+>>>>>>> 81d750ec (Merge pull request #30 from SEUIL/main)
 =======
     @JoinColumn(name = "task_id")
 >>>>>>> 81d750ec (Merge pull request #30 from SEUIL/main)
