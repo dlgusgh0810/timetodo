@@ -49,7 +49,11 @@ public class CalendarEntity {
     @JsonIgnore
     private UserEntity users;//userMTOcalendar; // 사용자 ID (Foreign Key)
 
+<<<<<<< HEAD
     @OneToMany(mappedBy = "calenders")
+=======
+    @OneToMany(mappedBy = "calendarId")
+>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
     @JsonIgnore
     private List<ReminderEntity> reminders;
 }

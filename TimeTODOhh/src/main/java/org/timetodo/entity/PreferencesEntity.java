@@ -4,19 +4,18 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.timetodo.entity.UserEntity;
 
-@Entity(name = "preferences_entity")
+@Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class PreferencesEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 생성 전략 설정
-//    @Column(name = "preferences_id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long preferencesId; // 선호 설정의 고유 ID (Primary Key)
 
+<<<<<<< HEAD
     @Column(nullable = false)
     private boolean notificationsEnabled; // 알림 설정 여부 (True/False)
 
@@ -30,4 +29,12 @@ public class PreferencesEntity {
 
     @OneToOne(mappedBy = "preferences") // User와의 양방향 관계 설정
     private UserEntity userEntity; // Foreign Key (외래 키) - UserEntity 클래스에서 참조
+=======
+    @Column(nullable = false, length = 20)
+    private String theme;
+
+    //@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
+    @OneToOne
+    private UserEntity userEntity;
+>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 }

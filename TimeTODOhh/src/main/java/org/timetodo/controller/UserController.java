@@ -34,6 +34,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO) {
+<<<<<<< HEAD
         // DTO를 엔티티로 변환하여 사용자 생성
         /*UserEntity newUserEntity = new UserEntity(
                 userDTO.getUserId(),
@@ -44,6 +45,8 @@ public class UserController {
 
         // 서비스에서 사용자 저장
         userService.saveUser(newUserEntity);*/
+=======
+>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 
         userService.registerUser(userDTO);// DTO를 서비스 계층에서 엔티티로 변환 및 저장
         return ResponseEntity.ok("UserEntity registered successfully");

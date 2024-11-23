@@ -44,6 +44,17 @@ public class CalendarController {
             calendarService.addCalendar(calendarRequestDto,userId);
             return ResponseEntity.ok("캘린더 생성 성공");
         }
+<<<<<<< HEAD
+=======
+
+        // Calendar 생성
+        calendarRequestDto.setUserId(userId);
+        CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId);
+
+
+        return ResponseEntity.ok("캘린더 생성 성공");
+
+>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
     }
 
     // 로그인한 유저의 일정을 전체 조회하는 엔드포인트

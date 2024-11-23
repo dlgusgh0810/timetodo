@@ -6,4 +6,5 @@ import org.timetodo.entity.PreferencesEntity;
 
 @Repository
 public interface PreferencesRepository extends JpaRepository<PreferencesEntity,Long> {
+    Optional<PreferencesEntity> findByUserEntity_UserId(Long userId);
 }

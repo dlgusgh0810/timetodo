@@ -20,8 +20,17 @@ public class ReminderEntity {
     private boolean repeats; // 알림 반복 여부
 
     @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가 하나의 Task와 연관 (N:1 관계)
+<<<<<<< HEAD
     private TaskEntity tasks;//taskMTOreminder; // Foreign Key (외래 키)
 
     @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가  하나의 Calendar와 연관 (N:1 관계)
     private CalendarEntity calenders;//calendarMTOreminder; // Foreign Key (외래 키)
+=======
+    private TaskEntity taskId;//taskMTOreminder; // Foreign Key (외래 키)
+
+    @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가  하나의 Calendar와 연관 (N:1 관계)
+    private CalendarEntity calendarId; //calendarMTOreminder; // Foreign Key (외래 키)
+
+
+>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 }

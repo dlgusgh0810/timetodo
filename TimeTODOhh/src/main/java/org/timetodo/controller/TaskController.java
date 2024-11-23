@@ -4,6 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+<<<<<<< HEAD
+=======
+import org.timetodo.dto.TaskDto;
+>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 import org.timetodo.dto.TaskRequestDto;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.service.TaskService;
@@ -29,8 +33,35 @@ public class TaskController {
     public ResponseEntity<TaskEntity> addTask(@RequestBody TaskRequestDto taskRequestDto) {
         // 사용자가 보낸 할 일 데이터를 TaskService로 넘겨 새로운 할 일을 추가하고,
         // 그 결과를 응답으로 반환합니다.
+<<<<<<< HEAD
         TaskEntity newTask = taskService.addTask(taskRequestDto);
         return ResponseEntity.ok(newTask); // 성공 시 추가된 할 일을 반환
+=======
+        Long userId = 0L;
+        try {
+            Cookie userCookie = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals("userId"))
+                    .findAny()
+                    .orElse(null);
+            userId = Long.valueOf(userCookie.getValue());
+            log.info("세션에서 가져온 UserId : {}", userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // Task 생성
+        taskRequestDto.setUserId(userId);
+        TaskEntity task = taskService.addTask(taskRequestDto, userId);
+
+       /* // JWT 생성
+        String token = jwtService.createToken("taskId", task.getTaskId());
+
+        // 클라이언트로 JWT 응답
+        response.setHeader("Authorization", "Bearer " + token);*/
+
+        return ResponseEntity.ok("할 일 생성 성공");
+
+
+>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
     }
 
     // 모든 할 일을 조회하는 엔드포인트
