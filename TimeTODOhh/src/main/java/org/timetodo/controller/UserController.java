@@ -34,6 +34,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody UserDTO userDTO) {
+
         userService.registerUser(userDTO);// DTO를 서비스 계층에서 엔티티로 변환 및 저장
         return ResponseEntity.ok("UserEntity registered successfully");
     }

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import jakarta.servlet.http.HttpSession;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
@@ -11,6 +13,7 @@ import org.timetodo.entity.ReminderEntity;
 import org.timetodo.entity.UserEntity;
 import org.timetodo.repository.CalendarRepository;
 import org.timetodo.repository.UserRepository;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -137,40 +140,14 @@ public class CalendarService {
         );
     }
 
-    /*// 반복 일정 추가
-    @Override
-    public CalendarEntity addRepeatingEvent(CalendarRequestDto request) {
-        CalendarEntity event = new CalendarEntity();
-        event.setTitle(request.getTitle());
-        event.setDescription(request.getDescription());
-        event.setLocation(request.getLocation());
-        event.setStartTime(request.getStartTime());
-        event.setEndTime(request.getEndTime());
-        event.setRepeatType(request.getRepeatType());
-
-
-        // 반복 일정 로직 예시
-        switch (request.getRepeatType()) {
-            case "NONE":
-                //반복없음
-                break;
-            case "DAILY":
-                // 매일 반복 설정 로직 (예: 매일 일정 생성)
-                break;
-            case "WEEKLY":
-                // 매주 반복 설정 로직
-                break;
-            case "MONTHLY":
-                // 매월 반복 설정 로직
-                break;
-            case "YEARLY":
-                // 매년 반복 설정 로직
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid repeat type: " + request.getRepeatType());
-        }
-
-        return calendarRepository.save(event);
-    }*/
 
 }
+/*
+CalendarService
+addCalendar(): 새로운 일정을 추가합니다. DTO에서 받은 데이터를 CalendarEntity로 변환하여 저장합니다.
+getAllCalendars(): 저장된 모든 일정을 조회합니다.
+updateCalendar(): 특정 일정을 업데이트합니다. 기존 데이터를 조회하고 새로운 데이터로 업데이트한 후 저장합니다.
+deleteCalendar(): 특정 일정을 삭제합니다.
+addRepeatingEvent() : 반복 일정을 추가
+searchEvents() : 특정 일정 검색 기능
+*/

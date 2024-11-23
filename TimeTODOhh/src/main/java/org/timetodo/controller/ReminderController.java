@@ -33,11 +33,8 @@ public class ReminderController {
      */
     @PostMapping("/addTask")
     public ResponseEntity<String> createTaskReminder(
-            @RequestBody ReminderRequestDto reminderRequestDto/*,
-            @RequestHeader("Authorization") String token*/) {
+            @RequestBody ReminderRequestDto reminderRequestDto) {
 
-        // TaskId JWT에서 추출
-        //Long taskId = jwtService.extractId(token, "taskId");
 
         Long taskId = reminderRequestDto.getTaskId();
 
@@ -51,12 +48,7 @@ public class ReminderController {
 
     @PostMapping("/addCalendar")
     public ResponseEntity<String> createCalendarReminder(
-            @RequestBody ReminderRequestDto reminderRequestDto/*,
-            @RequestHeader(value = "Authorization", required = false) String token*/) {
-
-        /*log.info("createCalendarReminder 메소드 , Authorization Token : " + token);
-        // CalendarId JWT에서 추출
-        Long calendarId = jwtService.extractId(token, "calendarId");*/
+            @RequestBody ReminderRequestDto reminderRequestDto) {
 
         Long calendarId = reminderRequestDto.getCalendarId();
 
@@ -74,15 +66,13 @@ public class ReminderController {
      * @return 알림 목록
      */
     @GetMapping("/findTask")
-    public List<ReminderEntity> getTaskReminders(@RequestBody ReminderRequestDto reminderRequestDto/*@RequestHeader("Authorization") String token*/) {
-        //Long taskId = jwtService.extractId(token,"taskId");
+    public List<ReminderEntity> getTaskReminders(@RequestBody ReminderRequestDto reminderRequestDto) {
         Long taskId = reminderRequestDto.getTaskId();
         return reminderService.getReminderByTaskId(taskId);
     }
 
     @GetMapping("/findCalendar")
-    public List<ReminderEntity> getCalendarsReminders(@RequestBody ReminderRequestDto reminderRequestDto/*@RequestHeader("Authorization") String token*/) {
-        //Long calendarId = jwtService.extractId(token,"calendarId");
+    public List<ReminderEntity> getCalendarsReminders(@RequestBody ReminderRequestDto reminderRequestDto) {
         Long calendarId = reminderRequestDto.getCalendarId();
         return reminderService.getReminderByCalendarId(calendarId);
     }

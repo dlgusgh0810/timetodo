@@ -63,7 +63,7 @@ public class ReminderService {
 
         // 2. ReminderEntity 생성
         ReminderEntity reminder = new ReminderEntity();
-        reminder.setCalenderId(calendar); // ManyToOne 관계로 설정된 Calendar를 연결
+        reminder.setCalendarId(calendar); // ManyToOne 관계로 설정된 Calendar를 연결
         reminder.setNotificationsEnabled(reminderRequestDto.isNotificationsEnabled());
         reminder.setTimeBefore(reminderRequestDto.getTimeBefore());
         reminder.setRepeats(reminderRequestDto.isRepeats());
@@ -88,8 +88,8 @@ public class ReminderService {
             dto.setTaskId(reminder.getTaskId().getTaskId());
         }
 
-        if(reminder.getCalenderId() != null) {
-            dto.setCalendarId(reminder.getCalenderId().getCalendarId());
+        if(reminder.getCalendarId() != null) {
+            dto.setCalendarId(reminder.getCalendarId().getCalendarId());
         }
 
         return dto;
@@ -102,7 +102,9 @@ public class ReminderService {
      */
     public List<ReminderEntity> getReminderByTaskId(Long taskId) {
         // TaskEntity와 CalendarEntity를 통해 간접적으로 알림을 조회
-        return reminderRepository.findByTaskId(taskId);
+        TaskEntity task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + taskId));
+        return reminderRepository.findByTaskId(task);
     }
 
     /**
@@ -112,7 +114,9 @@ public class ReminderService {
      */
     public List<ReminderEntity> getReminderByCalendarId(Long calendarId) {
         // TaskEntity와 CalendarEntity를 통해 간접적으로 알림을 조회
-        return reminderRepository.findByCalendarId(calendarId);
+        CalendarEntity calendar = calendarRepository.findById(calendarId)
+                .orElseThrow(() -> new RuntimeException("Calendar not found with Id: " + calendarId));
+        return reminderRepository.findByCalendarId(calendar);
     }
 
     /**

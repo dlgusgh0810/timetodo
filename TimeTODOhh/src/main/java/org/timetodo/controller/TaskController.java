@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-//import org.timetodo.JWT.JwtService;
 import org.timetodo.dto.TaskDto;
 import org.timetodo.dto.TaskRequestDto;
 import org.timetodo.entity.TaskEntity;
@@ -48,7 +47,7 @@ public class TaskController {
         }
         // Task 생성
         taskRequestDto.setUserId(userId);
-        TaskDto task = taskService.addTask(taskRequestDto, userId);
+        TaskEntity task = taskService.addTask(taskRequestDto, userId);
 
        /* // JWT 생성
         String token = jwtService.createToken("taskId", task.getTaskId());
