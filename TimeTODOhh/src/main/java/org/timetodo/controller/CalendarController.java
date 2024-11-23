@@ -2,18 +2,17 @@ package org.timetodo.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-//import org.timetodo.JWT.JwtService;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
 import org.timetodo.service.CalendarService;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -26,43 +25,29 @@ import java.util.List;
 public class CalendarController {
 
     private final CalendarService calendarService; // CalendarService를 주입받아 사용합니다.
-    //private final JwtService jwtService;
 
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<String> addCalendar(
-            @RequestBody CalendarRequestDto calendarRequestDto,
-            HttpServletRequest request) {
+    public ResponseEntity<String> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpServletRequest request) {
         Long userId = 0L;
-        try {
+        try{
             Cookie userCookie = Arrays.stream(request.getCookies())
                     .filter(cookie -> cookie.getName().equals("userId"))
                     .findAny()
                     .orElse(null);
             userId = Long.valueOf(userCookie.getValue());
             log.info("세션에서 가져온 UserId : {}", userId);
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
+        }finally {
+            calendarRequestDto.setUserId(userId);
+            calendarService.addCalendar(calendarRequestDto,userId);
+            return ResponseEntity.ok("캘린더 생성 성공");
         }
-
-        // Calendar 생성
-        calendarRequestDto.setUserId(userId);
-        CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId);
-
-        /*// JWT 생성
-        String token = jwtService.createToken("calendarId", calendar.getCalendarId());
-        log.info("calendarId 토큰 : {}", token);
-        log.info("calendarId : {}", calendar.getCalendarId());
-
-        // 클라이언트로 JWT 응답
-        response.setHeader("Authorization", "Bearer " + token);*/
-
-        return ResponseEntity.ok("캘린더 생성 성공");
-
     }
 
     // 로그인한 유저의 일정을 전체 조회하는 엔드포인트
-    @GetMapping("/find")
+    @GetMapping("/all")
     public List<CalendarEntity> getUserCalendars(HttpServletRequest request) {
         Long userId = 0L;
         Cookie userCookie = Arrays.stream(request.getCookies())
@@ -101,6 +86,13 @@ public class CalendarController {
         List<CalendarEntity> events = calendarService.searchEvents(title, description, categoryId, startTime);
         return ResponseEntity.ok(events);
     }
+
+    /*// 반복 일정 추가 엔드포인트
+    @PostMapping("/addRepeatingEvent")
+    public ResponseEntity<CalendarEntity> addRepeatingEvent(@RequestBody CalendarRequestDto request) {
+        CalendarEntity event = calendarService.addRepeatingEvent(request);
+        return ResponseEntity.ok(event);
+    }*/
 
 }
 
