@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8db78006-8a46-4152-8508-f332751acf96" name="변경" comment="이거 맞죠?" />
+    <list default="true" id="8db78006-8a46-4152-8508-f332751acf96" name="변경" comment="카테고리 기능">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,17 +23,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\융프 자바\\IntelliJ IDEA 2024.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/융프 자바/스프링부트 파일/TimeTODOhh",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "D:\\융프 자바\\IntelliJ IDEA 2024.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="TimeToDoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="TimeTODO" />
@@ -59,6 +62,8 @@
       <updated>1728995189093</updated>
       <workItem from="1728995190664" duration="223000" />
       <workItem from="1729076281499" duration="25000" />
+      <workItem from="1731162610918" duration="257000" />
+      <workItem from="1731856274258" duration="33000" />
     </task>
     <task id="LOCAL-00001" summary="이거 맞죠?">
       <option name="closed" value="true" />
@@ -76,7 +81,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728995350169</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="카테고리 기능">
+      <option name="closed" value="true" />
+      <created>1731162713557</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731162713557</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -95,6 +108,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="이거 맞죠?" />
-    <option name="LAST_COMMIT_MESSAGE" value="이거 맞죠?" />
+    <MESSAGE value="카테고리 기능" />
+    <option name="LAST_COMMIT_MESSAGE" value="카테고리 기능" />
   </component>
 </project>

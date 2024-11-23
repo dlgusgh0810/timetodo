@@ -1,5 +1,6 @@
 package org.timetodo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,16 +38,18 @@ public class TaskEntity {
     @Column(nullable = true)
     private String repeatType; // 반복 일정 여부
 
-    @ManyToOne //여러 Task가 하나의 User와 연관 (N:1 관계)
-    //@JoinColumn(name = "user_id")
-    private UserEntity users; //Foreign Key (외래 키)
-
-    @ManyToOne // 여러 Task가 하나의 Category와 연관 (N:1 관계)
     //@JoinColumn(name = "category_id")
+    @ManyToOne // 여러 Task가 하나의 Category와 연관 (N:1 관계)
     private CategoryEntity categories;//categoryMTOtask; // Foreign Key (외래 키)
 
-    @OneToMany(mappedBy = "tasks")
-    private List<ReminderEntity> reminders = new ArrayList<>();
+    //@JoinColumn(name = "user_id")
+    @ManyToOne //여러 Task가 하나의 User와 연관 (N:1 관계)
+    @JsonIgnore
+    private UserEntity users; //Foreign Key (외래 키)
+
+    @OneToMany(mappedBy = "taskId")
+    @JsonIgnore
+    private List<ReminderEntity> reminderId;
 }
 
 

@@ -1,18 +1,24 @@
 package org.timetodo.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
 import org.timetodo.service.CalendarService;
-
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 //@RestController // 이 클래스는 REST API 요청을 처리하는 컨트롤러임을 나타냅니다.
+@Slf4j
 @RestController // HTML 템플릿을 렌더링
 @RequiredArgsConstructor // final 필드로 선언된 의존성(서비스)을 자동으로 주입하는 생성자를 생성해줍니다.
 @RequestMapping("/api/calendar") // 이 컨트롤러의 모든 엔드포인트는 "/calendar" 경로로 시작됩니다.
@@ -20,34 +26,37 @@ public class CalendarController {
 
     private final CalendarService calendarService; // CalendarService를 주입받아 사용합니다.
 
-    /*// 기본 확인용 엔드포인트 (홈 페이지와 연동)
-    @GetMapping
-    public ResponseEntity<String> home() {
-        return ResponseEntity.ok("Calendar API Home");
-    }*/
-
-    // 일정 추가 페이지를 GET 요청으로 렌더링
-    @GetMapping("/add")
-    public String showAddCalendarForm() {
-        return "calendarForm"; // calendarForm.html을 반환
-    }
-
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<CalendarEntity> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto) {
-        // 사용자가 보낸 일정 데이터를 CalendarService로 넘겨 새로운 일정을 추가하고,
-        // 그 결과를 응답으로 반환합니다.
-        CalendarEntity newCalendar = calendarService.addCalendar(calendarRequestDto);
-        return ResponseEntity.ok(newCalendar); // 성공 시 추가된 일정을 반환
+    public ResponseEntity<String> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpServletRequest request) {
+        Long userId = 0L;
+        try{
+            Cookie userCookie = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals("userId"))
+                    .findAny()
+                    .orElse(null);
+            userId = Long.valueOf(userCookie.getValue());
+            log.info("세션에서 가져온 UserId : {}", userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            calendarRequestDto.setUserId(userId);
+            calendarService.addCalendar(calendarRequestDto,userId);
+            return ResponseEntity.ok("캘린더 생성 성공");
+        }
     }
 
-    // 모든 일정을 조회하는 엔드포인트
+    // 로그인한 유저의 일정을 전체 조회하는 엔드포인트
     @GetMapping("/all")
-    public ResponseEntity<List<CalendarEntity>> getAllCalendars() {
-        // CalendarService를 통해 저장된 모든 일정을 조회하고,
-        // 그 결과를 응답으로 반환합니다.
-        List<CalendarEntity> calendars = calendarService.getAllCalendars();
-        return ResponseEntity.ok(calendars); // 성공 시 일정 목록을 반환
+    public List<CalendarEntity> getUserCalendars(HttpServletRequest request) {
+        Long userId = 0L;
+        Cookie userCookie = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("userId"))
+                .findAny()
+                .orElse(null);
+        userId = Long.valueOf(userCookie.getValue());
+        // userId에 해당하는 일정만 조회
+        return calendarService.getCalendarsByUserId(userId); // 성공 시 일정 목록을 반환
     }
 
     // 특정 일정을 업데이트하는 엔드포인트
@@ -78,12 +87,12 @@ public class CalendarController {
         return ResponseEntity.ok(events);
     }
 
-    // 반복 일정 추가 엔드포인트
+    /*// 반복 일정 추가 엔드포인트
     @PostMapping("/addRepeatingEvent")
     public ResponseEntity<CalendarEntity> addRepeatingEvent(@RequestBody CalendarRequestDto request) {
         CalendarEntity event = calendarService.addRepeatingEvent(request);
         return ResponseEntity.ok(event);
-    }
+    }*/
 
 }
 

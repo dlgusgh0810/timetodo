@@ -1,6 +1,9 @@
 package org.timetodo.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +11,10 @@ import org.timetodo.dto.TaskRequestDto;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.service.TaskService;
 
+import java.util.Arrays;
 import java.util.List;
 
-//@RestController // 이 클래스는 REST API 요청을 처리하는 컨트롤러임을 나타냅니다.
+@Slf4j
 @Controller // HTML 템플릿을 렌더링
 @RequiredArgsConstructor // final 필드로 선언된 의존성(서비스)을 자동으로 주입하는 생성자를 생성해줍니다.
 @RequestMapping("/api/task") // 이 컨트롤러의 모든 엔드포인트는 "/task" 경로로 시작됩니다.
@@ -26,20 +30,39 @@ public class TaskController {
 
     // 새로운 할 일을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<TaskEntity> addTask(@RequestBody TaskRequestDto taskRequestDto) {
+    public ResponseEntity<String> addTask(@RequestBody TaskRequestDto taskRequestDto, HttpServletRequest request) {
         // 사용자가 보낸 할 일 데이터를 TaskService로 넘겨 새로운 할 일을 추가하고,
         // 그 결과를 응답으로 반환합니다.
-        TaskEntity newTask = taskService.addTask(taskRequestDto);
-        return ResponseEntity.ok(newTask); // 성공 시 추가된 할 일을 반환
+        Long userId = 0L;
+        try{
+            Cookie userCookie = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals("userId"))
+                    .findAny()
+                    .orElse(null);
+            userId = Long.valueOf(userCookie.getValue());
+            log.info("세션에서 가져온 UserId : {}", userId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            taskRequestDto.setUserId(userId);
+            taskService.addTask(taskRequestDto,userId);
+            return ResponseEntity.ok("할 일 생성 성공");
+        }
+
     }
 
     // 모든 할 일을 조회하는 엔드포인트
     @GetMapping("/all")
-    public ResponseEntity<List<TaskEntity>> getAllTasks() {
+    public List<TaskEntity> getUserTasks(HttpServletRequest request) {
+        Long userId = 0L;
+        Cookie userCookie = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("userId"))
+                .findAny()
+                .orElse(null);
+        userId = Long.valueOf(userCookie.getValue());
         // TaskService를 통해 저장된 모든 할 일을 조회하고,
         // 그 결과를 응답으로 반환합니다.
-        List<TaskEntity> tasks = taskService.getAllTasks();
-        return ResponseEntity.ok(tasks); // 성공 시 할 일 목록을 반환
+        return taskService.getTasksByUserId(userId); // 성공 시 할 일 목록을 반환
     }
 
     // 특정 할 일을 업데이트하는 엔드포인트

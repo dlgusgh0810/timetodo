@@ -1,16 +1,17 @@
 package org.timetodo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.prefs.Preferences;
 
 @Entity
 @Table(name = "user_entity")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
 
     // Constructors, Getters and Setters
@@ -33,8 +34,8 @@ public class UserEntity {
 //    @JoinColumn(name = "preferences_id", referencedColumnName = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
 //    private Preferences preferences; // Foreign Key (외래 키)
 
-    @OneToOne // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
     //@JoinColumn(name = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
+    @OneToOne // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
     private PreferencesEntity preferences; // Foreign Key (외래 키)
 
     @OneToMany(mappedBy = "users")
@@ -46,10 +47,4 @@ public class UserEntity {
     @OneToMany(mappedBy = "users")
     private List<CalendarEntity> calendars;
 
-    public UserEntity(String username, String password, String email, PreferencesEntity preferences) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.preferences = preferences;
-    }
 }

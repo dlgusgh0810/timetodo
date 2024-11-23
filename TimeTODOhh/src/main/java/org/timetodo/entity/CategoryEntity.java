@@ -2,14 +2,19 @@ package org.timetodo.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.timetodo.entity.UserEntity;
+
 
 import java.util.List;
 
 @Entity(name = "category_entity")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CategoryEntity {
 
     @Id
@@ -28,7 +33,6 @@ public class CategoryEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity users;
-
 
     @OneToMany(mappedBy = "categories", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<CalendarEntity> calendar;
