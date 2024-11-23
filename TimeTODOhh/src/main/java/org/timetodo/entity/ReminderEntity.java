@@ -26,7 +26,7 @@ public class ReminderEntity {
     private TaskEntity taskId;//taskMTOreminder; // Foreign Key (외래 키)
 
     @ManyToOne(fetch = FetchType.LAZY) // 여러 Reminder가  하나의 Calendar와 연관 (N:1 관계)
-    private CalendarEntity calenderId; //calendarMTOreminder; // Foreign Key (외래 키)
+    private CalendarEntity calendarId; //calendarMTOreminder; // Foreign Key (외래 키)
 
 
 }

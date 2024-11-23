@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 //.allowedOrigins("http://localhost:3000") //리액트랑 연동하려면 포트번호 3000으로 바꿔야됌, calendar 기능 사용해볼려고 임시로 바꿔뒀음!!!!!
                 .allowedOriginPatterns("*")//모든 출처 허용 (개발과정에서만 사용할것!)
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

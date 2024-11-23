@@ -2,11 +2,13 @@ package org.timetodo.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.timetodo.dto.TaskDto;
 import org.timetodo.dto.TaskRequestDto;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.service.TaskService;
@@ -21,38 +23,45 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService; // TaskService를 주입받아 사용합니다.
+    //private final JwtService jwtService;
 
-    //할 일 추가 페이지를 GET 요청으로 렌더링할꺼임
-    @GetMapping("/add")
-    public String showAddTaskForm() {
-        return "taskForm";
-    }
 
     // 새로운 할 일을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<String> addTask(@RequestBody TaskRequestDto taskRequestDto, HttpServletRequest request) {
+    public ResponseEntity<String> addTask(
+            @RequestBody TaskRequestDto taskRequestDto,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         // 사용자가 보낸 할 일 데이터를 TaskService로 넘겨 새로운 할 일을 추가하고,
         // 그 결과를 응답으로 반환합니다.
         Long userId = 0L;
-        try{
+        try {
             Cookie userCookie = Arrays.stream(request.getCookies())
                     .filter(cookie -> cookie.getName().equals("userId"))
                     .findAny()
                     .orElse(null);
             userId = Long.valueOf(userCookie.getValue());
             log.info("세션에서 가져온 UserId : {}", userId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            taskRequestDto.setUserId(userId);
-            taskService.addTask(taskRequestDto,userId);
-            return ResponseEntity.ok("할 일 생성 성공");
         }
+        // Task 생성
+        taskRequestDto.setUserId(userId);
+        TaskEntity task = taskService.addTask(taskRequestDto, userId);
+
+       /* // JWT 생성
+        String token = jwtService.createToken("taskId", task.getTaskId());
+
+        // 클라이언트로 JWT 응답
+        response.setHeader("Authorization", "Bearer " + token);*/
+
+        return ResponseEntity.ok("할 일 생성 성공");
+
 
     }
 
-    // 모든 할 일을 조회하는 엔드포인트
-    @GetMapping("/all")
+    // 특정 user 의 모든 할 일을 조회하는 엔드포인트
+    @GetMapping("/find")
     public List<TaskEntity> getUserTasks(HttpServletRequest request) {
         Long userId = 0L;
         Cookie userCookie = Arrays.stream(request.getCookies())

@@ -49,7 +49,7 @@ public class CalendarEntity {
     @JsonIgnore
     private UserEntity users;//userMTOcalendar; // 사용자 ID (Foreign Key)
 
-    @OneToMany(mappedBy = "calenderId")
+    @OneToMany(mappedBy = "calendarId")
     @JsonIgnore
     private List<ReminderEntity> reminderId;
 }
