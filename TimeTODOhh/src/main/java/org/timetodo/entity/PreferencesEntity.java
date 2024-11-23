@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PreferencesEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long preferencesId; // 선호 설정의 고유 ID (Primary Key)
+    private Long preferencesId;
 
 <<<<<<< HEAD
     @Column(nullable = false)
@@ -33,8 +32,8 @@ public class PreferencesEntity {
     @Column(nullable = false, length = 20)
     private String theme;
 
-    //@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
     @OneToOne
+    //@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
     private UserEntity userEntity;
 >>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 }
