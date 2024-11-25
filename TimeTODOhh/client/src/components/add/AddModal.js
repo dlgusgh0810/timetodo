@@ -81,40 +81,23 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
                     />
 
                     <label>라벨</label>
-                    {/*<div className={styles.scrollableLabelContainer}>*/}
-                    {/*    <select value={label} onChange={(e) => setLabel(e.target.value)} size={6}>*/}
-                    {/*        {labelOptions.map((option, index) => (*/}
-                    {/*            <option key={index} value={option}>*/}
-                    {/*                {option}*/}
-                    {/*            </option>*/}
-                    {/*        ))}*/}
-                    {/*    </select>*/}
-                    {/*    <button*/}
-                    {/*        type="button"*/}
-                    {/*        className={styles.addLabelButton}*/}
-                    {/*        onClick={() => setIsLabelModalOpen(true)} // 라벨 추가 모달 열기*/}
-                    {/*    >*/}
-                    {/*        + 라벨 추가*/}
-                    {/*    </button>*/}
-                    {/*</div>*/}
-                    <FormField label="라벨">
-                        <div className={styles.scrollableLabelContainer}>
-                            <select value={label} onChange={(e) => setLabel(e.target.value)} size={6}>
-                                {labelOptions.map((option, index) => (
-                                    <option key={index} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                type="button"
-                                className={styles.addLabelButton}
-                                onClick={() => setIsLabelModalOpen(true)}
-                            >
-                                + 라벨 추가
-                            </button>
-                        </div>
-                    </FormField>
+                    <div className={styles.scrollableLabelContainer}>
+                        <select value={label} onChange={(e) => setLabel(e.target.value)} size={6}>
+                            {labelOptions.map((option, index) => (
+                                <option key={index} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            className={styles.addLabelButton}
+                            onClick={() => setIsLabelModalOpen(true)} // 라벨 추가 모달 열기
+                        >
+                            + 라벨 추가
+                        </button>
+                    </div>
+
 
                     <label>우선순위</label>
                     <select value={priority} onChange={(e) => setPriority(e.target.value)}>
