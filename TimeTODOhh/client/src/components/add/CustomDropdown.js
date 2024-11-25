@@ -25,6 +25,16 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
             {/* 드롭다운 옵션 */}
             {isDropdownOpen && (
                 <div className={styles.dropdownMenu}>
+                    <div
+                        className={styles.addLabelButton}
+                        onClick={() => {
+                            setIsDropdownOpen(false);
+                            onAddLabel();
+                        }}
+                    >
+                        + 라벨 추가
+                    </div>
+
                     {options.map((option, index) => (
                         <div
                             key={index}
@@ -38,17 +48,6 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
                             {option.name}
                         </div>
                     ))}
-
-                    {/* 라벨 추가 버튼 */}
-                    <div
-                        className={styles.addLabelButton}
-                        onClick={() => {
-                            setIsDropdownOpen(false);
-                            onAddLabel();
-                        }}
-                    >
-                        + 라벨 추가
-                    </div>
                 </div>
             )}
         </div>

@@ -27,7 +27,7 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
         const newTodo = {
             title,
             date,
-            label: selectedLabel,
+            label: selectedLabel, // 선택된 라벨 객체를 저장
             priority,
             description,
         };
@@ -88,8 +88,13 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
                     <CustomDropdown
                         options={labelOptions}
                         onLabelSelect={(option) => setSelectedLabel(option)}
-                        onAddLabel={() => setIsLabelModalOpen(true)} // 라벨 추가 버튼 핸들러 전달
+                        onAddLabel={() => setIsLabelModalOpen(true)}
                     />
+
+                    {/* 선택된 라벨 표시 */}
+                    <div className={styles.selectedLabelDisplay}>
+                        선택된 라벨: <span style={{ color: selectedLabel.color }}>{selectedLabel.name}</span>
+                    </div>
 
                     {/* 우선순위 */}
                     <label>우선순위</label>
