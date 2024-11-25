@@ -59,7 +59,7 @@ const Sidebar = ({ onAddEvent }) => {
                 <ul>
                     <li>
                         <Link to="/home" className={styles.menuLink}>
-                            <FaHome className={styles.menuIcon} /> 홈
+                            <FaHome className={styles.menuIcon} /> 홈 sss
                         </Link>
                     </li>
                     <li>
