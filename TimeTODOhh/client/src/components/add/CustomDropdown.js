@@ -5,10 +5,10 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
     const [selectedLabel, setSelectedLabel] = useState(options[0]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const handleLabelClick = (option) => {
-        setSelectedLabel(option);
+    const handleLabelClick = (label) => {
+        setSelectedLabel(label); // 전체 객체를 선택
         setIsDropdownOpen(false);
-        onLabelSelect(option);
+        onLabelSelect(label.name); // 이름만 상위로 전달
     };
 
     return (
@@ -25,6 +25,7 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
             {/* 드롭다운 옵션 */}
             {isDropdownOpen && (
                 <div className={styles.dropdownMenu}>
+                    {/* 라벨 추가 버튼 */}
                     <div
                         className={styles.addLabelButton}
                         onClick={() => {
@@ -35,6 +36,7 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
                         + 라벨 추가
                     </div>
 
+                    {/* 라벨 항목 */}
                     {options.map((option, index) => (
                         <div
                             key={index}
@@ -42,7 +44,7 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
                             onClick={() => handleLabelClick(option)}
                             style={{
                                 backgroundColor: option.color,
-                                color: '#fff',
+                                color: option.color === '#FFFFFF' ? '#000' : '#FFF', // 밝은 색에는 어두운 텍스트
                             }}
                         >
                             {option.name}

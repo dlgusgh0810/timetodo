@@ -17,13 +17,14 @@
     background: white;
     padding: 20px;
     border-radius: 12px;
-    max-width: 400px;
-    max-height: 600px;
+    max-width: 500px; /* 너비 조정 */
+    max-height: 80vh; /* 화면 높이의 80%로 제한 */
     width: 100%;
     position: relative;
     z-index: 1001;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
     font-family: 'Arial', sans-serif;
+    overflow-y: auto; /* 넘치는 내용을 스크롤 가능하게 */
 }
 
 /* 모달 헤더 */
@@ -56,8 +57,15 @@
 .form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px; /* 요소 간 간격 */
     align-items: stretch;
+}
+
+.textarea {
+    resize: none;
+    height: 80px;
+    max-height: 100px; /* 텍스트 영역 최대 높이 제한 */
+    overflow-y: auto;
 }
 
 form input,
@@ -111,20 +119,22 @@ button[type="button"]:hover,
 /* 탭 스타일 */
 .tabContainer {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between; /* 버튼 간 간격 조정 */
     margin: 10px 0;
+    flex-wrap: wrap; /* 창 크기에 맞게 버튼을 줄바꿈 */
 }
 
 .tabContainer button {
     border: none;
     outline: none;
     padding: 10px 20px;
-    margin-right: 10px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     border-radius: 10px;
     transition: all 0.3s ease;
+    flex: 1; /* 버튼 크기를 균등 분배 */
+    margin: 5px; /* 버튼 간격 */
 }
 
 .activeTab {
