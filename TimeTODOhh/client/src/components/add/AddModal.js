@@ -124,8 +124,8 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
 
                     <label>라벨</label>
                     <CustomDropdown
-                        options={labelOptions.map(option => option.name)} // 이름만 전달
-                        onLabelSelect={(labelName) => setSelectedLabel(labelName)}
+                        options={labelOptions}
+                        onLabelSelect={(label) => setSelectedLabel(label.name)}
                         onAddLabel={() => setIsLabelModalOpen(true)}
                     />
 

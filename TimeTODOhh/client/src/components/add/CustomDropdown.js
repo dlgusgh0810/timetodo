@@ -5,15 +5,16 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
     const [selectedLabel, setSelectedLabel] = useState(options[0]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    // options가 변경될 때 selectedLabel 초기화
     useEffect(() => {
-        setSelectedLabel(options[0]);
-    }, [options]);
+        if (options.length > 0) {
+            setSelectedLabel(options[0]); // 새 옵션으로 기본값 설정
+        }
+    }, [options]); // options 업데이트 시 실행
 
     const handleLabelClick = (label) => {
-        setSelectedLabel(label);
+        setSelectedLabel(label); // 선택된 라벨 업데이트
+        onLabelSelect(label); // 부모에 전달
         setIsDropdownOpen(false);
-        onLabelSelect(label.name); // 선택된 라벨 이름 전달
     };
 
     return (
