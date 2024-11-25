@@ -54,8 +54,8 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
     };
 
     const handleAddLabel = (newLabel) => {
-        setLabelOptions([...labelOptions, newLabel]);
-        setIsLabelModalOpen(false);
+        setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
+        setIsLabelModalOpen(false); // 모달 닫기
     };
 
     return (

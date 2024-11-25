@@ -3,11 +3,11 @@ import Modal from 'react-modal';
 import styles from './AddLabelModal.module.css';
 
 function AddLabelModal({ isOpen, onRequestClose, onSave }) {
-    const [newLabel, setNewLabel] = useState('');
-    const [newLabelColor, setNewLabelColor] = useState('#808080'); // 기본 색상: 회색
+    const [newLabelName, setNewLabelName] = useState('');
+    const [newLabelColor, setNewLabelColor] = useState('#808080'); // 기본 색상
 
     const handleSave = () => {
-        if (newLabel.trim() === '') {
+        if (newLabelName.trim() === '') {
             alert('라벨 이름을 입력하세요.');
             return;
         }
@@ -15,9 +15,9 @@ function AddLabelModal({ isOpen, onRequestClose, onSave }) {
             alert('라벨 색상을 선택하세요.');
             return;
         }
-        onSave({ name: newLabel, color: newLabelColor }); // 부모 컴포넌트로 라벨과 색상 전달
-        setNewLabel('');
-        setNewLabelColor('#808080'); // 기본 색상으로 초기화
+        onSave({ name: newLabelName, color: newLabelColor }); // 객체 형태로 전달
+        setNewLabelName('');
+        setNewLabelColor('#808080'); // 기본 색상 초기화
     };
 
     return (
@@ -32,25 +32,22 @@ function AddLabelModal({ isOpen, onRequestClose, onSave }) {
                     닫기
                 </button>
             </div>
-
             <form className={styles.form}>
-                <label>새 라벨 이름</label>
+                <label>라벨 이름</label>
                 <input
                     type="text"
-                    value={newLabel}
-                    onChange={(e) => setNewLabel(e.target.value)}
+                    value={newLabelName}
+                    onChange={(e) => setNewLabelName(e.target.value)}
                     placeholder="라벨 이름을 입력하세요"
                     className={styles.input}
                 />
-
-                <label>라벨 색상 선택</label>
+                <label>라벨 색상</label>
                 <input
                     type="color"
                     value={newLabelColor}
                     onChange={(e) => setNewLabelColor(e.target.value)}
                     className={styles.colorPicker}
                 />
-
                 <button type="button" onClick={handleSave} className={styles.saveButton}>
                     저장
                 </button>

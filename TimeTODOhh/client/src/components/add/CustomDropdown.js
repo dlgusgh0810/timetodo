@@ -1,31 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './CustomDropdown.module.css';
 
 function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
     const [selectedLabel, setSelectedLabel] = useState(options[0]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+    // options가 변경될 때 selectedLabel 초기화
+    useEffect(() => {
+        setSelectedLabel(options[0]);
+    }, [options]);
+
     const handleLabelClick = (label) => {
-        setSelectedLabel(label); // 전체 객체를 선택
+        setSelectedLabel(label);
         setIsDropdownOpen(false);
-        onLabelSelect(label.name); // 이름만 상위로 전달
+        onLabelSelect(label.name); // 선택된 라벨 이름 전달
     };
 
     return (
         <div className={styles.dropdownContainer}>
-            {/* 선택된 라벨 표시 */}
             <div
                 className={styles.selectedLabel}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                style={{ backgroundColor: selectedLabel.color }}
+                style={{ backgroundColor: selectedLabel?.color }}
             >
-                {selectedLabel.name}
+                {selectedLabel?.name || '라벨 없음'}
             </div>
-
-            {/* 드롭다운 옵션 */}
             {isDropdownOpen && (
                 <div className={styles.dropdownMenu}>
-                    {/* 라벨 추가 버튼 */}
                     <div
                         className={styles.addLabelButton}
                         onClick={() => {
@@ -35,19 +36,17 @@ function CustomDropdown({ options, onLabelSelect, onAddLabel }) {
                     >
                         + 라벨 추가
                     </div>
-
-                    {/* 라벨 항목 */}
-                    {options.map((option, index) => (
+                    {options.map((label, index) => (
                         <div
                             key={index}
                             className={styles.dropdownItem}
-                            onClick={() => handleLabelClick(option)}
+                            onClick={() => handleLabelClick(label)}
                             style={{
-                                backgroundColor: option.color,
-                                color: option.color === '#FFFFFF' ? '#000' : '#FFF', // 밝은 색에는 어두운 텍스트
+                                backgroundColor: label.color,
+                                color: label.color === '#FFFFFF' ? '#000' : '#FFF',
                             }}
                         >
-                            {option.name}
+                            {label.name}
                         </div>
                     ))}
                 </div>
