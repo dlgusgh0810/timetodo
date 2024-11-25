@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import AddLabelModal from './AddLabelModal';
+import CustomDropdown from './CustomDropdown';
 import styles from './AddModal.module.css';
 
 Modal.setAppElement('#root');
@@ -8,7 +9,7 @@ Modal.setAppElement('#root');
 function AddModal({ isOpen, onRequestClose, onSave }) {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
-    const [label, setLabel] = useState('');
+    const [selectedLabel, setSelectedLabel] = useState({ name: '라벨 없음', color: '#808080' });
     const [priority, setPriority] = useState('우선순위 없음');
     const [description, setDescription] = useState('');
     const [labelOptions, setLabelOptions] = useState([
@@ -26,7 +27,7 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
         const newTodo = {
             title,
             date,
-            label,
+            label: selectedLabel,
             priority,
             description,
         };
@@ -39,13 +40,12 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
     const resetForm = () => {
         setTitle('');
         setDate('');
-        setLabel('');
+        setSelectedLabel({ name: '라벨 없음', color: '#808080' });
         setPriority('우선순위 없음');
         setDescription('');
     };
 
     const handleAddLabel = (newLabel) => {
-        // 라벨 추가
         setLabelOptions([...labelOptions, newLabel]);
         setIsLabelModalOpen(false);
     };
@@ -85,26 +85,11 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
 
                     {/* 라벨 */}
                     <label>라벨</label>
-                    <div className={styles.labelContainer}>
-                        <select
-                            value={label}
-                            onChange={(e) => setLabel(e.target.value)}
-                            className={styles.labelSelect}
-                        >
-                            {labelOptions.map((option, index) => (
-                                <option key={index} value={option.name} style={{ color: option.color }}>
-                                    {option.name}
-                                </option>
-                            ))}
-                        </select>
-                        <button
-                            type="button"
-                            className={styles.addLabelButton}
-                            onClick={() => setIsLabelModalOpen(true)}
-                        >
-                            + 라벨 추가
-                        </button>
-                    </div>
+                    <CustomDropdown
+                        options={labelOptions}
+                        onLabelSelect={(option) => setSelectedLabel(option)}
+                        onAddLabel={() => setIsLabelModalOpen(true)} // 라벨 추가 버튼 핸들러 전달
+                    />
 
                     {/* 우선순위 */}
                     <label>우선순위</label>
