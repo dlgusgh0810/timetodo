@@ -4,7 +4,7 @@
     right: 5%; /* 화면 오른쪽에서 간격 */
     background: #fff;
     border-radius: 8px;
-    z-index: 2000; /* 높은 우선순위를 가지도록 설정 */
+    z-index: 10000; /* 높은 우선순위를 가지도록 설정 */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     width: 300px; /* 모달 너비 */
     padding: 20px; /* 내부 여백 */

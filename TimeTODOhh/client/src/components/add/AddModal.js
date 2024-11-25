@@ -132,6 +132,7 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
                     <div className={styles.selectedLabelDisplay}>
                         선택된 라벨: {selectedLabel}
                     </div>
+                    {/*나중에 주석예정*/}
 
                     <label className={styles.label}>
                         <FaExclamationCircle className={styles.icon} />
