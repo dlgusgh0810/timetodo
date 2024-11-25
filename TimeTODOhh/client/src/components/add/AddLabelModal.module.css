@@ -48,3 +48,17 @@
 .saveButton:hover {
     background: #0056b3;
 }
+
+/* AddLabelModal.module.css */
+.modal {
+    position: fixed;
+    z-index: 2000; /* 기존 모달보다 높은 값 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
