@@ -1,0 +1,145 @@
+/* Calendar.module.css */
+
+/* 전체 캘린더 컨테이너 */
+.calendarContainer {
+    width: 10000vh;
+    height: 100vh;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden; /* 스크롤 문제 해결 */
+}
+
+/* 보기 선택 드롭다운 스타일 */
+.viewSelector {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.viewSelector label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.viewSelector select {
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.viewSelector select:hover {
+    border-color: #6200ea;
+}
+
+/* FullCalendar 기본 스타일 재정의 */
+.fc .fc-toolbar-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+.fc .fc-button {
+    background-color: #6200ea;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.fc .fc-button:hover {
+    background-color: #3700b3;
+}
+
+.fc .fc-daygrid-day-number {
+    font-weight: bold;
+    color: #333;
+}
+
+/* 이벤트 스타일 */
+.fc-event {
+    background-color: #4caf50; /* 기본 배경색 */
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* 특정 이벤트 색상 */
+.fc-event-title {
+    font-weight: bold;
+    color: #fff;
+}
+
+
+/* AddModal 스타일 */
+.eventModal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    position: relative;
+    z-index: 1001;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.eventModal h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.eventModal form {
+    display: flex;
+    flex-direction: column;
+}
+
+.eventModal form label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.eventModal form input,
+.eventModal form select,
+.eventModal form textarea {
+    margin-top: 5px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+/* X 아이콘 스타일 */
+.closeIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+}
+
+/* 저장 버튼 스타일 */
+.saveButton {
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button[type="button"]:hover {
+    background-color: #3700b3;
+}
