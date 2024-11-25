@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.TaskDto;
 import org.timetodo.dto.TaskRequestDto;
-import org.timetodo.entity.CalendarEntity;
 import org.timetodo.entity.ReminderEntity;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.entity.UserEntity;
@@ -35,11 +33,11 @@ public class TaskService{
 
         // DTO로부터 받은 데이터를 TaskEntity로 변환하여 저장
         TaskEntity task = new TaskEntity();
-        task.setTitle(taskRequestDto.getTitle());
-        task.setDueDate(taskRequestDto.getDueDate());
-        task.setPriority(taskRequestDto.getPriority());
-        task.setStatus(taskRequestDto.getStatus());
-        task.setRepeatType(taskRequestDto.getRepeatType());
+        task.setTitle(taskRequestDto.getTitle()); //타이틀
+        task.setDueDate(taskRequestDto.getDueDate()); //마감기한
+        task.setPriority(taskRequestDto.getPriority()); //우선순위
+        task.setStatus(taskRequestDto.getStatus()); // 진행상태
+        task.setRepeatType(taskRequestDto.getRepeatType()); //반복일정 여부
         switch (taskRequestDto.getRepeatType()) {
             case "NONE":
                 //반복없음
@@ -60,7 +58,7 @@ public class TaskService{
                 throw new IllegalArgumentException("Invalid repeat type: " + taskRequestDto.getRepeatType());
         }
         // 2. userId를 사용하여 UserEntity 조회 후 설정
-        task.setUsers(user);
+        task.setUserId(user);
 
         // 3. CalendarEntity 저장
         TaskEntity saveTask = taskRepository.save(task);
@@ -79,13 +77,13 @@ public class TaskService{
         dto.setRepeatType(task.getRepeatType());
 
         // UserEntity의 ID를 설정
-        if (task.getUsers() != null) {
-            dto.setUserId(task.getUsers().getUserId());
+        if (task.getUserId() != null) {
+            dto.setUserId(task.getUserId().getUserId());
         }
 
         // CategoryEntity의 ID를 설정
-        if(task.getCategories() != null) {
-            dto.setCategoryId(task.getCategories().getCategoryId());
+        if(task.getCategoryId() != null) {
+            dto.setCategoryId(task.getCategoryId().getCategoryId());
         }
 
         // ReminderEntity 리스트의 ID들을 설정
@@ -102,8 +100,11 @@ public class TaskService{
 
 
     public List<TaskEntity> getTasksByUserId(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+
         // 저장된 모든 할 일 조회
-        return taskRepository.findAllByUsers_UserId(userId);
+        return taskRepository.findAllByUserId(user);
     }
 
     public TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto) {

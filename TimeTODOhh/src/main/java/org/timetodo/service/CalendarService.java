@@ -5,13 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpSession;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
+import org.timetodo.entity.CategoryEntity;
 import org.timetodo.entity.ReminderEntity;
 import org.timetodo.entity.UserEntity;
 import org.timetodo.repository.CalendarRepository;
+import org.timetodo.repository.CategoryRepository;
 import org.timetodo.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -27,21 +28,24 @@ public class CalendarService {
     private final CalendarRepository calendarRepository; // CalendarRepository 주입
     @Autowired
     private final UserRepository userRepository;  // UserRepository 주입
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     // 새로운 일정을 추가 (반복일정 로직추가 11/11)
     public CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID(캘린더서비스) : " + userId));
+
         log.info("CalendarSevice > addCalendar메소드 > userId 정보 : " + userId); //로그
 
         // 1. CalendarRequestDto를 CalendarEntity로 변환
         CalendarEntity calendar = new CalendarEntity();
-        calendar.setTitle(calendarRequestDto.getTitle());
-        calendar.setDescription(calendarRequestDto.getDescription());
-        calendar.setStartTime(calendarRequestDto.getStartTime());
-        calendar.setEndTime(calendarRequestDto.getEndTime());
-        calendar.setLocation(calendarRequestDto.getLocation());
-        calendar.setRepeatType(calendarRequestDto.getRepeatType());
+        calendar.setTitle(calendarRequestDto.getTitle()); //타이틀
+        calendar.setDescription(calendarRequestDto.getDescription()); //설명
+        calendar.setStartTime(calendarRequestDto.getStartTime()); //시작시간
+        calendar.setEndTime(calendarRequestDto.getEndTime()); //종료시간
+        calendar.setLocation(calendarRequestDto.getLocation()); //위치
+        calendar.setRepeatType(calendarRequestDto.getRepeatType()); //반복유형
         switch (calendarRequestDto.getRepeatType()) {
             case "NONE":
                 //반복없음
@@ -63,7 +67,7 @@ public class CalendarService {
         }
 
         // 2. userId를 사용하여 UserEntity 조회 후 설정
-        calendar.setUsers(user);
+        calendar.setUserId(user);
 
         // 3. CalendarEntity 저장
         CalendarEntity savedCalendar = calendarRepository.save(calendar);
@@ -84,13 +88,13 @@ public class CalendarService {
         dto.setRepeatType(calendar.getRepeatType());
 
         // UserEntity의 ID를 설정
-        if (calendar.getUsers() != null) {
-            dto.setUserId(calendar.getUsers().getUserId());
+        if (calendar.getUserId() != null) {
+            dto.setUserId(calendar.getUserId().getUserId());
         }
 
         // CategoryEntity의 ID를 설정
-        if (calendar.getCategories() != null) {
-            dto.setCategoryId(calendar.getCategories().getCategoryId());
+        if (calendar.getCategoryId() != null) {
+            dto.setCategoryId(calendar.getCategoryId().getCategoryId());
         }
 
         // ReminderEntity 리스트의 ID들을 설정
@@ -106,8 +110,10 @@ public class CalendarService {
 
     // 모든 일정을 조회
     public List<CalendarEntity> getCalendarsByUserId(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         // 저장된 모든 일정 조회
-        return calendarRepository.findAllByUsers_UserId(userId);
+        return calendarRepository.findAllByUserId(user);
     }
 
     // 특정 일정을 업데이트
@@ -135,8 +141,11 @@ public class CalendarService {
 
     // 일정 검색 엔드포인트
     public List<CalendarEntity> searchEvents(String title, String description, Long categoryId, LocalDateTime startTime) {
-        return calendarRepository.findByTitleContainingAndDescriptionContainingAndCategories_CategoryIdAndStartTime(
-                title, description, categoryId, startTime
+        CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+
+        return calendarRepository.findByTitleContainingAndDescriptionContainingAndCategoryIdAndStartTime(
+                title, description, category, startTime
         );
     }
 
