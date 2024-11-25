@@ -1,49 +1,77 @@
 package org.timetodo.service;
 
-<<<<<<< HEAD
-=======
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 
 import jakarta.servlet.http.HttpSession;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
-<<<<<<< HEAD
-=======
 import org.timetodo.entity.ReminderEntity;
 import org.timetodo.entity.UserEntity;
 import org.timetodo.repository.CalendarRepository;
 import org.timetodo.repository.UserRepository;
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface CalendarService {
+@Slf4j
+@RequiredArgsConstructor
+@Service
+public class CalendarService {
+
+    @Autowired
+    private final CalendarRepository calendarRepository; // CalendarRepository 주입
+    @Autowired
+    private final UserRepository userRepository;  // UserRepository 주입
 
     // 새로운 일정을 추가 (반복일정 로직추가 11/11)
-    CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId);
+    public CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID(캘린더서비스) : " + userId));
+        log.info("CalendarSevice > addCalendar메소드 > userId 정보 : " + userId); //로그
 
-    // 모든 일정 조회
-    List<CalendarEntity> getCalendarsByUserId(Long userId);
+        // 1. CalendarRequestDto를 CalendarEntity로 변환
+        CalendarEntity calendar = new CalendarEntity();
+        calendar.setTitle(calendarRequestDto.getTitle());
+        calendar.setDescription(calendarRequestDto.getDescription());
+        calendar.setStartTime(calendarRequestDto.getStartTime());
+        calendar.setEndTime(calendarRequestDto.getEndTime());
+        calendar.setLocation(calendarRequestDto.getLocation());
+        calendar.setRepeatType(calendarRequestDto.getRepeatType());
+        switch (calendarRequestDto.getRepeatType()) {
+            case "NONE":
+                //반복없음
+                break;
+            case "DAILY":
+                // 매일 반복 설정 로직 (예: 매일 일정 생성)
+                break;
+            case "WEEKLY":
+                // 매주 반복 설정 로직
+                break;
+            case "MONTHLY":
+                // 매월 반복 설정 로직
+                break;
+            case "YEARLY":
+                // 매년 반복 설정 로직
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid repeat type: " + calendarRequestDto.getRepeatType());
+        }
 
-    // 특정 일정 업데이트
-    CalendarEntity updateCalendar(Long id, CalendarRequestDto calendarRequestDto);
+        // 2. userId를 사용하여 UserEntity 조회 후 설정
+        calendar.setUsers(user);
 
-    // 특정 일정 삭제
-    void deleteCalendar(Long id);
+        // 3. CalendarEntity 저장
+        CalendarEntity savedCalendar = calendarRepository.save(calendar);
 
-    // 반복 일정 추가
-//    CalendarEntity addRepeatingEvent(CalendarRequestDto request);
+        // 4. 저장된 CalendarEntity를 CalendarDTO로 변환
+        return convertToDto(savedCalendar);
+    }
 
-<<<<<<< HEAD
-    // 일정 검색
-    List<CalendarEntity> searchEvents(String title, String description, Long categoryId, LocalDateTime startTime);
-=======
     // CalendarEntity를 CalendarDTO로 변환하는 메서드
     private CalendarDTO convertToDto(CalendarEntity calendar) {
         CalendarDTO dto = new CalendarDTO();
@@ -112,7 +140,6 @@ public interface CalendarService {
         );
     }
 
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 
 }
 /*

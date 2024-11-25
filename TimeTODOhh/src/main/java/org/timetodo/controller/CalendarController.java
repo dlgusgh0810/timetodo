@@ -25,27 +25,24 @@ import java.util.List;
 public class CalendarController {
 
     private final CalendarService calendarService; // CalendarService를 주입받아 사용합니다.
+    //private final JwtService jwtService;
 
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<String> addCalendar(@RequestBody CalendarRequestDto calendarRequestDto, HttpServletRequest request) {
+    public ResponseEntity<String> addCalendar(
+            @RequestBody CalendarRequestDto calendarRequestDto,
+            HttpServletRequest request) {
         Long userId = 0L;
-        try{
+        try {
             Cookie userCookie = Arrays.stream(request.getCookies())
                     .filter(cookie -> cookie.getName().equals("userId"))
                     .findAny()
                     .orElse(null);
             userId = Long.valueOf(userCookie.getValue());
             log.info("세션에서 가져온 UserId : {}", userId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            calendarRequestDto.setUserId(userId);
-            calendarService.addCalendar(calendarRequestDto,userId);
-            return ResponseEntity.ok("캘린더 생성 성공");
         }
-<<<<<<< HEAD
-=======
 
         // Calendar 생성
         calendarRequestDto.setUserId(userId);
@@ -54,11 +51,10 @@ public class CalendarController {
 
         return ResponseEntity.ok("캘린더 생성 성공");
 
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
     }
 
     // 로그인한 유저의 일정을 전체 조회하는 엔드포인트
-    @GetMapping("/all")
+    @GetMapping("/find")
     public List<CalendarEntity> getUserCalendars(HttpServletRequest request) {
         Long userId = 0L;
         Cookie userCookie = Arrays.stream(request.getCookies())

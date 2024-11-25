@@ -6,10 +6,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
 import styles from './Calendar.module.css';
 
-function Calendar({ initialEvents }) {
+function Calendar({ events }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
-    const [events, setEvents] = useState(initialEvents); // 이벤트 상태 관리
     const calendarRef = useRef(null); // FullCalendar의 ref 생성
 
     // 날짜 클릭 이벤트
@@ -23,22 +22,40 @@ function Calendar({ initialEvents }) {
         setModalOpen(false);
     };
 
-    // 이벤트 저장 함수
-    const handleSave = (newEvent) => {
-        // 기존 이벤트에 새 이벤트 추가
-        setEvents((prevEvents) => [
-            ...prevEvents,
-            { title: newEvent.title, start: newEvent.date, ...newEvent }
-        ]);
-
-        closeModal(); // 모달 닫기
-    };
-
     // 보기 전환 이벤트
     const handleViewChange = (event) => {
         const newView = event.target.value; // 드롭다운에서 선택된 보기
         const calendarApi = calendarRef.current.getApi(); // FullCalendar API 호출
         calendarApi.changeView(newView); // 선택된 보기로 전환
+    };
+
+    // 새로 추가한 onSave 함수
+    const handleSave = async (newTodo) => {
+        console.log("New Todo Saved:", newTodo);
+
+        try {
+            // 백엔드로 POST 요청 전송
+            const response = await fetch('http://localhost:8085/api/calendar/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newTodo),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save data to backend');
+            }
+
+            const data = await response.json();
+            console.log('Response from backend:', data);
+
+            // 성공적으로 저장되면 모달을 닫음
+            closeModal();
+        } catch (error) {
+            console.error('Error saving data:', error);
+            alert('데이터 저장에 실패했습니다.');
+        }
     };
 
     return (
@@ -58,7 +75,7 @@ function Calendar({ initialEvents }) {
                 ref={calendarRef} // FullCalendar에 ref 연결
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth" // 초기 보기는 월간으로 설정
-                events={events} // 상태로 관리되는 이벤트 전달
+                events={events}
                 dateClick={handleDateClick}
                 headerToolbar={{
                     left: 'prev,next today',
@@ -75,7 +92,7 @@ function Calendar({ initialEvents }) {
             <AddModal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
-                onSave={handleSave} // 이벤트 저장 함수 전달
+                onSave={handleSave}  // 추가된 onSave prop
                 selectedDate={selectedDate}
             />
         </div>

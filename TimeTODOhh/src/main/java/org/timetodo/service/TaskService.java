@@ -1,8 +1,5 @@
 package org.timetodo.service;
 
-<<<<<<< HEAD
-import org.timetodo.dto.TaskRequestDto;
-=======
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,34 +9,59 @@ import org.timetodo.dto.TaskDto;
 import org.timetodo.dto.TaskRequestDto;
 import org.timetodo.entity.CalendarEntity;
 import org.timetodo.entity.ReminderEntity;
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 import org.timetodo.entity.TaskEntity;
+import org.timetodo.entity.UserEntity;
+import org.timetodo.repository.TaskRepository;
+import org.timetodo.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface TaskService {
+@Slf4j
+@Service
+@RequiredArgsConstructor // 의존성 주입을 위한 생성자 자동 생성
+public class TaskService{
 
-    // 새로운 할 일 추가
-    TaskEntity addTask(TaskRequestDto taskRequestDto);
+    @Autowired
+    private final TaskRepository taskRepository; // TaskRepository 주입
 
-    // 모든 할 일 조회
-    List<TaskEntity> getAllTasks();
+    @Autowired
+    private final UserRepository userRepository;  // UserRepository 주입
 
-<<<<<<< HEAD
-    // 특정 할 일 업데이트
-    TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto);
-=======
     public TaskEntity addTask(TaskRequestDto taskRequestDto, Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID(테스크서비스) : " + userId));
         log.info("TaskSevice > addTask메소드 > userId 정보 : " + userId); //로그
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 
-    // 특정 할 일 삭제
-    void deleteTask(Long id);
+        // DTO로부터 받은 데이터를 TaskEntity로 변환하여 저장
+        TaskEntity task = new TaskEntity();
+        task.setTitle(taskRequestDto.getTitle());
+        task.setDueDate(taskRequestDto.getDueDate());
+        task.setPriority(taskRequestDto.getPriority());
+        task.setStatus(taskRequestDto.getStatus());
+        task.setRepeatType(taskRequestDto.getRepeatType());
+        switch (taskRequestDto.getRepeatType()) {
+            case "NONE":
+                //반복없음
+                break;
+            case "DAILY":
+                // 매일 반복 설정 로직 (예: 매일 일정 생성)
+                break;
+            case "WEEKLY":
+                // 매주 반복 설정 로직
+                break;
+            case "MONTHLY":
+                // 매월 반복 설정 로직
+                break;
+            case "YEARLY":
+                // 매년 반복 설정 로직
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid repeat type: " + taskRequestDto.getRepeatType());
+        }
+        // 2. userId를 사용하여 UserEntity 조회 후 설정
+        task.setUsers(user);
 
-<<<<<<< HEAD
-=======
         // 3. CalendarEntity 저장
         TaskEntity saveTask = taskRepository.save(task);
 
@@ -103,13 +125,4 @@ public interface TaskService {
         // 특정 할 일 삭제
         taskRepository.deleteById(id);
     }
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
 }
-
-/*
-TaskService
-addTask(): 새로운 할 일을 추가합니다. DTO에서 받은 데이터를 TaskEntity로 변환하여 저장합니다.
-getAllTasks(): 저장된 모든 할 일을 조회합니다.
-updateTask(): 특정 할 일을 업데이트합니다. 기존 데이터를 조회하고 새로운 데이터로 업데이트한 후 저장합니다.
-deleteTask(): 특정 할 일을 삭제합니다.
-*/

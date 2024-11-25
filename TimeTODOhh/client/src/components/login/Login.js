@@ -5,6 +5,8 @@ import styles from './Login.module.css';
 
 import axios from 'axios';
 
+
+
 function Login({ onLoginSuccess }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -33,12 +35,8 @@ function Login({ onLoginSuccess }) {
         }
     };
 
-    // "로그인패스" 버튼 클릭 핸들러
-    const handleLoginPass = () => {
-        navigate('/home'); // /home으로 바로 이동
-    };
-
     return (
+
         <div className={styles.loginPage}>
             <div className={styles.circle1}></div> {/* 배경 원 추가 */}
             <div className={styles.circle2}></div> {/* 배경 원 추가 */}
@@ -48,23 +46,24 @@ function Login({ onLoginSuccess }) {
                     <h2 className="login-text">로그인</h2>
                     <div className={styles.formGroup}>
                         <input className={styles.loginText}
-                               type="text"
-                               id="username"
-                               placeholder="아이디"
-                               value={username}
-                               onChange={(e) => setUsername(e.target.value)}
-                               required
+                            type="text"
+                            id="username"
+                            placeholder="아이디"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
                         />
                     </div>
 
+
                     <div className={styles.formGroup}>
                         <input className={styles.loginText}
-                               type="password"
-                               id="password"
-                               placeholder="비밀번호"
-                               value={password}
-                               onChange={(e) => setPassword(e.target.value)}
-                               required
+                            type="password"
+                            id="password"
+                            placeholder="비밀번호"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
                         />
                     </div>
 
@@ -75,14 +74,8 @@ function Login({ onLoginSuccess }) {
                     <p className={styles.signupLink}>
                         아직 계정이 없으신가요? <Link to="/signup">회원가입</Link>
                     </p>
-                    {/* 로그인패스 버튼 */}
-                    <button onClick={handleLoginPass} className={styles.loginButton}>
-                        매직패스
-                    </button>
                 </form>
             </div>
-
-            
         </div>
     );
 }

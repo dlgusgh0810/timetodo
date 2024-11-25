@@ -77,8 +77,6 @@
             <scope>test</scope>
         </dependency>
 
-<<<<<<< HEAD
-=======
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
             <groupId>org.json</groupId>
@@ -118,7 +116,6 @@
 <!--            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>-->
 <!--            <version>3.3.4</version> &lt;!&ndash; 현재 사용 중인 Spring Boot 버전과 맞춰야 합니다 &ndash;&gt;-->
 <!--        </dependency>-->
->>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
     </dependencies>
 
     <build>

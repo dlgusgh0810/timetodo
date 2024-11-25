@@ -22,7 +22,7 @@ public class CalendarRequestDto {
     private Long categoryId;          // Category의 ID (Foreign Key 대신 ID 참조)
     private Long userId;              // User의 ID (Foreign Key 대신 ID 참조)
 
-    private List<Long> reminderIds;   // Reminder 엔티티의 ID 리스트
+    private List<Long> reminderId;   // Reminder 엔티티의 ID 리스트
 }
 
 /*

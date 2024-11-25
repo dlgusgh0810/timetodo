@@ -15,9 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CalendarEntity {
 
+//    @Column(name = "calendar_id", unique = true, nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "calendar_id", unique = true, nullable = false)
     private Long calendarId; // 캘린더 고유 ID (Primary Key)
 
     //@Column(nullable = false, length = 100)
@@ -49,11 +49,7 @@ public class CalendarEntity {
     @JsonIgnore
     private UserEntity users;//userMTOcalendar; // 사용자 ID (Foreign Key)
 
-//<<<<<<< HEAD
-//    @OneToMany(mappedBy = "calenders")
-//=======
-//    @OneToMany(mappedBy = "calendarId")
-//>>>>>>> 1b4a5ec5 (Merge pull request #29 from SEUIL/main)
-//    @JsonIgnore
-//    private List<ReminderEntity> reminders;
+    @OneToMany(mappedBy = "calendarId")
+    @JsonIgnore
+    private List<ReminderEntity> reminderId;
 }

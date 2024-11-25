@@ -34,8 +34,8 @@ public class UserEntity {
 //    @JoinColumn(name = "preferences_id", referencedColumnName = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
 //    private Preferences preferences; // Foreign Key (외래 키)
 
-    @OneToOne // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
     //@JoinColumn(name = "preferences_id") // Preferences의 기본 키를 외래 키로 설정
+    @OneToOne // 1:1 관계, 연결된 엔티티도 같이 저장/삭제
     private PreferencesEntity preferences; // Foreign Key (외래 키)
 
     @OneToMany(mappedBy = "users")
