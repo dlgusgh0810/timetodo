@@ -1,6 +1,6 @@
 /* 반투명 배경 */
 .eventModalOverlay {
-    position: fixed; /* 화면 전체를 덮도록 설정 */
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -9,21 +9,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000; /* 오버레이를 최상위에 표시 */
+    z-index: 1000;
 }
 
 /* 모달 스타일 */
 .eventModal {
     background: white;
     padding: 20px;
-    border-radius: 12px; /* 기존 스타일 반영 */
+    border-radius: 12px;
     max-width: 400px;
     max-height: 600px;
     width: 100%;
     position: relative;
-    z-index: 1001; /* 오버레이보다 위에 표시 */
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1); /* 그림자 수정 */
-    font-family: 'Arial', sans-serif; /* 폰트 적용 */
+    z-index: 1001;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
 }
 
 /* 모달 헤더 */
@@ -31,23 +31,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px; /* 기존 CSS에서 반영 */
+    margin-bottom: 15px;
 }
 
-/* 제목 스타일 */
 .h2 {
     margin: 0;
-    font-size: 1.5rem; /* 사용하고 싶은 스타일로 변경 */
+    font-size: 1.5rem;
     font-weight: bold;
     color: #333;
 }
 
-/* 닫기 아이콘 */
 .closeIcon {
     font-size: 1.5rem;
     cursor: pointer;
     color: #333;
-    transition: color 0.3s ease; /* 호버 스타일 추가 */
+    transition: color 0.3s ease;
 }
 
 .closeIcon:hover {
@@ -58,17 +56,13 @@
 .form {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* 요소 간 일정한 간격 */
+    gap: 20px;
     align-items: stretch;
 }
 
-.label {
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-}
-
-form input, form select, form textarea {
+form input,
+form select,
+form textarea {
     margin-top: 5px;
     padding: 10px;
     font-size: 14px;
@@ -78,7 +72,9 @@ form input, form select, form textarea {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-form input:focus, form select:focus, form textarea:focus {
+form input:focus,
+form select:focus,
+form textarea:focus {
     border-color: #6200ea;
     box-shadow: 0 0 4px rgba(98, 0, 234, 0.3);
 }
@@ -88,8 +84,9 @@ form input:focus, form select:focus, form textarea:focus {
     height: 80px;
 }
 
-/* 버튼 스타일 */
-button[type="button"], .saveButton {
+/* 저장 버튼 */
+button[type="button"],
+.saveButton {
     margin-top: 20px;
     padding: 12px;
     font-size: 16px;
@@ -102,7 +99,8 @@ button[type="button"], .saveButton {
     transition: background-color 0.3s ease;
 }
 
-button[type="button"]:hover, .saveButton:hover {
+button[type="button"]:hover,
+.saveButton:hover {
     background-color: #3700b3;
 }
 
@@ -152,8 +150,8 @@ button[type="button"]:hover, .saveButton:hover {
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 10px;
-    position: relative; /* 자식 요소 고정을 위해 부모를 relative로 설정 */
-    padding-bottom: 40px; /* 버튼 위치를 위해 아래 여백 추가 */
+    position: relative;
+    padding-bottom: 40px;
 }
 
 .scrollableLabelContainer select {
@@ -182,6 +180,7 @@ button[type="button"]:hover, .saveButton:hover {
     background-color: #e0e0e0;
 }
 
+/* 라벨 선택 메뉴 */
 .labelDropdown {
     position: relative;
     cursor: pointer;
@@ -217,9 +216,10 @@ button[type="button"]:hover, .saveButton:hover {
     background-color: #f0f0f0;
 }
 
+/* 아이콘 스타일 */
 .icon {
-    font-size: 16px; /* 아이콘 크기 */
-    color: #888; /* 아이콘 색상 */
-    margin-right: 8px; /* 텍스트와 간격 */
-    vertical-align: middle; /* 텍스트와 정렬 */
+    font-size: 16px;
+    color: #888;
+    margin-right: 8px;
+    vertical-align: middle;
 }

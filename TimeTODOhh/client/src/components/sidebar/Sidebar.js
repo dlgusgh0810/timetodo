@@ -42,7 +42,7 @@ const Sidebar = ({ onAddEvent }) => {
             <div className={styles.profileSection} onClick={toggleProfile}>
                 <img src="https://via.placeholder.com/50" alt="profile" className={styles.profileImage} />
                 <div className={styles.profileInfo}>
-                    <span className={styles.username}>kimdiyong</span>
+                    <span className={styles.username}>user</span>
                     <FaChevronDown
                         className={styles.dropdownIcon}
                         style={{ transform: isProfileVisible ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
@@ -59,7 +59,7 @@ const Sidebar = ({ onAddEvent }) => {
                 <ul>
                     <li>
                         <Link to="/home" className={styles.menuLink}>
-                            <FaHome className={styles.menuIcon} /> 홈 sss
+                            <FaHome className={styles.menuIcon} /> 홈
                         </Link>
                     </li>
                     <li>
