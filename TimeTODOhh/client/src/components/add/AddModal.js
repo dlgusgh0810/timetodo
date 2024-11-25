@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import AddLabelModal from './AddLabelModal'; // 새 모달 컴포넌트 추가
+import { FaTimes, FaCalendarAlt, FaBell, FaTag, FaExclamationCircle, FaSyncAlt, FaClipboardList } from 'react-icons/fa';
 import styles from './AddModal.module.css';
 
 Modal.setAppElement('#root');
@@ -10,21 +10,16 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [label, setLabel] = useState('');
+    const [labelOptions, setLabelOptions] = useState([
+        "라벨 없음",
+        "첫번째 라벨",
+        "두번째 라벨"
+    ]); // 라벨 옵션 상태
     const [priority, setPriority] = useState('우선순위 없음');
     const [description, setDescription] = useState('');
     const [repeat, setRepeat] = useState('반복 없음');
     const [reminder, setReminder] = useState('30분 전');
-    const [labelOptions, setLabelOptions] = useState([
-        "라벨 없음",
-        "첫번째 라벨",
-        "두번째 라벨",
-    ]);
-    const [isLabelModalOpen, setIsLabelModalOpen] = useState(false); // 라벨 모달 상태
-
-    const handleAddLabel = (newLabel) => {
-        setLabelOptions([...labelOptions, newLabel]);
-        setIsLabelModalOpen(false); // 라벨 추가 후 모달 닫기
-    };
+    const [newLabel, setNewLabel] = useState(''); // 새 라벨 추가를 위한 상태
 
     const handleSave = () => {
         if (title.trim() === '') {
@@ -50,82 +45,172 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
         setTitle('');
         setDate('');
         setLabel('');
-        setPriority('우선순위 없음'); // 수정
+        setPriority('일반');
         setDescription('');
         setRepeat('반복 없음');
         setReminder('30분 전');
     };
 
+    const addNewLabel = () => {
+        if (newLabel.trim() === '') {
+            alert('새 라벨 이름을 입력해주세요.');
+            return;
+        }
+        if (labelOptions.includes(newLabel)) {
+            alert('이미 존재하는 라벨입니다.');
+            return;
+        }
+        setLabelOptions([...labelOptions, newLabel]); // 새 라벨 추가
+        setNewLabel(''); // 입력 필드 초기화
+    };
 
     return (
-        <>
-            <Modal
-                isOpen={isOpen}
-                onRequestClose={onRequestClose}
-                className={styles.eventModal}
-                overlayClassName={styles.eventModalOverlay}
-            >
-                <div className={styles.modalHeader}>
-                    <button onClick={onRequestClose} className={styles.closeButton}>
-                        닫기
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={onRequestClose}
+            className={styles.eventModal}
+            overlayClassName={styles.eventModalOverlay}
+        >
+            <div className={styles.modalHeader}>
+                <FaTimes className={styles.closeIcon} onClick={onRequestClose} />
+            </div>
+
+            <form className={styles.form}>
+                {/* 제목 */}
+                <label>제목</label>
+                <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="제목을 입력하세요"
+                />
+
+                {/* 탭 전환 버튼 */}
+                <div className={styles.tabContainer}>
+                    <button
+                        type="button"
+                        className={activeTab === '할 일' ? styles.activeTab : styles.inactiveTab}
+                        onClick={() => setActiveTab('할 일')}
+                    >
+                        할 일
+                    </button>
+                    <button
+                        type="button"
+                        className={activeTab === '일정' ? styles.activeTab : styles.inactiveTab}
+                        onClick={() => setActiveTab('일정')}
+                    >
+                        일정
                     </button>
                 </div>
 
-                <form className={styles.form}>
-                    <label>제목</label>
+                {/* 날짜 */}
+                <label className={styles.label}>
+                    <FaCalendarAlt className={styles.icon}/>
+                    <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className={styles.input}
+                    />
+                </label>
+
+                {/* 알림 설정 - 일정 전용 */}
+                {activeTab === '일정' && (
+                    <label className={styles.label}>
+                        <FaBell className={styles.icon}/>
+                        <select
+                            className={styles.select}
+                            value={reminder}
+                            onChange={(e) => setReminder(e.target.value)}
+                        >
+                            <option value="알림 없음">알림 없음</option>
+                            <option value="30분 전">30분 전</option>
+                            <option value="1시간 전">1시간 전</option>
+                            <option value="1일 전">1일 전</option>
+                        </select>
+                    </label>
+                )}
+
+                {/* 라벨 */}
+                <label className={styles.label}>
+                    <FaTag className={styles.icon}/>
+                    <select
+                        className={styles.select}
+                        value={label}
+                        onChange={(e) => setLabel(e.target.value)}
+                    >
+                        {labelOptions.map((option, index) => (
+                            <option key={index} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                {/* 새 라벨 추가 */}
+                <div className={styles.newLabelContainer}>
                     <input
                         type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="제목을 입력하세요"
+                        value={newLabel}
+                        onChange={(e) => setNewLabel(e.target.value)}
+                        placeholder="새 라벨 이름 입력"
+                        className={styles.input}
                     />
+                    <button
+                        type="button"
+                        onClick={addNewLabel}
+                        className={styles.addLabelButton}
+                    >
+                        라벨 추가
+                    </button>
+                </div>
 
-                    <label>라벨</label>
-                    <div className={styles.scrollableLabelContainer}>
-                        <select value={label} onChange={(e) => setLabel(e.target.value)} size={6}>
-                            {labelOptions.map((option, index) => (
-                                <option key={index} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                        <button
-                            type="button"
-                            className={styles.addLabelButton}
-                            onClick={() => setIsLabelModalOpen(true)} // 라벨 추가 모달 열기
-                        >
-                            + 라벨 추가
-                        </button>
-                    </div>
-
-
-                    <label>우선순위</label>
-                    <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+                {/* 우선순위 */}
+                <label className={styles.label}>
+                    <FaExclamationCircle className={styles.icon}/>
+                    <select
+                        className={styles.select}
+                        value={priority}
+                        onChange={(e) => setPriority(e.target.value)}
+                    >
                         <option value="중요">중요</option>
                         <option value="일반">일반</option>
                         <option value="우선순위 없음">우선순위 없음</option>
                     </select>
+                </label>
 
-                    <label>설명</label>
+                {/* 설명 */}
+                <label className={styles.label}>
+                    <FaClipboardList className={styles.icon}/>
                     <textarea
+                        className={styles.textarea}
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="설명을 입력하세요"
                     />
+                </label>
 
-                    <button type="button" onClick={handleSave} className={styles.saveButton}>
-                        저장
-                    </button>
-                </form>
-            </Modal>
+                {/* 반복 설정 */}
+                <label className={styles.label}>
+                    <FaSyncAlt className={styles.icon}/>
+                    <select
+                        className={styles.select}
+                        value={repeat}
+                        onChange={(e) => setRepeat(e.target.value)}
+                    >
+                        <option value="반복 없음">반복 없음</option>
+                        <option value="매일">매일</option>
+                        <option value="매주">매주</option>
+                        <option value="매월">매월</option>
+                    </select>
+                </label>
 
-            {/* 라벨 추가 모달 */}
-            <AddLabelModal
-                isOpen={isLabelModalOpen}
-                onRequestClose={() => setIsLabelModalOpen(false)}
-                onSave={handleAddLabel}
-            />
-        </>
+                {/* 저장 버튼 */}
+                <button type="button" onClick={handleSave} className={styles.saveButton}>
+                    저장
+                </button>
+            </form>
+        </Modal>
     );
 }
 

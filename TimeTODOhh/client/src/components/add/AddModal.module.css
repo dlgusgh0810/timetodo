@@ -55,14 +55,14 @@
 }
 
 /* 폼 스타일 */
-form {
+.form {
     display: flex;
     flex-direction: column;
     gap: 20px; /* 요소 간 일정한 간격 */
     align-items: stretch;
 }
 
-form label {
+.label {
     font-size: 14px;
     color: #666;
     font-weight: 500;
@@ -215,4 +215,11 @@ button[type="button"]:hover, .saveButton:hover {
 
 .dropdownItem:hover {
     background-color: #f0f0f0;
+}
+
+.icon {
+    font-size: 16px; /* 아이콘 크기 */
+    color: #888; /* 아이콘 색상 */
+    margin-right: 8px; /* 텍스트와 간격 */
+    vertical-align: middle; /* 텍스트와 정렬 */
 }
