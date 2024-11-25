@@ -1,23 +1,21 @@
+/* AddLabelModal.module.css */
+
+
 .labelModal {
-    width: 300px;
-    padding: 20px;
+    position: fixed;
+    top: 10%; /* 화면 위쪽에서의 간격 */
+    right: 5%; /* 화면 오른쪽에서의 간격 */
     background: #fff;
     border-radius: 8px;
-    position: relative;
-    margin: auto;
-    top: 20%;
-    outline: none;
-}
+    z-index: 2000; /* 오버레이보다 높은 값 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 300px; /* 너비 */
+    padding: 20px;
+    outline: none;}
 
-.labelModalOverlay {
-    background: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
 
+
+/* 헤더 (닫기 버튼 포함) */
 .modalHeader {
     display: flex;
     justify-content: flex-end;
@@ -26,39 +24,67 @@
 .closeButton {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 16px;
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
+/* 폼 스타일 */
 .form {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.saveButton {
+/* 입력 필드 */
+.input {
     padding: 10px;
-    background: #007bff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #6200ea;
+    box-shadow: 0 0 4px rgba(98, 0, 234, 0.3);
+}
+
+/* 색상 선택기 */
+/* AddLabelModal.module.css */
+
+/* 색상 선택기 스타일 */
+.colorPicker {
+    width: 100%;
+    height: 40px; /* 크기를 명확히 지정 */
+    border: 1px solid #ccc; /* 선택기 경계선을 명확히 표시 */
+    border-radius: 4px;
+    background-color: #f7f7f7; /* 기본 배경 */
+    cursor: pointer;
+    outline: none;
+}
+
+/* 선택기 활성화 시 효과 */
+.colorPicker:focus {
+    border-color: #6200ea;
+    box-shadow: 0 0 4px rgba(98, 0, 234, 0.3);
+}
+
+
+/* 저장 버튼 */
+.saveButton {
+    background-color: #6200ea;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 10px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .saveButton:hover {
-    background: #0056b3;
+    background-color: #4500b3;
 }
-
-/* AddLabelModal.module.css */
-.modal {
-    position: fixed;
-    z-index: 2000; /* 기존 모달보다 높은 값 */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
