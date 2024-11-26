@@ -20,7 +20,7 @@
     bottom: 0;
     background-color: #ccc;
     border-radius: 20px;
-    transition: 0.4s;
+    transition: 0s;
 }
 
 .slider:before {
@@ -32,7 +32,7 @@
     bottom: 3px;
     background-color: white;
     border-radius: 50%;
-    transition: 0.4s;
+    transition: 0s;
 }
 
 input:checked + .slider {
