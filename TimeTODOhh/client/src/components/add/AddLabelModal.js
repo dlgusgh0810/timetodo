@@ -17,7 +17,9 @@ function AddLabelModal({ isOpen, onRequestClose, onSave }) {
     };
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={onRequestClose} className={styles.labelModal}>
+        <Modal isOpen={isOpen} onRequestClose={onRequestClose}
+               className={styles.labelModal}
+               overlayClassName={styles.labelModalOverlay}>
             <h2>라벨 추가</h2>
             <input
                 type="text"

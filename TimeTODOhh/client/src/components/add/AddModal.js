@@ -71,7 +71,7 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
                 </div>
 
                 <form className={styles.form}>
-                    <label>제목</label>
+                    {/*<label>제목</label>*/}
                     <input
                         type="text"
                         value={title}
