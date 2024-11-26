@@ -4,7 +4,7 @@
     right: 5%; /* 화면 오른쪽에서 간격 */
     background: #fff;
     border-radius: 8px;
-    z-index: 10000; /* 높은 우선순위를 가지도록 설정 */
+    z-index: 2000; /* AddModal보다 높은 값으로 설정 */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     width: 300px; /* 모달 너비 */
     padding: 20px; /* 내부 여백 */
@@ -18,8 +18,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
-    z-index: 1999; /* 모달 바로 아래 */
+    background-color: rgba(255, 255, 255, 0); /* 투명 배경 */
+    z-index: 1999; /* AddLabelModal의 컨텐츠보다 낮은 값 */
 }
 
 /* 모달 헤더 */
