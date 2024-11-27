@@ -93,7 +93,8 @@ function Calendar({ events }) {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 onSave={handleSave}  // 추가된 onSave prop
-                selectedDate={selectedDate}
+                selectedDate={selectedDate} // 선택된 날짜 전달
+                defaultTab="일정" // 기본 탭 전달
             />
         </div>
     );

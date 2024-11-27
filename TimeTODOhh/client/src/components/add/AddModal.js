@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {useEffect} from "react";
 import Modal from 'react-modal';
 import AddLabelModal from './AddLabelModal';
 import CustomDropdown from './CustomDropdown';
@@ -6,10 +7,11 @@ import { FaTimes, FaCalendarAlt, FaBell, FaExclamationCircle, FaClipboardList, F
 import styles from './AddModal.module.css';
 Modal.setAppElement('#root');
 
-function AddModal({ isOpen, onRequestClose, onSave }) {
-    const [activeTab, setActiveTab] = useState('일정');
+
+function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) {
+    const [activeTab, setActiveTab] = useState(defaultTab || '일정');
     const [title, setTitle] = useState('');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(selectedDate || '');
     const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
     const [priority, setPriority] = useState('우선순위 없음');
     const [repeat, setRepeat] = useState('반복 없음');
@@ -20,6 +22,14 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
         { name: '첫번째 라벨', color: '#FF6347' },
     ]);
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            // 모달 열릴 때 기본 값 설정
+            setActiveTab(defaultTab || '일정');
+            setDate(selectedDate || '');
+        }
+    }, [isOpen, selectedDate, defaultTab]);
 
     const handleSave = () => {
         if (title.trim() === '') {
@@ -56,6 +66,7 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
         setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
         setIsLabelModalOpen(false); // 모달 닫기
     };
+    // Gpt는 handleAddLabel을 지웠음
 
     return (
         <>
@@ -173,6 +184,7 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
                     <button type="button" onClick={handleSave} className={styles.saveButton}>
                         저장
                     </button>
+
                 </form>
             </Modal>
 
@@ -181,6 +193,13 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
                 onRequestClose={() => setIsLabelModalOpen(false)}
                 onSave={handleAddLabel}
             />
+            {/*<AddLabelModal*/}
+            {/*    isOpen={isLabelModalOpen}*/}
+            {/*    onRequestClose={() => setIsLabelModalOpen(false)}*/}
+            {/*    onSave={(newLabel) => {*/}
+            {/*        setLabelOptions((prev) => [...prev, newLabel]);*/}
+            {/*    }}*/}
+            {/*/>*/}
         </>
     );
 }
