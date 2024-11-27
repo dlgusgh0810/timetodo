@@ -3,8 +3,13 @@ package org.timetodo.ai;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -16,8 +21,11 @@ public class OpenAIController {
     @Autowired
     private final OpenAIService openAIService;
 
-
-    //자연어로 일정을 처리
+    /**
+     * 자연어로 calendar, task 를 추가하는 챗봇기능
+     * @param inputText 챗봇에게 입력하는 데이터
+     * @param userId 프론트에서 @RequestParam 방식으로 userId 할당 필요
+     */
     @PostMapping("/add")
     public ResponseEntity<String> inputChat(@RequestBody String inputText,
                                             @RequestParam Long userId) {
@@ -28,11 +36,23 @@ public class OpenAIController {
 
         return ResponseEntity.ok(responseMessage);
     }
+
+    /**
+     * 알림 설정 요청 처리
+     */
+    /*@PostMapping("/reminder")
+    public ResponseEntity<String> setReminder(@RequestBody Map<String, Object> reminderInput,
+                                              @RequestParam Long userId) {
+        log.info("Received reminder input: {}", reminderInput);
+
+        // 사용자가 입력한 알림 설정 데이터 처리
+        try {
+            String responseMessage = openAIService.processReminderInput(reminderInput, userId);
+            return ResponseEntity.ok(responseMessage);
+        } catch (Exception e) {
+            log.error("Error while processing reminder: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알림 설정 중 오류가 발생했습니다.");
+        }
+    }*/
 }
 
-/*
-이 코드가 하는 일
-OpenAIService를 호출하여 자연어로 입력된 일정을 해석합니다.
-응답(JSON)을 파싱하여 필요한 데이터(예: 제목, 날짜, 시간)를 추출합니다.
-추출된 데이터를 Schedule 객체로 변환하여 DB에 저장합니다.
- */

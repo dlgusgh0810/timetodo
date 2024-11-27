@@ -26,8 +26,11 @@ import org.timetodo.service.TaskService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -74,6 +77,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
             for (Map<String, Object> item : responseList) {
                 String type = safeGet(item, "type", "unknown");
                 log.info("파싱 데이터 타입 : Parsed type: {}", type); // 디버깅 로그 추가
+
                 switch (type) {
                     case "calendar":
                         log.info("calendar로 파싱");
@@ -129,9 +133,51 @@ public class OpenAIService { //사용자 입력 파실 및 처리
         requestBody.put("model", "gpt-3.5-turbo"); // OpenAI의 GPT 모델
         requestBody.put("messages", List.of(
                 Map.of("role", "system", "content",
-                        "사용자의 요청을 JSON으로 처리하세요. 아래와 같은 구조를 따르십시오: " +
-                                "{ \"type\": \"calendar\", \"title\": \"\", \"date\": \"YYYY-MM-DD\", \"start_time\": \"HH:MM\", \"end_time\": \"HH:MM\" }." +
-                                " start_time과 end_time을 반드시 포함하세요. start_time 이후 1시간 뒤를 기본 end_time으로 설정할 수 있습니다."),
+                        "사용자의 요청을 JSON으로 처리하세요. 마지막 항목 뒤에 쉼표를 포함하지 마세요. 아래와 같은 구조를 따르십시오:\n" +
+
+                                "- `calendar` 요청의 경우:\n" +
+                                "{\n" +
+                                "    \"type\": \"calendar\",\n" +
+                                "    \"title\": \"\",\n" +
+                                "    \"description\": \"\",\n" +
+                                "    \"location\": \"\",\n" +
+                                "    \"repeatType\": \"\",\n" +
+                                "    \"startTime\": \"\",\n" +
+                                "    \"endTime\": \"\"\n" +
+                                "}\n" +
+                                "  * `title`, `description`, `location`, `repeatType`, `startTime`, `endTime`를 반드시 포함하세요.\n" +
+                                "  * `repeatType`은 NONE, DAILY, WEEKLY, MONTHLY, YEARLY 중 하나로 설정하세요.\n" +
+                                "  * `startTime`과 `endTime`은 ISO 8601 LocalDateTime 형식(`yyyy-MM-dd'T'HH:mm:ss`)으로 반환하세요.\n" +
+
+                                "- `task` 요청의 경우:\n" +
+                                "{\n" +
+                                "    \"type\": \"task\",\n" +
+                                "    \"title\": \"\",\n" +
+                                "    \"dueDate\": \"\",\n" +
+                                "    \"priority\": \"\",\n" +
+                                "    \"status\": \"\",\n" +
+                                "    \"repeatType\": \"\"\n" +
+                                "}\n" +
+                                "  * `title`, `dueDate`, `priority`, `status`, `repeatType`를 반드시 포함하세요.\n" +
+                                "  * `dueDate`는 ISO 8601 LocalDateTime 형식(`yyyy-MM-dd'T'HH:mm:ss`)으로 반환하세요.\n" +
+                                "  * `priority`는 LOW, MEDIUM, HIGH 중 하나로 설정하세요.\n" +
+                                "  * `status`는 PENDING, IN_PROGRESS, DONE 중 하나로 설정하세요.\n" +
+                                "  * `repeatType`은 NONE, DAILY, WEEKLY, MONTHLY, YEARLY 중 하나로 설정하세요.\n" +
+
+                                "- `reminder` 요청의 경우:\n" +
+                                "{\n" +
+                                "    \"type\": \"reminder\",\n" +
+                                "    \"notificationsEnabled\": true,\n" +
+                                "    \"timeBefore\": 10,\n" +
+                                "    \"repeats\": false\n" +
+                                "}\n" +
+                                "  * `notificationsEnabled`는 boolean(true/false) 값으로 반환하세요.\n" +
+                                "  * `timeBefore`는 정수 값(분 단위)으로 반환하세요.\n" +
+                                "  * `repeats`는 boolean(true/false) 값으로 반환하세요.\n" +
+                                "사용자가 알림 설정을 요청할 경우 `reminder` 타입으로 처리하고, 필요한 필드 값을 포함하여 응답하세요." +
+
+                                "모든 JSON은 잘 구성된 형식으로 반환해야 하며, 마지막 항목 뒤에 쉼표를 포함하지 마세요."
+                ),
                 Map.of("role", "user", "content", input)
         ));
         requestBody.put("max_tokens", 150); // 응답 최대 토큰 수
@@ -161,8 +207,10 @@ public class OpenAIService { //사용자 입력 파실 및 처리
     private List<Map<String, Object>> parseResponse(String response) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            JsonNode rootNode = mapper.readTree(response); // 응답을 JSON 트리로 파싱
+            // 응답 정제
+            String sanitizedResponse = sanitizeJson(response);
 
+            JsonNode rootNode = mapper.readTree(sanitizedResponse); // 응답을 JSON 트리로 파싱
             JsonNode choicesNode = rootNode.path("choices"); // OpenAI 응답에서 choices 배열 추출
 
             if (!choicesNode.isArray() || choicesNode.isEmpty()) {
@@ -175,7 +223,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
             log.info("추출된 content: {}", content);
 
             // content가 JSON 배열인지 JSON 객체인지 판별
-            JsonNode contentNode = mapper.readTree(content); // JSON 문자열로부터 트리 노드 생성
+            JsonNode contentNode = mapper.readTree(sanitizeJson(content)); // 정제 후 파싱, JSON 문자열로부터 트리 노드 생성
             if (contentNode.isArray()) {
                 // JSON 배열이면 리스트로 변환
                 return mapper.convertValue(contentNode, new TypeReference<List<Map<String, Object>>>() {});
@@ -196,20 +244,25 @@ public class OpenAIService { //사용자 입력 파실 및 처리
      * 안전하게 Map 데이터에서 값을 가져오는 헬퍼 메서드.
      */
     private String safeGet(Map<String, Object> data, String key, String defaultValue) {
-        return data.containsKey(key) ? (String) data.get(key) : defaultValue;
+        if (!data.containsKey(key)) {
+            return defaultValue;
+        }
+
+        Object value = data.get(key);
+        if (value instanceof String) {
+            return (String) value;
+        } else if (value instanceof Boolean) {
+            return Boolean.toString((Boolean) value);
+        } else if (value instanceof Number) {
+            return String.valueOf(value);
+        }
+
+        return defaultValue; // 처리할 수 없는 타입인 경우 기본값 반환
     }
 
-    /**
-     * 안전하게 Map 데이터에서 LocalDateTime을 파싱하는 헬퍼 메서드.
-     */
-    private LocalDateTime safeParseDateTime(Map<String, Object> data, String key) {
-        String value = safeGet(data, key, null);
-        try {
-            return value != null ? LocalDateTime.parse(value) : null;
-        } catch (Exception e) {
-            log.warn("Invalid date format for key {}: {}", key, value);
-            return null;
-        }
+    private String sanitizeJson(String json) {
+        // 마지막 쉼표 제거 로직
+        return json.replaceAll(",\\s*}", "}").replaceAll(",\\s*]", "]");
     }
 
 
@@ -222,24 +275,28 @@ public class OpenAIService { //사용자 입력 파실 및 처리
     private void handleCalendar(Map<String, Object> data, Long userId) {
         try {
             CalendarRequestDto requestDto = new CalendarRequestDto();
+
             requestDto.setTitle(safeGet(data, "title", "제목 없음"));
             requestDto.setDescription(safeGet(data, "description", "설명이 없습니다."));
+            requestDto.setLocation(safeGet(data, "location", "위치 정보 없음"));
+            requestDto.setRepeatType(safeGet(data, "repeatType", "NONE"));
 
-            LocalDateTime startTime = safeParseDateTime(data, "startTime");
-            LocalDateTime endTime = safeParseDateTime(data, "endTime");
+            // 문자열에서 LocalDateTime으로 변환
+            String startTimeStr = (String) data.get("startTime"); // JSON에서 문자열로 가져오기
+            String endTimeStr = (String) data.get("endTime");
 
-            // 기본 endTime 설정
-            if (endTime == null && startTime != null) {
+            // LocalDateTime 변환
+            LocalDateTime startTime = LocalDateTime.parse(startTimeStr); // 변환
+            LocalDateTime endTime = LocalDateTime.parse(endTimeStr);
+
+            if (endTime == null) {
                 endTime = startTime.plusHours(1); // 기본으로 시작 시간의 1시간 뒤
             }
 
             requestDto.setStartTime(startTime);
             requestDto.setEndTime(endTime);
 
-            requestDto.setLocation(safeGet(data, "location", "위치 정보 없음"));
-            requestDto.setRepeatType(safeGet(data, "repeatType", "NONE"));
-
-            log.info("handleCalendar > CalendarRequestDto: {}", requestDto);
+            log.info("로그, handleCalendar > CalendarRequestDto: {}", requestDto);
 
             calendarService.addCalendar(requestDto, userId);
         } catch (Exception e) {
@@ -253,19 +310,25 @@ public class OpenAIService { //사용자 입력 파실 및 처리
      * 할 일 데이터를 처리하고 저장하는 메서드
      * @param data 파싱된 할 일 데이터
      * @param userId 사용자 고유 ID
-     * @return 처리 결과 메시지
      */
     private void handleTask(Map<String, Object> data, Long userId) {
         try {
             TaskRequestDto requestDto = new TaskRequestDto();
+
+            // 필수 데이터 매핑
             requestDto.setTitle(safeGet(data, "title", "제목 없음"));
-            requestDto.setDueDate(safeParseDateTime(data, "dueDate"));
             requestDto.setPriority(safeGet(data, "priority", "LOW"));
             requestDto.setStatus(safeGet(data, "status", "PENDING"));
             requestDto.setRepeatType(safeGet(data, "repeatType", "NONE"));
 
-            log.info("handleTask > TaskRequestDto: {}", requestDto);
+            // dueDate(LocalDateTime) 파싱
+            String dueDateStr = (String) data.get("dueDate");
+            LocalDateTime dueDate = LocalDateTime.parse(dueDateStr);
+            requestDto.setDueDate(dueDate);
 
+            log.info("로그 , handleTask > TaskRequestDto: {}", requestDto);
+
+            // Task 생성
             taskService.addTask(requestDto, userId);
         } catch (Exception e) {
             log.error("handleTask 처리 중 오류 발생: {}", data, e);
@@ -275,29 +338,251 @@ public class OpenAIService { //사용자 입력 파실 및 처리
 
 
     /**
-     * 알림 데이터를 처리하고 저장하는 메서드
-     * @param data 파싱된 알림 데이터
-     * @param userId 사용자 고유 ID
-     * @return 처리 결과 메시지
+     * 알림 데이터를 처리하는 메서드
      */
     private void handleReminder(Map<String, Object> data, Long userId) {
         try {
-            ReminderRequestDto requestDto = new ReminderRequestDto();
-            requestDto.setNotificationsEnabled(Boolean.parseBoolean(safeGet(data, "notificationsEnabled", "false")));
-            requestDto.setTimeBefore(Integer.parseInt(safeGet(data, "timeBefore", "10")));
-            requestDto.setRepeats(Boolean.parseBoolean(safeGet(data, "repeats", "false")));
+            // Step 1: 사용자에게 선택 가능한 Task와 Calendar 목록 제공
+            List<TaskEntity> tasks = taskService.getTasksByUserId(userId);
+            List<CalendarEntity> calendars = calendarService.getCalendarsByUserId(userId);
 
-            if (data.containsKey("calendarId")) {
-                reminderService.createCalendarReminder(requestDto, Long.parseLong(safeGet(data, "calendarId", "0")));
-            } else if (data.containsKey("taskId")) {
-                reminderService.createTaskReminder(requestDto, Long.parseLong(safeGet(data, "taskId", "0")));
+            // Task와 Calendar를 Map 형식으로 변환
+            List<Map<String, Object>> taskList = tasks.stream()
+                    .map(task -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", task.getTaskId());
+                        map.put("title", task.getTitle());
+                        map.put("dueDate", task.getDueDate());
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+
+            List<Map<String, Object>> calendarList = calendars.stream()
+                    .map(calendar -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", calendar.getCalendarId());
+                        map.put("title", calendar.getTitle());
+                        map.put("startTime", calendar.getStartTime());
+                        map.put("endTime", calendar.getEndTime());
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+
+            log.info("사용자 {}의 Task와 Calendar 리스트 제공: tasks={}, calendars={}", userId, taskList, calendarList);
+
+            // 사용자 선택 처리: 현재는 요청에 이미 `id`와 `type`이 포함되어 있다고 가정
+            String type = safeGet(data, "type", "unknown");
+            Long id = Long.parseLong(safeGet(data, "id", "0"));
+
+            boolean notificationsEnabled = Boolean.parseBoolean(safeGet(data, "notificationsEnabled", "false"));
+            int timeBefore = Integer.parseInt(safeGet(data, "timeBefore", "10"));
+            boolean repeats = Boolean.parseBoolean(safeGet(data, "repeats", "false"));
+
+            // Step 2: 알림 생성
+            ReminderRequestDto reminderRequestDto = new ReminderRequestDto();
+            reminderRequestDto.setNotificationsEnabled(notificationsEnabled);
+            reminderRequestDto.setTimeBefore(timeBefore);
+            reminderRequestDto.setRepeats(repeats);
+
+            if ("task".equalsIgnoreCase(type)) {
+                reminderService.createTaskReminder(reminderRequestDto, id);
+                log.info("Reminder successfully created for Task ID: {}", id);
+            } else if ("calendar".equalsIgnoreCase(type)) {
+                reminderService.createCalendarReminder(reminderRequestDto, id);
+                log.info("Reminder successfully created for Calendar ID: {}", id);
             } else {
-                log.warn("Reminder 처리 중 CalendarId와 TaskId가 없음");
+                throw new IllegalArgumentException("Invalid type: " + type);
             }
+
         } catch (Exception e) {
-            log.error("handleReminder 처리 중 오류 발생: {}", data, e);
-            throw new RuntimeException("알림 처리 중 오류가 발생했습니다.", e);
+            log.error("Error while processing reminder input: {}", data, e);
+            throw new RuntimeException("알림 처리 중 오류가 발생했습니다.");
         }
     }
+    /**
+     * 사용자가 선택한 데이터를 기반으로 알림을 저장
+     * @param reminderInput
+     * @param userId
+     */
+    /*
+    public String processReminderInput(Map<String, Object> reminderInput, Long userId) {
+        log.info("Processing reminder input: {}", reminderInput);
 
+        try {
+            // 입력 값 파싱
+            String type = reminderInput.get("type").toString(); // "task" 또는 "calendar"
+            Long entityId = Long.parseLong(reminderInput.get("id").toString()); // Task 또는 Calendar의 ID
+            boolean notificationsEnabled = Boolean.parseBoolean(reminderInput.get("notificationsEnabled").toString());
+            int timeBefore = Integer.parseInt(reminderInput.get("timeBefore").toString());
+            boolean repeats = Boolean.parseBoolean(reminderInput.get("repeats").toString());
+
+            // ReminderRequestDto 생성
+            ReminderRequestDto reminderRequestDto = new ReminderRequestDto();
+            reminderRequestDto.setNotificationsEnabled(notificationsEnabled);
+            reminderRequestDto.setTimeBefore(timeBefore);
+            reminderRequestDto.setRepeats(repeats);
+
+            // Task 또는 Calendar에 따라 알림 생성
+            if ("task".equalsIgnoreCase(type)) {
+                reminderService.createTaskReminder(reminderRequestDto, entityId);
+                log.info("Reminder created for Task ID: {}", entityId);
+            } else if ("calendar".equalsIgnoreCase(type)) {
+                reminderService.createCalendarReminder(reminderRequestDto, entityId);
+                log.info("Reminder created for Calendar ID: {}", entityId);
+            } else {
+                throw new IllegalArgumentException("Invalid type: " + type);
+            }
+
+            return "알림이 성공적으로 생성되었습니다.";
+        } catch (Exception e) {
+            log.error("Error while processing reminder input: {}", reminderInput, e);
+            throw new RuntimeException("알림 처리 중 오류가 발생했습니다.");
+        }
+    }*/
+
+    /**
+     * 알림 데이터를 처리하고 저장하는 메서드
+     * handleReminderCreation , getTaskAndCalendarSelectionList , mapUserSelectionToId 메서드 통합 플로우
+     * @param reminderData
+     * @param userId
+     */
+    /*public void processReminderRequest(Map<String, Object> reminderData, Long userId) {
+        log.info("Received reminder data: {}", reminderData);
+
+        // Step 1: 알림 데이터 매핑
+        ReminderRequestDto requestDto = new ReminderRequestDto();
+        requestDto.setNotificationsEnabled(Boolean.parseBoolean(safeGet(reminderData, "notificationsEnabled", "false")));
+        requestDto.setTimeBefore(Integer.parseInt(safeGet(reminderData, "timeBefore", "10")));
+        requestDto.setRepeats(Boolean.parseBoolean(safeGet(reminderData, "repeats", "false")));
+
+        // Step 2: Task 또는 Calendar 선택 처리
+        if (reminderData.containsKey("taskId")) {
+            Long taskId = Long.parseLong(safeGet(reminderData, "taskId", "0"));
+            reminderService.createTaskReminder(requestDto, taskId);
+            log.info("Reminder successfully created for Task ID: {}", taskId);
+        } else if (reminderData.containsKey("calendarId")) {
+            Long calendarId = Long.parseLong(safeGet(reminderData, "calendarId", "0"));
+            reminderService.createCalendarReminder(requestDto, calendarId);
+            log.info("Reminder successfully created for Calendar ID: {}", calendarId);
+        } else {
+            // 사용자 선택이 필요할 때
+            Map<String, List<String>> selectionMap = getTaskAndCalendarSelectionList(userId);
+            log.info("Available tasks and calendars for user {}: {}", userId, selectionMap);
+
+            // 사용자로부터 입력받는 로직 (현재 하드코딩)
+            log.info("Please select a task or calendar from the following list:");
+            log.info("Tasks:");
+            for (String task : selectionMap.get("tasks")) {
+                log.info(task);
+            }
+            log.info("Calendars:");
+            for (String calendar : selectionMap.get("calendars")) {
+                log.info(calendar);
+            }
+            String userSelection = "T1"; // 예: "T1"은 Task 1, "C1"은 Calendar 1
+
+            handleReminderCreation(userSelection, reminderData, userId);
+        }
+    }*/
+
+    /**
+     * Task와 Calendar에 따라 각각 알림을 생성
+     * @param userSelection
+     * @param reminderData
+     * @param userId
+     */
+    /*public void handleReminderCreation(String userSelection, Map<String, Object> reminderData, Long userId) {
+        if (userSelection.startsWith("T")) {
+            // Task에 대한 알림 생성
+            Long taskId = mapUserSelectionToId(userSelection, userId, "task");
+            ReminderRequestDto requestDto = new ReminderRequestDto();
+            requestDto.setNotificationsEnabled(Boolean.parseBoolean(safeGet(reminderData, "notificationsEnabled", "false")));
+            requestDto.setTimeBefore(Integer.parseInt(safeGet(reminderData, "timeBefore", "10")));
+            requestDto.setRepeats(Boolean.parseBoolean(safeGet(reminderData, "repeats", "false")));
+            reminderService.createTaskReminder(requestDto, taskId);
+            log.info("Reminder successfully created for Task ID: {}", taskId);
+        } else if (userSelection.startsWith("C")) {
+            // Calendar에 대한 알림 생성
+            Long calendarId = mapUserSelectionToId(userSelection, userId, "calendar");
+            ReminderRequestDto requestDto = new ReminderRequestDto();
+            requestDto.setNotificationsEnabled(Boolean.parseBoolean(safeGet(reminderData, "notificationsEnabled", "false")));
+            requestDto.setTimeBefore(Integer.parseInt(safeGet(reminderData, "timeBefore", "10")));
+            requestDto.setRepeats(Boolean.parseBoolean(safeGet(reminderData, "repeats", "false")));
+            reminderService.createCalendarReminder(requestDto, calendarId);
+            log.info("Reminder successfully created for Calendar ID: {}", calendarId);
+        } else {
+            throw new RuntimeException("알림 생성 중 오류 발생: 잘못된 선택입니다.");
+        }
+    }*/
+
+
+    /**
+     * Task와 Calendar 목록 제공
+     * Task와 Calendar 목록을 함께 제공하여 사용자가 둘 중 하나를 선택할 수 있도록 구성
+     */
+    /*public Map<String, List<String>> getTaskAndCalendarSelectionList(Long userId) {
+        // Task 목록 가져오기
+        List<TaskEntity> tasks = taskService.getTasksByUserId(userId);
+        List<String> taskSelection = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            TaskEntity task = tasks.get(i);
+            taskSelection.add(String.format("T%d. [%d] %s (마감: %s)",
+                    i + 1,
+                    task.getTaskId(),
+                    task.getTitle(),
+                    task.getDueDate() != null ? task.getDueDate().toString() : "없음"));
+        }
+
+        // Calendar 목록 가져오기
+        List<CalendarEntity> calendars = calendarService.getCalendarsByUserId(userId);
+        List<String> calendarSelection = new ArrayList<>();
+        for (int i = 0; i < calendars.size(); i++) {
+            CalendarEntity calendar = calendars.get(i);
+            calendarSelection.add(String.format("C%d. [%d] %s (시작: %s, 끝: %s)",
+                    i + 1,
+                    calendar.getCalendarId(),
+                    calendar.getTitle(),
+                    calendar.getStartTime() != null ? calendar.getStartTime().toString() : "없음",
+                    calendar.getEndTime() != null ? calendar.getEndTime().toString() : "없음"));
+        }
+
+        // 두 목록을 Map에 담아 반환
+        Map<String, List<String>> selectionMap = new HashMap<>();
+        selectionMap.put("tasks", taskSelection);
+        selectionMap.put("calendars", calendarSelection);
+        return selectionMap;
+    }*/
+
+    /**
+     * @param userSelection
+     * @param userId
+     * @param type
+     * Task와 Calendar 중 하나를 선택하면 이를 처리하여 taskId 또는 calendarId를 반환
+     */
+    /*public Long mapUserSelectionToId(String userSelection, Long userId, String type) {
+        try {
+            int selectionIndex = Integer.parseInt(userSelection.substring(1).trim()) - 1; // "T1" -> 0
+            if (userSelection.startsWith("T")) {
+                // Task 선택
+                List<TaskEntity> tasks = taskService.getTasksByUserId(userId);
+                if (selectionIndex < 0 || selectionIndex >= tasks.size()) {
+                    throw new RuntimeException("잘못된 Task 선택입니다. 올바른 번호를 입력하세요.");
+                }
+                return tasks.get(selectionIndex).getTaskId();
+            } else if (userSelection.startsWith("C")) {
+                // Calendar 선택
+                List<CalendarEntity> calendars = calendarService.getCalendarsByUserId(userId);
+                if (selectionIndex < 0 || selectionIndex >= calendars.size()) {
+                    throw new RuntimeException("잘못된 Calendar 선택입니다. 올바른 번호를 입력하세요.");
+                }
+                return calendars.get(selectionIndex).getCalendarId();
+            } else {
+                throw new RuntimeException("잘못된 입력 형식입니다. 'T1' 또는 'C1'과 같은 형식으로 입력하세요.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("입력 처리 중 오류가 발생했습니다. 올바른 입력을 확인하세요.", e);
+        }
+    }*/
 }
+
+//https://chatgpt.com/g/g-9Jg16ED8o-gaebal/c/6742ffab-78a4-800d-a197-60b0b438bb81

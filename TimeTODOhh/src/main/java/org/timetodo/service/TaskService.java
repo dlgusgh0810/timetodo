@@ -37,6 +37,19 @@ public class TaskService{
         task.setDueDate(taskRequestDto.getDueDate()); //마감기한
         task.setPriority(taskRequestDto.getPriority()); //우선순위
         task.setStatus(taskRequestDto.getStatus()); // 진행상태
+        switch (taskRequestDto.getStatus()){
+            case "PENDING":
+                //보류 중, 진행 중, 완료
+                break;
+            case "IN_PROGRESS":
+                //진행중
+                break;
+            case "DONE" :
+                //완료
+                break;
+            default:
+                throw new IllegalArgumentException("오류 Invalid Status type: " + taskRequestDto.getStatus());
+        }
         task.setRepeatType(taskRequestDto.getRepeatType()); //반복일정 여부
         switch (taskRequestDto.getRepeatType()) {
             case "NONE":
