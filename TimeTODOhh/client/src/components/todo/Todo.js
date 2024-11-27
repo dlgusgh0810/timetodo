@@ -65,7 +65,6 @@ function Todo() {
                 isOpen={showModal}
                 onRequestClose={() => setShowModal(false)}
                 onSave={addTodo}
-                defaultTab="할 일" // 기본 탭 설정
             />
         </div>
     );

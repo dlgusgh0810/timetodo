@@ -1,104 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import Modal from 'react-modal';
-import AddLabelModal from './AddLabelModal';
-import CustomDropdown from './CustomDropdown';
-import ReactDatePicker from 'react-datepicker'; // 시간 선택 추가
-import 'react-datepicker/dist/react-datepicker.css'; // 시간 선택 스타일 추가
-import { FaTimes, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from 'react-icons/fa'; // 아이콘 추가
-import styles from './AddModal.module.css';
+import React, { useState, useEffect } from "react";
+import Modal from "react-modal";
+import AddLabelModal from "./AddLabelModal";
+import CustomDropdown from "./CustomDropdown";
+import axios from "axios";
+import { FaTimes, FaCalendarAlt, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from "react-icons/fa"; // 아이콘 추가
+import styles from "./AddModal.module.css";
 
 Modal.setAppElement("#root");
 
-
-function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) {
-    const [activeTab, setActiveTab] = useState(defaultTab || '일정');
-    const [title, setTitle] = useState('');
-    const [startDate, setStartDate] = useState(new Date()); // 시작 시간 상태
-    const [endDate, setEndDate] = useState(new Date()); // 종료 시간 상태
-    const [deadline, setDeadline] = useState(new Date()); // 마감 기한 상태
-    const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
-    const [priority, setPriority] = useState('우선순위 없음');
-    const [repeat, setRepeat] = useState('반복 없음');
-    const [reminder, setReminder] = useState('30분 전');
-    const [description, setDescription] = useState('');
-    const [labelOptions, setLabelOptions] = useState([
-        { name: '라벨 없음', color: '#808080' },
-        { name: '첫번째 라벨', color: '#FF6347' },
-    ]);
+function AddModal({ isOpen, onRequestClose, onSave }) {
+    const [activeTab, setActiveTab] = useState("일정");
+    const [title, setTitle] = useState("");
+    const [date, setDate] = useState("");
+    const [selectedLabel, setSelectedLabel] = useState("라벨 없음");
+    const [priority, setPriority] = useState("우선순위 없음");
+    const [repeat, setRepeat] = useState("반복 없음");
+    const [reminder, setReminder] = useState("30분 전");
+    const [description, setDescription] = useState("");
+    const [labelOptions, setLabelOptions] = useState([{ name: "일반", color: "#808080" }]);
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
 
+    // 라벨 데이터 불러오기
     useEffect(() => {
         if (isOpen) {
-            setActiveTab(defaultTab || '일정');
-            setStartDate(selectedDate ? new Date(selectedDate) : new Date());
-            setEndDate(new Date());
-            setDeadline(new Date());
+            const fetchLabels = async () => {
+                try {
+                    const response = await axios.get("/api/categories/all");
+                    const categories = response.data || []; // 응답이 없으면 빈 배열 처리
+                    const formattedCategories = categories.map((category) => ({
+                        name: category.categoryName, // 서버 데이터의 필드 이름 확인
+                        color: category.color,
+                    }));
+                    setLabelOptions(formattedCategories); // 서버에서 가져온 라벨만 상태로 설정
+                } catch (error) {
+                    console.error("라벨 불러오기 실패:", error);
+                }
+            };
+            fetchLabels();
         }
-    }, [isOpen, selectedDate, defaultTab]);
-// =======
-// function AddModal({ isOpen, onRequestClose, onSave }) {
-//     const [activeTab, setActiveTab] = useState("일정");
-//     const [title, setTitle] = useState("");
-//     const [date, setDate] = useState("");
-//     const [selectedLabel, setSelectedLabel] = useState("라벨 없음");
-//     const [priority, setPriority] = useState("우선순위 없음");
-//     const [repeat, setRepeat] = useState("반복 없음");
-//     const [reminder, setReminder] = useState("30분 전");
-//     const [description, setDescription] = useState("");
-//     const [labelOptions, setLabelOptions] = useState([{ name: "일반", color: "#808080" }]);
-//     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
-
-//     // 라벨 데이터 불러오기
-//     useEffect(() => {
-//         if (isOpen) {
-//             const fetchLabels = async () => {
-//                 try {
-//                     const response = await axios.get("/api/categories/all");
-//                     const categories = response.data || []; // 응답이 없으면 빈 배열 처리
-//                     const formattedCategories = categories.map((category) => ({
-//                         name: category.categoryName, // 서버 데이터의 필드 이름 확인
-//                         color: category.color,
-//                     }));
-//                     setLabelOptions(formattedCategories); // 서버에서 가져온 라벨만 상태로 설정
-//                 } catch (error) {
-//                     console.error("라벨 불러오기 실패:", error);
-//                 }
-//             };
-//             fetchLabels();
-//         }
-//     }, [isOpen]);
+    }, [isOpen]);
 
 
 
-//     const handleAddLabel = async (newLabel) => {
-//         try {
-//             if (!newLabel.name || !newLabel.color) {
-//                 alert("라벨 이름과 색상을 입력해주세요.");
-//                 return;
-//             }
+    const handleAddLabel = async (newLabel) => {
+        try {
+            if (!newLabel.name || !newLabel.color) {
+                alert("라벨 이름과 색상을 입력해주세요.");
+                return;
+            }
 
-//             const duplicate = labelOptions.some((label) => label.name === newLabel.name);
-//             if (duplicate) {
-//                 alert("이미 존재하는 라벨입니다.");
-//                 return;
-//             }
+            const duplicate = labelOptions.some((label) => label.name === newLabel.name);
+            if (duplicate) {
+                alert("이미 존재하는 라벨입니다.");
+                return;
+            }
 
-//             await axios.post("/api/categories/add", {
-//                 categoryName: newLabel.name, // 서버 DTO에 맞게 변경
-//                 color: newLabel.color,
-//             });
+            await axios.post("/api/categories/add", {
+                categoryName: newLabel.name, // 서버 DTO에 맞게 변경
+                color: newLabel.color,
+            });
 
-//             setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
-//             setIsLabelModalOpen(false); // 모달 닫기
-//         } catch (error) {
-//             console.error("라벨 추가 실패:", error);
-//             alert("라벨 추가에 실패했습니다.");
-//         }
-//     };
+            setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
+            setIsLabelModalOpen(false); // 모달 닫기
+        } catch (error) {
+            console.error("라벨 추가 실패:", error);
+            alert("라벨 추가에 실패했습니다.");
+        }
+    };
 
 
 
-// >>>>>>> main
 
     const handleSave = () => {
         if (title.trim() === "") {
@@ -108,10 +79,8 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
 
         const newTodo = {
             title,
-            start: activeTab === '일정' ? startDate.toISOString() : undefined,
-            end: activeTab === '일정' ? endDate.toISOString() : undefined,
-            deadline: activeTab === '할 일' ? deadline.toISOString() : undefined,
-            label: selectedLabel,
+            date,
+            label: selectedLabel, // 선택된 라벨 이름만 저장
             priority,
             repeat,
             reminder: activeTab === "일정" ? reminder : undefined,
@@ -124,21 +93,13 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
     };
 
     const resetForm = () => {
-        setTitle('');
-        setStartDate(new Date());
-        setEndDate(new Date());
-        setDeadline(new Date());
-        setSelectedLabel('라벨 없음');
-        setPriority('우선순위 없음');
-        setDescription('');
-        setRepeat('반복 없음');
-        setReminder('30분 전');
-    };
-
-    const handleAddLabel = (newLabel) => {
-        setLabelOptions((prevOptions) => [...prevOptions, newLabel]);
-        setIsLabelModalOpen(false);
-
+        setTitle("");
+        setDate("");
+        setSelectedLabel("라벨 없음");
+        setPriority("우선순위 없음");
+        setDescription("");
+        setRepeat("반복 없음");
+        setReminder("30분 전");
     };
 
     return (
@@ -178,44 +139,15 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                         </button>
                     </div>
 
-                    {activeTab === '일정' && (
-                        <>
-                            <label className={styles.label}>
-                                시작 시간
-                                <ReactDatePicker
-                                    selected={startDate}
-                                    onChange={(date) => setStartDate(date)}
-                                    showTimeSelect
-                                    dateFormat="yyyy-MM-dd h:mm aa"
-                                    className={styles.datePicker}
-                                />
-                            </label>
-
-                            <label className={styles.label}>
-                                종료 시간
-                                <ReactDatePicker
-                                    selected={endDate}
-                                    onChange={(date) => setEndDate(date)}
-                                    showTimeSelect
-                                    dateFormat="yyyy-MM-dd h:mm aa"
-                                    className={styles.datePicker}
-                                />
-                            </label>
-                        </>
-                    )}
-
-                    {activeTab === '할 일' && (
-                        <label className={styles.label}>
-                            마감 기한
-                            <ReactDatePicker
-                                selected={deadline}
-                                onChange={(date) => setDeadline(date)}
-                                showTimeSelect
-                                dateFormat="yyyy-MM-dd h:mm aa"
-                                className={styles.datePicker}
-                            />
-                        </label>
-                    )}
+                    <label className={styles.label}>
+                        <FaCalendarAlt className={styles.icon} />
+                        <input
+                            type="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            className={styles.input}
+                        />
+                    </label>
 
                     {activeTab === "일정" && (
                         <label className={styles.label}>

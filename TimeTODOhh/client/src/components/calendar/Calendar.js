@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import {useEffect} from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,77 +6,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
 import styles from './Calendar.module.css';
 
-function Calendar() {
+function Calendar({ events }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
-    const calendarRef = useRef(null);
-    const [events, setEvents] = useState([
-        // {
-        //     // calendarId;        // 일정 ID
-        //     // title;           // 일정 제목
-        //     // escription;     // 일정 설명
-        //     // startTime; // 일정 시작 시간
-        //     // endTime;   // 일정 종료 시간
-        //     // private String location;        // 일정 장소
-        //     // private String repeatType;      // 반복 일정 유형 (예: daily, weekly)
-        //     // private Long userId;            // 사용자 ID (UserEntity와의 관계를 ID로 표현)
-        //     // private Long categoryId;        // 카테고리 ID (CategoryEntity와의 관계를 ID로 표현)
-        //     //
-        //     // private List<Long> reminderIds; /
-        //
-        //
-        //
-        // }
-        {
-            id: 1,
-            title: '팀 미팅',
-            start: '2024-11-30T10:00:00',
-            end: '2024-11-30T12:00:00',
-            description: '프로젝트 논의를 위한 팀 미팅',
-            location: '회의실 A',
-        },
-        {
-            id: 2,
-            title: '코드 리뷰',
-            start: '2024-12-01T15:00:00',
-            end: '2024-12-01T16:30:00',
-            description: '동료와 코드 리뷰 세션',
-            location: '회의실 B',
-        },
-        {
-            id: 3,
-            title: '데드라인 제출',
-            start: '2024-12-02T00:00:00',
-            end: '2024-12-03T00:00:00',
-            description: '프로젝트 최종 결과물 제출',
-            location: '온라인 제출',
-        }
-    ]);
-
-    useEffect(() => {
-        fetchEvents(); // 컴포넌트 로드 시 일정 데이터를 불러옴
-    }, []);
-
-    const fetchEvents = async () => {
-        try {
-            const response = await fetch('http://localhost:8085/api/calendar/find');
-            if (!response.ok) {
-                throw new Error('Failed to fetch events');
-            }
-            const data = await response.json(); // CalendarDTO 형식 데이터
-            const fullCalendarEvents = data.map((event) => ({
-                id: event.calendarId,
-                title: event.title,
-                start: event.startTime,
-                end: event.endTime,
-                description: event.description,
-                location: event.location,
-            }));
-            setEvents(fullCalendarEvents);
-        } catch (error) {
-            console.error('Error fetching events:', error);
-        }
-    };
+    const calendarRef = useRef(null); // FullCalendar의 ref 생성
 
     // 날짜 클릭 이벤트
     const handleDateClick = (arg) => {
@@ -161,8 +93,7 @@ function Calendar() {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 onSave={handleSave}  // 추가된 onSave prop
-                selectedDate={selectedDate} // 선택된 날짜 전달
-                defaultTab="일정" // 기본 탭 전달
+                selectedDate={selectedDate}
             />
         </div>
     );
