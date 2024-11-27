@@ -77,7 +77,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                 overlayClassName={styles.eventModalOverlay}
             >
                 <div className={styles.modalHeader}>
-                    <FaTimes className={styles.closeIcon} onClick={onRequestClose} />
+                    <FaTimes className={styles.closeIcon} onClick={onRequestClose}/>
                 </div>
 
                 <form className={styles.form}>
@@ -107,7 +107,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     </div>
 
                     <label className={styles.label}>
-                        <FaCalendarAlt className={styles.icon} />
+                        <FaCalendarAlt className={styles.icon}/>
                         <input
                             type="date"
                             value={date}
@@ -118,7 +118,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
 
                     {activeTab === '일정' && (
                         <label className={styles.label}>
-                            <FaBell className={styles.icon} />
+                            <FaBell className={styles.icon}/>
                             <select
                                 className={styles.select}
                                 value={reminder}
@@ -145,7 +145,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     {/*나중에 주석예정*/}
 
                     <label className={styles.label}>
-                        <FaExclamationCircle className={styles.icon} />
+                        <FaExclamationCircle className={styles.icon}/>
                         <select
                             className={styles.select}
                             value={priority}
@@ -158,7 +158,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     </label>
 
                     <label className={styles.label}>
-                        <FaClipboardList className={styles.icon} />
+                        <FaClipboardList className={styles.icon}/>
                         <textarea
                             className={styles.textarea}
                             value={description}
@@ -168,7 +168,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     </label>
 
                     <label className={styles.label}>
-                        <FaSyncAlt className={styles.icon} />
+                        <FaSyncAlt className={styles.icon}/>
                         <select
                             className={styles.select}
                             value={repeat}
