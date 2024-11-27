@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import AddLabelModal from "./AddLabelModal";
 import CustomDropdown from "./CustomDropdown";
 import axios from "axios";
-import { FaTimes, FaCalendarAlt, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from "react-icons/fa";
+import { FaTimes, FaCalendarAlt, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from "react-icons/fa"; // 아이콘 추가
 import styles from "./AddModal.module.css";
 
 Modal.setAppElement("#root");
@@ -26,12 +26,12 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
             const fetchLabels = async () => {
                 try {
                     const response = await axios.get("/api/categories/all");
-                    const categories = response.data || [];
+                    const categories = response.data || []; // 응답이 없으면 빈 배열 처리
                     const formattedCategories = categories.map((category) => ({
-                        name: category.categoryName,
+                        name: category.categoryName, // 서버 데이터의 필드 이름 확인
                         color: category.color,
                     }));
-                    setLabelOptions(formattedCategories);
+                    setLabelOptions(formattedCategories); // 서버에서 가져온 라벨만 상태로 설정
                 } catch (error) {
                     console.error("라벨 불러오기 실패:", error);
                 }
@@ -39,6 +39,8 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
             fetchLabels();
         }
     }, [isOpen]);
+
+
 
     const handleAddLabel = async (newLabel) => {
         try {
@@ -54,44 +56,40 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
             }
 
             await axios.post("/api/categories/add", {
-                categoryName: newLabel.name,
+                categoryName: newLabel.name, // 서버 DTO에 맞게 변경
                 color: newLabel.color,
             });
 
-            setLabelOptions((prevOptions) => [...prevOptions, newLabel]);
-            setIsLabelModalOpen(false);
+            setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
+            setIsLabelModalOpen(false); // 모달 닫기
         } catch (error) {
             console.error("라벨 추가 실패:", error);
             alert("라벨 추가에 실패했습니다.");
         }
     };
 
-    const handleSave = async () => {
+
+
+
+    const handleSave = () => {
         if (title.trim() === "") {
             alert("제목을 입력하세요.");
             return;
         }
 
-        const newTask = {
+        const newTodo = {
             title,
-            dueDate: date,
+            date,
+            label: selectedLabel, // 선택된 라벨 이름만 저장
             priority,
-            status: "미완료", // 기본 상태를 진행 중으로 설정
-            repeatType: repeat,
+            repeat,
+            reminder: activeTab === "일정" ? reminder : undefined,
+            description,
         };
 
-        try {
-            const response = await axios.post("/api/task/add", newTask);
-            console.log("서버 응답:", response.data); // 응답 데이터 로그 출력
-            alert("Task가 성공적으로 생성되었습니다!");
-            onSave(newTask);
-            resetForm();
-            onRequestClose();
-        } catch (error) {
-            console.error("Task 생성 실패:", error);
-            alert("Task 생성에 실패했습니다.");
-        }
-
+        onSave(newTodo);
+        resetForm();
+        onRequestClose();
     };
 
     const resetForm = () => {
