@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import {useEffect} from "react";
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import AddLabelModal from './AddLabelModal';
 import CustomDropdown from './CustomDropdown';
-import { FaTimes, FaCalendarAlt, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from 'react-icons/fa'; // 아이콘 추가
+import ReactDatePicker from 'react-datepicker'; // 시간 선택 추가
+import 'react-datepicker/dist/react-datepicker.css'; // 시간 선택 스타일 추가
+import { FaTimes, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from 'react-icons/fa'; // 아이콘 추가
 import styles from './AddModal.module.css';
-Modal.setAppElement('#root');
 
+Modal.setAppElement('#root');
 
 function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) {
     const [activeTab, setActiveTab] = useState(defaultTab || '일정');
     const [title, setTitle] = useState('');
-    const [date, setDate] = useState(selectedDate || '');
+    const [startDate, setStartDate] = useState(new Date()); // 시작 시간 상태
+    const [endDate, setEndDate] = useState(new Date()); // 종료 시간 상태
     const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
     const [priority, setPriority] = useState('우선순위 없음');
     const [repeat, setRepeat] = useState('반복 없음');
@@ -25,9 +27,9 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
 
     useEffect(() => {
         if (isOpen) {
-            // 모달 열릴 때 기본 값 설정
             setActiveTab(defaultTab || '일정');
-            setDate(selectedDate || '');
+            setStartDate(selectedDate ? new Date(selectedDate) : new Date());
+            setEndDate(new Date());
         }
     }, [isOpen, selectedDate, defaultTab]);
 
@@ -39,8 +41,9 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
 
         const newTodo = {
             title,
-            date,
-            label: selectedLabel, // 선택된 라벨 이름만 저장
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+            label: selectedLabel,
             priority,
             repeat,
             reminder: activeTab === '일정' ? reminder : undefined,
@@ -53,20 +56,20 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
     };
 
     const resetForm = () => {
-        setTitle('');//제목
-        setDate('');//날짜
-        setSelectedLabel('라벨 없음');//라벨(카테고리)
-        setPriority('우선순위 없음');//우선순위
-        setDescription('');//설명
-        setRepeat('반복 없음');//반복
-        setReminder('30분 전');//알림
+        setTitle('');
+        setStartDate(new Date());
+        setEndDate(new Date());
+        setSelectedLabel('라벨 없음');
+        setPriority('우선순위 없음');
+        setDescription('');
+        setRepeat('반복 없음');
+        setReminder('30분 전');
     };
 
     const handleAddLabel = (newLabel) => {
-        setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
-        setIsLabelModalOpen(false); // 모달 닫기
+        setLabelOptions((prevOptions) => [...prevOptions, newLabel]);
+        setIsLabelModalOpen(false);
     };
-    // Gpt는 handleAddLabel을 지웠음
 
     return (
         <>
@@ -77,11 +80,10 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                 overlayClassName={styles.eventModalOverlay}
             >
                 <div className={styles.modalHeader}>
-                    <FaTimes className={styles.closeIcon} onClick={onRequestClose}/>
+                    <FaTimes className={styles.closeIcon} onClick={onRequestClose} />
                 </div>
 
                 <form className={styles.form}>
-                    {/*<label>제목</label>*/}
                     <input
                         type="text"
                         value={title}
@@ -106,19 +108,32 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                         </button>
                     </div>
 
+                    {/* 시작 시간과 종료 시간 선택 */}
                     <label className={styles.label}>
-                        <FaCalendarAlt className={styles.icon}/>
-                        <input
-                            type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            className={styles.input}
+                        시작 시간
+                        <ReactDatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            showTimeSelect
+                            dateFormat="yyyy-MM-dd h:mm aa"
+                            className={styles.datePicker}
+                        />
+                    </label>
+
+                    <label className={styles.label}>
+                        종료 시간
+                        <ReactDatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            showTimeSelect
+                            dateFormat="yyyy-MM-dd h:mm aa"
+                            className={styles.datePicker}
                         />
                     </label>
 
                     {activeTab === '일정' && (
                         <label className={styles.label}>
-                            <FaBell className={styles.icon}/>
+                            <FaBell className={styles.icon} />
                             <select
                                 className={styles.select}
                                 value={reminder}
@@ -142,10 +157,9 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     <div className={styles.selectedLabelDisplay}>
                         선택된 라벨: {selectedLabel}
                     </div>
-                    {/*나중에 주석예정*/}
 
                     <label className={styles.label}>
-                        <FaExclamationCircle className={styles.icon}/>
+                        <FaExclamationCircle className={styles.icon} />
                         <select
                             className={styles.select}
                             value={priority}
@@ -158,7 +172,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     </label>
 
                     <label className={styles.label}>
-                        <FaClipboardList className={styles.icon}/>
+                        <FaClipboardList className={styles.icon} />
                         <textarea
                             className={styles.textarea}
                             value={description}
@@ -168,7 +182,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     </label>
 
                     <label className={styles.label}>
-                        <FaSyncAlt className={styles.icon}/>
+                        <FaSyncAlt className={styles.icon} />
                         <select
                             className={styles.select}
                             value={repeat}
@@ -184,7 +198,6 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                     <button type="button" onClick={handleSave} className={styles.saveButton}>
                         저장
                     </button>
-
                 </form>
             </Modal>
 
@@ -193,13 +206,6 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                 onRequestClose={() => setIsLabelModalOpen(false)}
                 onSave={handleAddLabel}
             />
-            {/*<AddLabelModal*/}
-            {/*    isOpen={isLabelModalOpen}*/}
-            {/*    onRequestClose={() => setIsLabelModalOpen(false)}*/}
-            {/*    onSave={(newLabel) => {*/}
-            {/*        setLabelOptions((prev) => [...prev, newLabel]);*/}
-            {/*    }}*/}
-            {/*/>*/}
         </>
     );
 }
