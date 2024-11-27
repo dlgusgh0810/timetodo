@@ -4,7 +4,6 @@ import AddLabelModal from './AddLabelModal';
 import CustomDropdown from './CustomDropdown';
 import { FaTimes, FaCalendarAlt, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from 'react-icons/fa'; // 아이콘 추가
 import styles from './AddModal.module.css';
-
 Modal.setAppElement('#root');
 
 function AddModal({ isOpen, onRequestClose, onSave }) {
@@ -44,13 +43,13 @@ function AddModal({ isOpen, onRequestClose, onSave }) {
     };
 
     const resetForm = () => {
-        setTitle('');
-        setDate('');
-        setSelectedLabel('라벨 없음');
-        setPriority('우선순위 없음');
-        setDescription('');
-        setRepeat('반복 없음');
-        setReminder('30분 전');
+        setTitle('');//제목
+        setDate('');//날짜
+        setSelectedLabel('라벨 없음');//라벨(카테고리)
+        setPriority('우선순위 없음');//우선순위
+        setDescription('');//설명
+        setRepeat('반복 없음');//반복
+        setReminder('30분 전');//알림
     };
 
     const handleAddLabel = (newLabel) => {
