@@ -14,6 +14,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
     const [title, setTitle] = useState('');
     const [startDate, setStartDate] = useState(new Date()); // 시작 시간 상태
     const [endDate, setEndDate] = useState(new Date()); // 종료 시간 상태
+    const [deadline, setDeadline] = useState(new Date()); // 마감 기한 상태
     const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
     const [priority, setPriority] = useState('우선순위 없음');
     const [repeat, setRepeat] = useState('반복 없음');
@@ -30,6 +31,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
             setActiveTab(defaultTab || '일정');
             setStartDate(selectedDate ? new Date(selectedDate) : new Date());
             setEndDate(new Date());
+            setDeadline(new Date());
         }
     }, [isOpen, selectedDate, defaultTab]);
 
@@ -41,8 +43,9 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
 
         const newTodo = {
             title,
-            start: startDate.toISOString(),
-            end: endDate.toISOString(),
+            start: activeTab === '일정' ? startDate.toISOString() : undefined,
+            end: activeTab === '일정' ? endDate.toISOString() : undefined,
+            deadline: activeTab === '할 일' ? deadline.toISOString() : undefined,
             label: selectedLabel,
             priority,
             repeat,
@@ -59,6 +62,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
         setTitle('');
         setStartDate(new Date());
         setEndDate(new Date());
+        setDeadline(new Date());
         setSelectedLabel('라벨 없음');
         setPriority('우선순위 없음');
         setDescription('');
@@ -108,28 +112,44 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
                         </button>
                     </div>
 
-                    {/* 시작 시간과 종료 시간 선택 */}
-                    <label className={styles.label}>
-                        시작 시간
-                        <ReactDatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            showTimeSelect
-                            dateFormat="yyyy-MM-dd h:mm aa"
-                            className={styles.datePicker}
-                        />
-                    </label>
+                    {activeTab === '일정' && (
+                        <>
+                            <label className={styles.label}>
+                                시작 시간
+                                <ReactDatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    showTimeSelect
+                                    dateFormat="yyyy-MM-dd h:mm aa"
+                                    className={styles.datePicker}
+                                />
+                            </label>
 
-                    <label className={styles.label}>
-                        종료 시간
-                        <ReactDatePicker
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            showTimeSelect
-                            dateFormat="yyyy-MM-dd h:mm aa"
-                            className={styles.datePicker}
-                        />
-                    </label>
+                            <label className={styles.label}>
+                                종료 시간
+                                <ReactDatePicker
+                                    selected={endDate}
+                                    onChange={(date) => setEndDate(date)}
+                                    showTimeSelect
+                                    dateFormat="yyyy-MM-dd h:mm aa"
+                                    className={styles.datePicker}
+                                />
+                            </label>
+                        </>
+                    )}
+
+                    {activeTab === '할 일' && (
+                        <label className={styles.label}>
+                            마감 기한
+                            <ReactDatePicker
+                                selected={deadline}
+                                onChange={(date) => setDeadline(date)}
+                                showTimeSelect
+                                dateFormat="yyyy-MM-dd h:mm aa"
+                                className={styles.datePicker}
+                            />
+                        </label>
+                    )}
 
                     {activeTab === '일정' && (
                         <label className={styles.label}>

@@ -12,21 +12,45 @@ function Calendar() {
     const [selectedDate, setSelectedDate] = useState('');
     const calendarRef = useRef(null);
     const [events, setEvents] = useState([
+        // {
+        //     // calendarId;        // 일정 ID
+        //     // title;           // 일정 제목
+        //     // escription;     // 일정 설명
+        //     // startTime; // 일정 시작 시간
+        //     // endTime;   // 일정 종료 시간
+        //     // private String location;        // 일정 장소
+        //     // private String repeatType;      // 반복 일정 유형 (예: daily, weekly)
+        //     // private Long userId;            // 사용자 ID (UserEntity와의 관계를 ID로 표현)
+        //     // private Long categoryId;        // 카테고리 ID (CategoryEntity와의 관계를 ID로 표현)
+        //     //
+        //     // private List<Long> reminderIds; /
+        //
+        //
+        //
+        // }
         {
-            // calendarId;        // 일정 ID
-            // title;           // 일정 제목
-            // escription;     // 일정 설명
-            // startTime; // 일정 시작 시간
-            // endTime;   // 일정 종료 시간
-            // private String location;        // 일정 장소
-            // private String repeatType;      // 반복 일정 유형 (예: daily, weekly)
-            // private Long userId;            // 사용자 ID (UserEntity와의 관계를 ID로 표현)
-            // private Long categoryId;        // 카테고리 ID (CategoryEntity와의 관계를 ID로 표현)
-            //
-            // private List<Long> reminderIds; /
-
-
-
+            id: 1,
+            title: '팀 미팅',
+            start: '2024-11-30T10:00:00',
+            end: '2024-11-30T12:00:00',
+            description: '프로젝트 논의를 위한 팀 미팅',
+            location: '회의실 A',
+        },
+        {
+            id: 2,
+            title: '코드 리뷰',
+            start: '2024-12-01T15:00:00',
+            end: '2024-12-01T16:30:00',
+            description: '동료와 코드 리뷰 세션',
+            location: '회의실 B',
+        },
+        {
+            id: 3,
+            title: '데드라인 제출',
+            start: '2024-12-02T00:00:00',
+            end: '2024-12-03T00:00:00',
+            description: '프로젝트 최종 결과물 제출',
+            location: '온라인 제출',
         }
     ]);
 
