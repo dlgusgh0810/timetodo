@@ -3,6 +3,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -17,20 +18,15 @@ import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.dto.ReminderRequestDto;
 import org.timetodo.dto.TaskRequestDto;
 import org.timetodo.entity.CalendarEntity;
-import org.timetodo.entity.CategoryEntity;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.service.CalendarService;
 import org.timetodo.service.CategoryService;
 import org.timetodo.service.ReminderService;
 import org.timetodo.service.TaskService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,6 +49,70 @@ public class OpenAIService { //사용자 입력 파실 및 처리
 
     @Value("${openai.api.key}") // application.properties 파일에서 API 키를 가져옵니다
     private String apiKey;
+
+    /**
+     * OpenAI API를 호출해 사용자의 입력을 다음 네 가지로 분류하는 메서드
+     * @param userInput
+     */
+    public String OpenAIAPI_SelectProcessing(String userInput, Long id) {
+        // RestTemplate 객체 생성
+        RestTemplate restTemplate = new RestTemplate();
+
+        // OpenAI API 엔드포인트
+        String url = "https://api.openai.com/v1/chat/completions"; // GPT 모델 사용 시
+
+        // HTTP 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(apiKey); // @Value("${openai.api.key}")로 가져온 API 키 사용
+
+        // 요청 데이터 작성
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("model", "gpt-3.5-turbo"); // OpenAI의 GPT 모델
+        requestBody.put("messages", List.of(
+                Map.of("role", "system", "content",
+                        "너는 사용자의 입력을 다음 네 가지로 분류하는 시스템이야:\\n\\n" +
+                                "1. 새로운 일정(Calendar)을 추가하는 내용.\n" +
+                                "2. 새로운 할일(Task)을 추가하는 내용.\n" +
+                                "3. 단순히 알람(Alarm)을 추가하는 내용.\n" +
+                                "4. 일정(Calendar)이나 할일(Task)에 대한 알림(Reminder)을 추가하는 내용.\n\n" +
+                                "위 입력을 네 가지 중 하나로 정확히 분류해서 다음 값 중 하나로만 응답해:\n" +
+                                "- \"calendar\": 일정(Calendar)\n" +
+                                "- \"task\": 할일(Task)\n" +
+                                "- \"alarm\": 단순 알람\n" +
+                                "- \"selectionData\": 일정이나 할일에 대한 알림"
+                ),
+                Map.of("role", "user", "content", userInput)
+        ));
+        requestBody.put("max_tokens", 150); // 응답 최대 토큰 수
+        requestBody.put("temperature", 0.7); // 응답 다양성 제어
+
+        String response = "";
+        // API 호출 및 응답 처리
+        try {
+            HttpEntity<String> request = new HttpEntity<>(requestBody.toString(), headers);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, request, String.class);
+
+            // 응답 파싱
+            JSONObject responseJson = new JSONObject(responseEntity.getBody());
+            JSONArray choices = responseJson.getJSONArray("choices");
+            String content = choices.getJSONObject(0).getJSONObject("message").getString("content").trim();
+
+            if (content.contains("calendar") || content.contains("task") || content.contains("selectionData")) {
+                response = processChatInput(userInput,id);
+                return response;
+            } else if (content.contains("alarm")) {
+                response = handleReminderSelectionFlow(userInput,id);
+                return response;
+            }
+        } catch (Exception e) {
+            // 에러 발생 시 로깅 및 기본 응답
+            log.error(e.getMessage());
+            return ("OpenAIAPI_SelectProcessing 실행 실패");
+        }
+        return response;
+    }
+
 
     /**
      * 사용자의 자연어 입력을 처리하는 메서드
@@ -97,7 +157,6 @@ public class OpenAIService { //사용자 입력 파실 및 처리
                         break;
                 }
             }
-
             resultMessage = "요청이 성공적으로 처리되었습니다.";
         } catch (Exception e) {
             log.error("Error processing input", e);
@@ -112,7 +171,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
 
 
     /**
-     * OpenAI API를 호출하는 메서드 (예제 JSON 응답 포함)
+     * OpenAI API를 호출해서 자료형 파싱하는 메서드
      * @param input 사용자 입력
      * @return OpenAI 응답 (JSON 형식)
      */
@@ -167,14 +226,18 @@ public class OpenAIService { //사용자 입력 파실 및 처리
                                 "- `reminder` 요청의 경우:\n" +
                                 "{\n" +
                                 "    \"type\": \"reminder\",\n" +
+                                "    \"id\": \"1\",\n" +
+                                "    \"detailsType\": \"task\",\n" +
                                 "    \"notificationsEnabled\": true,\n" +
                                 "    \"timeBefore\": 10,\n" +
                                 "    \"repeats\": false\n" +
                                 "}\n" +
+                                "  * `id`는 번호를 의미하는 값으로 반환하세요.\n" +
+                                "  * `detailsType`는 일정이라는 단어가 있을경우 calendar 로 반환하고, 할일이라는 단어가 있을경우 task 로 반환하세요.\n" +
                                 "  * `notificationsEnabled`는 boolean(true/false) 값으로 반환하세요.\n" +
                                 "  * `timeBefore`는 정수 값(분 단위)으로 반환하세요.\n" +
                                 "  * `repeats`는 boolean(true/false) 값으로 반환하세요.\n" +
-                                "사용자가 알림 설정을 요청할 경우 `reminder` 타입으로 처리하고, 필요한 필드 값을 포함하여 응답하세요." +
+                                "사용자가 알림 설정을 요청할 경우 `reminder` 타입(type)으로 처리하고, 필요한 필드 값을 포함하여 응답하세요." +
 
                                 "모든 JSON은 잘 구성된 형식으로 반환해야 하며, 마지막 항목 뒤에 쉼표를 포함하지 마세요."
                 ),
@@ -198,6 +261,8 @@ public class OpenAIService { //사용자 입력 파실 및 처리
             throw new RuntimeException("OpenAI API 호출 실패", e);
         }
     }
+
+
 
     /**
      * OpenAI 응답 데이터를 파싱하여 Map 형태로 변환.
@@ -260,11 +325,98 @@ public class OpenAIService { //사용자 입력 파실 및 처리
         return defaultValue; // 처리할 수 없는 타입인 경우 기본값 반환
     }
 
+    /**
+     * 마지막 쉼표 제거 메서드
+     * @param json
+     */
     private String sanitizeJson(String json) {
         // 마지막 쉼표 제거 로직
         return json.replaceAll(",\\s*}", "}").replaceAll(",\\s*]", "]");
     }
 
+    /**
+     * Calendar와 Task를 가시성 좋게 불러오는 메서드
+     * @param data
+     * @param userId
+     */
+    public String handleReminderSelectionFlow(String data, Long userId) {
+        try {
+            // 사용자에게 제공할 Task 및 Calendar 목록 조회
+            List<TaskEntity> tasks = taskService.getTasksByUserId(userId);
+            List<CalendarEntity> calendars = calendarService.getCalendarsByUserId(userId);
+
+            // 보기 쉽게 포맷된 문자열 생성
+            StringBuilder response = new StringBuilder();
+
+            // Calendar 목록 추가
+            response.append("일정(Calendar)\n");
+            if (calendars.isEmpty()) {
+                response.append("  - 등록된 일정이 없습니다.\n");
+            } else {
+                calendars.forEach(calendar ->
+                        response.append(String.format("  %d번 일정: %s\n",
+                                calendar.getCalendarId(), calendar.getTitle()))
+                );
+            }
+
+            // Task 목록 추가
+            response.append("\n할일(Task)\n");
+            if (tasks.isEmpty()) {
+                response.append("  - 등록된 할일이 없습니다.\n");
+            } else {
+                tasks.forEach(task ->
+                        response.append(String.format("  %d번 할일: %s\n",
+                                task.getTaskId(), task.getTitle()))
+                );
+            }
+
+            log.info("Returning formatted Task and Calendar list for user {}: {}", userId, response);
+
+            return response.toString();
+        } catch (Exception e) {
+            log.error("Error handling reminder selection flow: {}", data, e);
+            throw new RuntimeException("리마인더 목록 처리 중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * Reminder 데이터를 처리하고 저장하는 메서드
+     * @param selectionData 파싱된 Reminder 데이터
+     * @param userId 사용자 고유 ID
+     * @return 처리 결과 메시지
+     */
+    public String handleReminder(Map<String, Object> selectionData, Long userId) {
+        try {
+            // 선택 데이터 파싱
+            String type = safeGet(selectionData, "detailsType", "unknown"); // task or calendar
+            Long id = Long.parseLong(safeGet(selectionData, "id", "0")); // 선택한 ID
+            boolean notificationsEnabled = Boolean.parseBoolean(safeGet(selectionData, "notificationsEnabled", "true"));
+            int timeBefore = Integer.parseInt(safeGet(selectionData, "timeBefore", "10"));
+            boolean repeats = Boolean.parseBoolean(safeGet(selectionData, "repeats", "false"));
+
+            // 알림 DTO 생성
+            ReminderRequestDto reminderRequestDto = new ReminderRequestDto();
+            reminderRequestDto.setNotificationsEnabled(notificationsEnabled);
+            reminderRequestDto.setTimeBefore(timeBefore);
+            reminderRequestDto.setRepeats(repeats);
+
+            // Task 또는 Calendar에 대한 알림 생성
+            if ("task".equalsIgnoreCase(type)) {
+                reminderService.createTaskReminder(reminderRequestDto, id);
+                log.info("Reminder created for Task ID: {}", id);
+            } else if ("calendar".equalsIgnoreCase(type)) {
+                reminderService.createCalendarReminder(reminderRequestDto, id);
+                log.info("Reminder created for Calendar ID: {}", id);
+            } else {
+                throw new IllegalArgumentException("Invalid selection type: " + type);
+            }
+
+            return "알림이 성공적으로 생성되었습니다.";
+        } catch (Exception e) {
+            log.error("Error processing reminder selection: {}", selectionData, e);
+            throw new RuntimeException("알림 생성 중 오류가 발생했습니다.");
+        }
+    }
 
     /**
      * 일정 데이터를 처리하고 저장하는 메서드
@@ -340,7 +492,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
     /**
      * 알림 데이터를 처리하는 메서드
      */
-    private void handleReminder(Map<String, Object> data, Long userId) {
+    /*private void handleReminderProcess(Map<String, Object> data, Long userId) {
         try {
             // Step 1: 사용자에게 선택 가능한 Task와 Calendar 목록 제공
             List<TaskEntity> tasks = taskService.getTasksByUserId(userId);
@@ -398,7 +550,8 @@ public class OpenAIService { //사용자 입력 파실 및 처리
             log.error("Error while processing reminder input: {}", data, e);
             throw new RuntimeException("알림 처리 중 오류가 발생했습니다.");
         }
-    }
+    }*/
+
     /**
      * 사용자가 선택한 데이터를 기반으로 알림을 저장
      * @param reminderInput
@@ -584,5 +737,3 @@ public class OpenAIService { //사용자 입력 파실 및 처리
         }
     }*/
 }
-
-//https://chatgpt.com/g/g-9Jg16ED8o-gaebal/c/6742ffab-78a4-800d-a197-60b0b438bb81

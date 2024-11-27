@@ -21,21 +21,49 @@ public class OpenAIController {
     @Autowired
     private final OpenAIService openAIService;
 
+
     /**
-     * 자연어로 calendar, task 를 추가하는 챗봇기능
+     * 클라이언트 입력 -> OpenAIAPI_SelectProcessing 에서 ai가 구분 ->
+     *     1. 일정 || 할일 || 알림생성 의 경우에는 callOpenAIAPI -> processChatInput -> handleCalendar or handleTask 로 DB에 저장
+     *     2. 알림(알람)일 경우에는 OpenAIAPI_SelectProcessing 에서 handleReminderSelectionFlow 을 실행해서 사용자에게 선택지 출력
+     *         -> 사용자가 선택지를 보고 입력 -> 다시 OpenAIAPI_SelectProcessing 메소드에서 알림 리스트를 만드는건지 알림을 추가하는건지
+     *         구분해서 알림추가인걸로 확인 후 -> callOpenAIAPI -> processChatInput -> handleReminder 로 DB에 저장
      * @param inputText 챗봇에게 입력하는 데이터
      * @param userId 프론트에서 @RequestParam 방식으로 userId 할당 필요
      */
     @PostMapping("/add")
     public ResponseEntity<String> inputChat(@RequestBody String inputText,
                                             @RequestParam Long userId) {
-        log.info("Received input text: {}", inputText); // 요청 로그
-
-        // OpenAI API로 자연어 일정을 분석하고 처리
-        String responseMessage = openAIService.processChatInput(inputText, userId);
-
-        return ResponseEntity.ok(responseMessage);
+        try{
+            log.info("input text: {}", inputText); // 요청 로그
+            return ResponseEntity.ok(openAIService.OpenAIAPI_SelectProcessing(inputText, userId));
+        }catch (Exception e){
+            log.error("컨트롤러 에러 : Error processing inputChat request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
+        }
     }
+
+    /*private ResponseEntity<String> redirectChat(@RequestBody String inputText,
+                                            @RequestParam Long userId) {
+        try{
+            log.info("redirect text: {}", inputText); // 요청 로그
+            return ResponseEntity.ok(openAIService.processChatInput(inputText, userId));
+        }catch (Exception e){
+            log.error("컨트롤러 에러 : Error processing redirectChat request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
+        }
+
+    }*/
+
+    /*@GetMapping("/selection")
+    public ResponseEntity<String> getReminderSelection(@RequestParam Long userId) {
+        try {
+            String response = openAIService.handleReminderSelectionFlow(null, userId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching reminders");
+        }
+    }*/
 
     /**
      * 알림 설정 요청 처리
