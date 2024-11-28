@@ -20,4 +20,11 @@ public class PreferencesEntity {
     //@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
     @OneToOne
     private UserEntity userEntity;
+
+    @PrePersist
+    public void setDefaultTheme() {
+        if (this.theme == null) {
+            this.theme = "light";
+        }
+    }
 }
