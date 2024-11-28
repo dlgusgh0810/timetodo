@@ -27,7 +27,7 @@ public class CategoryService {
         CategoryEntity category = new CategoryEntity();
         category.setCategoryName(categoryDto.getCategoryName());
         category.setColor(categoryDto.getColor());
-        category.setUsers(user);
+        category.setUserId(user);
         categoryRepository.save(category);
     }
 
@@ -36,7 +36,7 @@ public class CategoryService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        List<CategoryEntity> categories = categoryRepository.findByUsers(user);
+        List<CategoryEntity> categories = categoryRepository.findByUserId(user);
         return categories.stream()
                 .map(category -> new CategoryResponseDto(
                         category.getCategoryId(),
@@ -79,7 +79,7 @@ public class CategoryService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         // 사용자와 카테고리 이름으로 카테고리 조회
-        CategoryEntity category = categoryRepository.findByUsersAndCategoryName(user, categoryName);
+        CategoryEntity category = categoryRepository.findByUserIdAndCategoryName(user, categoryName);
         if (category == null) {
             throw new RuntimeException("해당 이름의 카테고리를 찾을 수 없습니다.");
         }

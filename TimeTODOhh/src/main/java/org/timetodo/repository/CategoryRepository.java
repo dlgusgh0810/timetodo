@@ -11,12 +11,12 @@ import java.util.List;
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
     // UserEntity를 받아야 합니다.
-    List<CategoryEntity> findByUsers(UserEntity user);
+    List<CategoryEntity> findByUserId(UserEntity user);
 
     // 특정 사용자와 카테고리 이름으로 조회
-    CategoryEntity findByUsersAndCategoryName(UserEntity user, String categoryName);
+    CategoryEntity findByUserIdAndCategoryName(UserEntity user, String categoryName);
 
     // 특정 사용자와 카테고리 ID로 삭제
-    void deleteByCategoryIdAndUsers(Long categoryId, UserEntity user);
+    void deleteByCategoryIdAndUserId(Long categoryId, UserEntity user);
 
 }

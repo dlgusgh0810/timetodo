@@ -40,12 +40,12 @@ public class TaskEntity {
 
     //@JoinColumn(name = "category_id")
     @ManyToOne // 여러 Task가 하나의 Category와 연관 (N:1 관계)
-    private CategoryEntity categories;//categoryMTOtask; // Foreign Key (외래 키)
+    private CategoryEntity categoryId;//categoryMTOtask; // Foreign Key (외래 키)
 
     //@JoinColumn(name = "user_id")
     @ManyToOne //여러 Task가 하나의 User와 연관 (N:1 관계)
     @JsonIgnore
-    private UserEntity users; //Foreign Key (외래 키)
+    private UserEntity userId; //Foreign Key (외래 키)
 
     @OneToMany(mappedBy = "taskId")
     @JsonIgnore

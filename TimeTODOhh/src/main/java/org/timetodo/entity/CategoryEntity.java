@@ -19,6 +19,7 @@ public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long categoryId;
 
     // 카테고리 이름 중복 방지를 위해 unique 제약 조건 추가
@@ -32,12 +33,12 @@ public class CategoryEntity {
     // N:1 관계 설정 및 외래 키 명시
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity users;
+    private UserEntity userId;
 
-    @OneToMany(mappedBy = "categories", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    @OneToMany(mappedBy = "categoryId", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<CalendarEntity> calendar;
 
-    @OneToMany(mappedBy = "categories", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    @OneToMany(mappedBy = "categoryId", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<TaskEntity> tasks;
 
 }

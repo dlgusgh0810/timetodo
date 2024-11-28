@@ -39,9 +39,9 @@ public class ReminderService {
         // 2. ReminderEntity 생성
         ReminderEntity reminder = new ReminderEntity();
         reminder.setTaskId(task); // ManyToOne 관계로 설정된 Task를 연결
-        reminder.setNotificationsEnabled(reminderRequestDto.isNotificationsEnabled());
-        reminder.setTimeBefore(reminderRequestDto.getTimeBefore());
-        reminder.setRepeats(reminderRequestDto.isRepeats());
+        reminder.setNotificationsEnabled(reminderRequestDto.isNotificationsEnabled()); //알림 설정 여부 (True/False)
+        reminder.setTimeBefore(reminderRequestDto.getTimeBefore()); // 알림 시작 시간 (분 단위)
+        reminder.setRepeats(reminderRequestDto.isRepeats()); // 알림 반복 여부
 
         // 3. ReminderEntity 저장
         ReminderEntity savedReminder = reminderRepository.save(reminder);
