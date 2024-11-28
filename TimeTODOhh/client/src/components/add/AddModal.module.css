@@ -1,6 +1,6 @@
-/* AddModal.module.css */
+/* 반투명 배경 */
 .eventModalOverlay {
-    position: fixed; /* 화면 전체를 덮도록 설정 */
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -9,86 +9,227 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000; /* 오버레이를 최상위에 표시 */
+    z-index: 1000;
 }
 
+/* 모달 스타일 */
 .eventModal {
     background: white;
     padding: 20px;
-    border-radius: 8px;
-    max-width: 400px;
-    max-height: 600px;
+    border-radius: 12px;
+    max-width: 500px; /* 너비 조정 */
+    max-height: 80vh; /* 화면 높이의 80%로 제한 */
     width: 100%;
     position: relative;
-    z-index: 1001; /* 오버레이보다 위에 표시 */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 추가로 입체감 부여 */
+    z-index: 1001;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    overflow-y: auto; /* 넘치는 내용을 스크롤 가능하게 */
 }
 
+/* 모달 헤더 */
 .modalHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 15px;
 }
 
 .h2 {
     margin: 0;
-    font-size: 1.5em;
-}
-
-.closeIcon {
-    font-size: 1.5em;
-    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;
     color: #333;
 }
 
-form {
+.closeIcon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.closeIcon:hover {
+    color: #000;
+}
+
+/* 폼 스타일 */
+.form {
     display: flex;
     flex-direction: column;
+    gap: 15px; /* 요소 간 간격 */
+    align-items: stretch;
 }
 
-form label {
-    margin-top: 10px;
+.textarea {
+    resize: none;
+    height: 80px;
+    max-height: 100px; /* 텍스트 영역 최대 높이 제한 */
+    overflow-y: auto;
 }
 
-form input, form select, form textarea {
+form input,
+form select,
+form textarea {
     margin-top: 5px;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-button[type="button"] {
-    margin-top: 15px;
     padding: 10px;
-    font-size: 16px;
-    background-color: #6200ea;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.icon {
-    font-size: 18px;
-    color: #666;
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #6200ea;
+    box-shadow: 0 0 4px rgba(98, 0, 234, 0.3);
 }
 
+.textarea {
+    resize: none;
+    height: 80px;
+}
+
+/* 저장 버튼 */
+button[type="button"],
 .saveButton {
-    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 16px;
     background-color: #6200ea;
     color: white;
-    padding: 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
+button[type="button"]:hover,
 .saveButton:hover {
     background-color: #3700b3;
 }
 
-.tabContainer{
+.saveButton {
+    width: 100%;
+}
 
+/* 탭 스타일 */
+.tabContainer {
+    display: flex;
+    justify-content: space-between; /* 버튼 간 간격 조정 */
+    margin: 10px 0;
+    flex-wrap: wrap; /* 창 크기에 맞게 버튼을 줄바꿈 */
+}
+
+.tabContainer button {
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    flex: 1; /* 버튼 크기를 균등 분배 */
+    margin: 5px; /* 버튼 간격 */
+}
+
+.activeTab {
+    background-color: purple;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.inactiveTab {
+    background-color: lightgray;
+    color: black;
+}
+
+.inactiveTab:hover {
+    background-color: #e0e0e0;
+}
+
+/* 라벨 드롭다운 스타일 */
+.scrollableLabelContainer {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+    padding-bottom: 40px;
+}
+
+.scrollableLabelContainer select {
+    width: 100%;
+    height: 120px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.addLabelButton {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.addLabelButton:hover {
+    background-color: #e0e0e0;
+}
+
+/* 라벨 선택 메뉴 */
+.labelDropdown {
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.selectedLabel {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background: #fff;
+    z-index: 10;
+    border-radius: 4px;
+}
+
+.dropdownItem {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdownItem:hover {
+    background-color: #f0f0f0;
+}
+
+/* 아이콘 스타일 */
+.icon {
+    font-size: 16px;
+    color: #888;
+    margin-right: 8px;
+    vertical-align: middle;
 }

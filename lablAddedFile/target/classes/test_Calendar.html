@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar API Test</title>
+</head>
+<body>
+<h1>Calendar API Test</h1>
+
+<!-- 1. 홈 페이지 -->
+<div id="home">
+    <h2>Home</h2>
+    <button onclick="showPage('addEvent')">2. Add New Event</button><br>
+    <button onclick="showPage('viewAll')">3. View All Events</button><br>
+    <button onclick="showPage('updateEvent')">4. Update Event</button><br>
+    <button onclick="showPage('deleteEvent')">5. Delete Event</button><br>
+    <button onclick="showPage('addRepeatingEvent')">6. Add Repeating Event</button><br>
+    <button onclick="showPage('searchEvent')">7. Search Events</button>
+</div>
+
+<!-- 2. 새로운 일정 추가 -->
+<div id="addEvent" style="display:none;">
+    <h2>Add New Event</h2>
+    <form onsubmit="addEvent(event)">
+        <label>Title: <input type="text" id="title" required></label><br>
+        <label>Description: <input type="text" id="description"></label><br>
+        <label>Location: <input type="text" id="location" required></label><br>
+        <label>Start Time: <input type="datetime-local" id="startTime" required></label><br>
+        <label>End Time: <input type="datetime-local" id="endTime" required></label><br>
+        <label>Category ID: <input type="number" id="categoryId"></label><br>
+        <button type="submit">Add Event</button>
+    </form>
+    <p id="addEventResult"></p>
+    <button onclick="showPage('home')">Back to Home</button>
+</div>
+
+<!-- 3. 모든 일정 조회 -->
+<div id="viewAll" style="display:none;">
+    <h2>View All Events</h2>
+    <button onclick="getAllEvents()">Load All Events</button>
+    <p id="viewAllResult"></p>
+    <button onclick="showPage('home')">Back to Home</button>
+</div>
+
+<!-- 4. 특정 일정을 업데이트 -->
+<div id="updateEvent" style="display:none;">
+    <h2>Update Event</h2>
+    <form onsubmit="updateEvent(event)">
+        <label>Event ID: <input type="number" id="updateEventId" required></label><br>
+        <label>Title: <input type="text" id="updateTitle" required></label><br>
+        <label>Description: <input type="text" id="updateDescription"></label><br>
+        <label>Location: <input type="text" id="updateLocation" required></label><br>
+        <label>Start Time: <input type="datetime-local" id="updateStartTime" required></label><br>
+        <label>End Time: <input type="datetime-local" id="updateEndTime" required></label><br>
+        <button type="submit">Update Event</button>
+    </form>
+    <p id="updateEventResult"></p>
+    <button onclick="showPage('home')">Back to Home</button>
+</div>
+
+<!-- 5. 특정 일정을 삭제 -->
+<div id="deleteEvent" style="display:none;">
+    <h2>Delete Event</h2>
+    <label>Event ID: <input type="number" id="deleteEventId" required></label><br>
+    <button onclick="deleteEvent()">Delete Event</button>
+    <p id="deleteEventResult"></p>
+    <button onclick="showPage('home')">Back to Home</button>
+</div>
+
+<!-- 6. 반복 일정을 추가 -->
+<div id="addRepeatingEvent" style="display:none;">
+    <h2>Add Repeating Event</h2>
+    <form onsubmit="addRepeatingEvent(event)">
+        <label>Title: <input type="text" id="repeatTitle" required></label><br>
+        <label>Description: <input type="text" id="repeatDescription"></label><br>
+        <label>Location: <input type="text" id="repeatLocation" required></label><br>
+        <label>Start Time: <input type="datetime-local" id="repeatStartTime" required></label><br>
+        <label>End Time: <input type="datetime-local" id="repeatEndTime" required></label><br>
+        <label>Repeat Type:
+            <select id="repeatType" required>
+                <option value="NONE">None</option>
+                <option value="DAILY">Daily</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="MONTHLY">Monthly</option>
+                <option value="YEARLY">Yearly</option>
+            </select>
+        </label><br>
+        <label>Category ID: <input type="number" id="repeatCategoryId"></label><br>
+        <button type="submit">Add Repeating Event</button>
+    </form>
+    <p id="repeatEventResult"></p>
+    <button onclick="showPage('home')">Back to Home</button>
+</div>
+
+<!-- 7. 일정 검색 -->
+<div id="searchEvent" style="display:none;">
+    <h2>Search Events</h2>
+    <form onsubmit="searchEvents(event)">
+        <label>Title: <input type="text" id="searchTitle"></label><br>
+        <label>Description: <input type="text" id="searchDescription"></label><br>
+        <label>Category ID: <input type="number" id="searchCategoryId"></label><br>
+        <label>Start Time: <input type="datetime-local" id="searchStartTime"></label><br>
+        <button type="submit">Search</button>
+    </form>
+    <p id="searchEventResult"></p>
+    <button onclick="showPage('home')">Back to Home</button>
+</div>
+
+<script>
+    const baseUrl = "http://localhost:8085/api/calendar";
+
+    function showPage(page) {
+        document.querySelectorAll("div").forEach(div => div.style.display = "none");
+        document.getElementById(page).style.display = "block";
+    }
+
+    async function addEvent(event) {
+        event.preventDefault();
+        const data = {
+            title: document.getElementById("title").value,
+            description: document.getElementById("description").value,
+            location: document.getElementById("location").value,
+            startTime: document.getElementById("startTime").value,
+            endTime: document.getElementById("endTime").value,
+            categoryId: document.getElementById("categoryId").value
+        };
+        const response = await fetch(`${baseUrl}/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        document.getElementById("addEventResult").innerText = `Added Event: ${JSON.stringify(result)}`;
+    }
+
+    async function getAllEvents() {
+        const response = await fetch(`${baseUrl}/all`);
+        const result = await response.json();
+        document.getElementById("viewAllResult").innerText = `All Events: ${JSON.stringify(result)}`;
+    }
+
+    async function updateEvent(event) {
+        event.preventDefault();
+        const id = document.getElementById("updateEventId").value;
+        const data = {
+            title: document.getElementById("updateTitle").value,
+            description: document.getElementById("updateDescription").value,
+            location: document.getElementById("updateLocation").value,
+            startTime: document.getElementById("updateStartTime").value,
+            endTime: document.getElementById("updateEndTime").value
+        };
+        const response = await fetch(`${baseUrl}/update/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        document.getElementById("updateEventResult").innerText = `Updated Event: ${JSON.stringify(result)}`;
+    }
+
+    async function deleteEvent() {
+        const id = document.getElementById("deleteEventId").value;
+        await fetch(`${baseUrl}/delete/${id}`, { method: "DELETE" });
+        document.getElementById("deleteEventResult").innerText = `Deleted Event ID: ${id}`;
+    }
+
+    async function addRepeatingEvent(event) {
+        event.preventDefault();
+        const data = {
+            title: document.getElementById("repeatTitle").value,
+            description: document.getElementById("repeatDescription").value,
+            location: document.getElementById("repeatLocation").value,
+            startTime: document.getElementById("repeatStartTime").value,
+            endTime: document.getElementById("repeatEndTime").value,
+            repeatType: document.getElementById("repeatType").value,
+            categoryId: document.getElementById("repeatCategoryId").value
+        };
+        const response = await fetch(`${baseUrl}/addRepeatingEvent`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        document.getElementById("repeatEventResult").innerText = `Added Repeating Event: ${JSON.stringify(result)}`;
+    }
+
+    async function searchEvents(event) {
+        event.preventDefault();
+        const title = document.getElementById("searchTitle").value;
+        const description = document.getElementById("searchDescription").value;
+        const categoryId = document.getElementById("searchCategoryId").value;
+        const startTime = document.getElementById("searchStartTime").value;
+        const queryParams = new URLSearchParams({ title, description, categoryId, startTime }).toString();
+        const response = await fetch(`${baseUrl}/search?${queryParams}`);
+        const result = await response.json();
+        document.getElementById("searchEventResult").innerText = `Search Results: ${JSON.stringify(result)}`;
+    }
+</script>
+</body>
+</html>
