@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import axios from "axios";
 import AddLabelModal from './AddLabelModal';
 import CustomDropdown from './CustomDropdown';
 import ReactDatePicker from 'react-datepicker'; // 시간 선택 추가
@@ -70,31 +71,7 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
 
 
 
-//     const handleAddLabel = async (newLabel) => {
-//         try {
-//             if (!newLabel.name || !newLabel.color) {
-//                 alert("라벨 이름과 색상을 입력해주세요.");
-//                 return;
-//             }
 
-//             const duplicate = labelOptions.some((label) => label.name === newLabel.name);
-//             if (duplicate) {
-//                 alert("이미 존재하는 라벨입니다.");
-//                 return;
-//             }
-
-//             await axios.post("/api/categories/add", {
-//                 categoryName: newLabel.name, // 서버 DTO에 맞게 변경
-//                 color: newLabel.color,
-//             });
-
-//             setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
-//             setIsLabelModalOpen(false); // 모달 닫기
-//         } catch (error) {
-//             console.error("라벨 추가 실패:", error);
-//             alert("라벨 추가에 실패했습니다.");
-//         }
-//     };
 
 
 
@@ -135,10 +112,36 @@ function AddModal({ isOpen, onRequestClose, onSave, selectedDate, defaultTab }) 
         setReminder('30분 전');
     };
 
-    const handleAddLabel = (newLabel) => {
-        setLabelOptions((prevOptions) => [...prevOptions, newLabel]);
-        setIsLabelModalOpen(false);
+    // const handleAddLabel = (newLabel) => {
+    //     setLabelOptions((prevOptions) => [...prevOptions, newLabel]);
+    //     setIsLabelModalOpen(false);
+    //
+    // };
 
+        const handleAddLabel = async (newLabel) => {
+        try {
+            if (!newLabel.name || !newLabel.color) {
+                alert("라벨 이름과 색상을 입력해주세요.");
+                return;
+            }
+
+            const duplicate = labelOptions.some((label) => label.name === newLabel.name);
+            if (duplicate) {
+                alert("이미 존재하는 라벨입니다.");
+                return;
+            }
+
+            await axios.post("/api/categories/add", {
+                categoryName: newLabel.name, // 서버 DTO에 맞게 변경
+                color: newLabel.color,
+            });
+
+            setLabelOptions((prevOptions) => [...prevOptions, newLabel]); // 새로운 라벨 추가
+            setIsLabelModalOpen(false); // 모달 닫기
+        } catch (error) {
+            console.error("라벨 추가 실패:", error);
+            alert("라벨 추가에 실패했습니다.");
+        }
     };
 
     return (
