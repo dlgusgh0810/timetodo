@@ -30,6 +30,13 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
 
     const [activeTab, setActiveTab] = useState(defaultTab || '일정');
 
+    // 초 단위까지 표시하는 유틸리티 함수
+    const formatDateToSeconds = (date) => {
+        const isoString = date.toISOString();
+        return isoString.split('.')[0]; // 밀리초 이후의 부분을 제거
+    };
+
+
     // 라벨 데이터 불러오기
     useEffect(() => {
         if (isOpen) {
@@ -50,7 +57,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
     }, [isOpen]);
 
-    // 저장 핸들러
+
     const handleSave = async () => {
         if (!title.trim()) {
             alert("제목을 입력하세요.");
@@ -61,11 +68,11 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         const newEvent = {
             title,
             description: description || null,
-            startTime: startDate.toISOString(),
-            endTime: endDate.toISOString(),
-            location: selectedLabel, // 선택된 라벨을 location으로 사용 (필요 시 수정 가능)
-            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 없음은 null로 처리
-            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080', // 라벨 색상
+            startTime: formatDateToSeconds(startDate), // 초 단위까지만 포함
+            endTime: formatDateToSeconds(endDate),    // 초 단위까지만 포함
+            location: selectedLabel,
+            repeatType: repeat === '반복 없음' ? null : repeat,
+            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080',
         };
 
         try {
@@ -101,6 +108,25 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             alert('데이터 저장에 실패했습니다.');
         }
     };
+
+
+
+
+
+
+
+
+
+    // const handleSave = async () => {
+    //     if (!title.trim()) {
+    //         alert("제목을 입력하세요.");
+    //         return;
+    //     }
+
+        // 데이터 구성 (초 단위까지만 포함)
+
+
+
 
 
     // 폼 초기화

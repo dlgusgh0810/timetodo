@@ -51,6 +51,7 @@ function Calendar() {
             end: '2024-12-03T00:00:00',
             description: '프로젝트 최종 결과물 제출',
             location: '온라인 제출',
+            color: '#808080'
         }
     ]);
 
