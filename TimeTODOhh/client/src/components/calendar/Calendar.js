@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import {useEffect} from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,9 +6,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
 import styles from './Calendar.module.css';
 
-function Calendar() {
+function Calendar({ events }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
+// <<<<<<< NewFile
     const calendarRef = useRef(null);
     const [events, setEvents] = useState([
         // {
@@ -79,6 +79,9 @@ function Calendar() {
             console.error('Error fetching events:', error);
         }
     };
+// =======
+//     const calendarRef = useRef(null); // FullCalendar의 ref 생성
+// >>>>>>> main
 
     // 날짜 클릭 이벤트
     const handleDateClick = (arg) => {
@@ -198,8 +201,7 @@ function Calendar() {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 onSave={handleSave}  // 추가된 onSave prop
-                selectedDate={selectedDate} // 선택된 날짜 전달
-                defaultTab="일정" // 기본 탭 전달
+                selectedDate={selectedDate}
             />
         </div>
     );

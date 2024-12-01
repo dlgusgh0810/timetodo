@@ -17,8 +17,8 @@ public class PreferencesEntity {
     @Column(nullable = false, length = 20)
     private String theme;
 
-    @OneToOne
     //@JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true)
+    @OneToOne
     private UserEntity userEntity;
 
     @PrePersist
