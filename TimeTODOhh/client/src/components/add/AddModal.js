@@ -58,38 +58,42 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
 
         // 데이터 구성
-        const newEntry = defaultTab === '일정'
-            ? { // 일정 데이터
-                title,
-                start: startDate.toISOString(),
-                end: endDate.toISOString(),
-                label: selectedLabel,
-                priority,
-                reminder,
-                repeat: repeat === '반복 없음' ? null : repeat,
-                description: description || null,
-            }
-            : { // 할 일 데이터
-                title,
-                deadline: deadline.toISOString(),
-                label: selectedLabel,
-                priority,
-                description: description || null,
-            };
+        const newEvent = {
+            title,
+            description: description || null,
+            startTime: startDate.toISOString(),
+            endTime: endDate.toISOString(),
+            location: selectedLabel, // 선택된 라벨을 location으로 사용 (필요 시 수정 가능)
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 없음은 null로 처리
+            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080', // 라벨 색상
+        };
 
         try {
-            const response = await fetch(`http://localhost:8085/api/${defaultTab === '일정' ? 'calendar' : 'todo'}/add`, {
+            const response = await fetch('http://localhost:8085/api/calendar/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newEntry),
+                body: JSON.stringify(newEvent),
             });
 
             if (!response.ok) {
                 throw new Error('Failed to save data to backend');
             }
 
-            const savedEntry = await response.json();
-            onSave(savedEntry);
+            const savedEvent = await response.json();
+            console.log('Response from backend:', savedEvent);
+
+            // FullCalendar에 추가할 데이터 형식
+            onSave({
+                id: savedEvent.calendarId,
+                title: savedEvent.title,
+                start: savedEvent.startTime,
+                end: savedEvent.endTime,
+                description: savedEvent.description,
+                location: savedEvent.location,
+                color: savedEvent.color,
+                repeatType: savedEvent.repeatType,
+            });
+
             resetForm();
             onRequestClose();
         } catch (error) {
@@ -97,6 +101,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             alert('데이터 저장에 실패했습니다.');
         }
     };
+
 
     // 폼 초기화
     const resetForm = () => {

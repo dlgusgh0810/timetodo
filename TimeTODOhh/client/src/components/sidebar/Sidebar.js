@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaHome, FaCalendarAlt, FaClipboardList, FaChartBar, FaBell, FaChevronDown } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie'; // 쿠키 관리 라이브러리
+
 import Profile from './Profile';
-import AddModal from '../add/AddModal'; // AddModal 컴포넌트 임포트
+import AddModal from '../add/AddModal';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ onAddEvent }) => {
@@ -10,14 +12,29 @@ const Sidebar = ({ onAddEvent }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const navigate = useNavigate();
 
-    // 프로필 토글 함수
+    const [username, setUsername] = useState('');
+    const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        // 쿠키에서 userId와 username 읽기
+        const storedUserId = Cookies.get('userId'); // userId 읽기
+        const storedUsername = Cookies.get('username'); // username 읽기
+
+        console.log("쿠키에서 읽은 userId:", storedUserId);
+        console.log("쿠키에서 읽은 username:", storedUsername);
+
+        if (storedUserId) setUserId(storedUserId); // 상태에 저장
+        if (storedUsername) setUsername(storedUsername); // 상태에 저장
+    }, []);
+
     const toggleProfile = () => {
         setProfileVisible(!isProfileVisible);
     };
 
-    // 로그아웃 함수
     const handleLogout = () => {
-        navigate("/login"); // 로그인 페이지로 이동
+        // 로그아웃 시 쿠키 제거
+
+        navigate("/login");
     };
 
     const openModal = () => {
@@ -35,14 +52,16 @@ const Sidebar = ({ onAddEvent }) => {
 
     return (
         <div className={styles.sidebar}>
-            {/* 추가 버튼 */}
             <button onClick={openModal}>추가</button>
 
             {/* 사용자 프로필 섹션 */}
             <div className={styles.profileSection} onClick={toggleProfile}>
                 <img src="https://via.placeholder.com/50" alt="profile" className={styles.profileImage} />
                 <div className={styles.profileInfo}>
-                    <span className={styles.username}>user</span>
+                    {/* userID를 바로 표시 */}
+                    <span className={styles.username}>
+                        {username ? `${username}` : '로그인해주세요'}
+                    </span>
                     <FaChevronDown
                         className={styles.dropdownIcon}
                         style={{ transform: isProfileVisible ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
@@ -51,10 +70,8 @@ const Sidebar = ({ onAddEvent }) => {
                 </div>
             </div>
 
-            {/* 프로필 컴포넌트 표시 */}
             {isProfileVisible && <Profile handleLogout={handleLogout} />}
 
-            {/* 네비게이션 메뉴 */}
             <nav className={styles.menu}>
                 <ul>
                     <li>
@@ -80,7 +97,6 @@ const Sidebar = ({ onAddEvent }) => {
                 </ul>
             </nav>
 
-            {/* AddModal */}
             <AddModal isOpen={isModalOpen} onRequestClose={closeModal} onSave={handleSaveEvent} />
         </div>
     );

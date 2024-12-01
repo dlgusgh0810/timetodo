@@ -43,14 +43,21 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserDTO userDTO, HttpServletResponse response) {
 
+        // 사용자 인증 로직
         UserEntity authenticatedUser = userService.authenticateUser(userDTO.getUsername(), userDTO.getPassword());
 
-        response.setHeader("Set-Cookie", "userId=" + authenticatedUser.getUserId() + "; Path=/; HttpOnly; SameSite=None; Secure"); //정답 : 포트번호가 달라져서 안보내질때 SameSite 사용!!
-        log.info("쿠키에 저장한 UserId : {} ", authenticatedUser.getUserId());
+        // userId 쿠키 설정
+        response.setHeader("Set-Cookie", "userId=" + authenticatedUser.getUserId() + "; Path=/; SameSite=None; Secure; HttpOnly");
 
-            return ResponseEntity.ok("Login successful");
+        // username 쿠키 추가 설정
+        response.addHeader("Set-Cookie", "username=" + authenticatedUser.getUsername() + "; Path=/; SameSite=None; Secure");
 
+        log.info("쿠키에 저장한 UserId : {}", authenticatedUser.getUserId());
+        log.info("쿠키에 저장한 Username : {}", authenticatedUser.getUsername());
+
+        return ResponseEntity.ok("Login successful");
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {

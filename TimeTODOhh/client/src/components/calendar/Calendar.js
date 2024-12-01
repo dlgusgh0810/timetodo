@@ -97,12 +97,39 @@ function Calendar() {
         calendarApi.changeView(newView); // 선택된 보기로 전환
     };
 
-    // 새로 추가한 onSave 함수
+    // // 새로 추가한 onSave 함수
+    // const handleSave = async (newTodo) => {
+    //     console.log("New Todo Saved:", newTodo);
+    //
+    //     try {
+    //         // 백엔드로 POST 요청 전송
+    //         const response = await fetch('http://localhost:8085/api/calendar/add', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(newTodo),
+    //         });
+    //
+    //         if (!response.ok) {
+    //             throw new Error('Failed to save data to backend');
+    //         }
+    //
+    //         const data = await response.json();
+    //         console.log('Response from backend:', data);
+    //
+    //         // 성공적으로 저장되면 모달을 닫음
+    //         closeModal();
+    //     } catch (error) {
+    //         console.error('Error saving data:', error);
+    //         alert('데이터 저장에 실패했습니다.');
+    //     }
+    // };
+
     const handleSave = async (newTodo) => {
         console.log("New Todo Saved:", newTodo);
 
         try {
-            // 백엔드로 POST 요청 전송
             const response = await fetch('http://localhost:8085/api/calendar/add', {
                 method: 'POST',
                 headers: {
@@ -118,7 +145,16 @@ function Calendar() {
             const data = await response.json();
             console.log('Response from backend:', data);
 
-            // 성공적으로 저장되면 모달을 닫음
+            // FullCalendar 형식으로 변환하여 상태 업데이트
+            const newEvent = {
+                id: data.calendarId,
+                title: data.title,
+                start: data.startTime,
+                end: data.endTime,
+                color: data.color || '#808080', // color 추가
+            };
+
+            setEvents((prevEvents) => [...prevEvents, newEvent]);
             closeModal();
         } catch (error) {
             console.error('Error saving data:', error);
