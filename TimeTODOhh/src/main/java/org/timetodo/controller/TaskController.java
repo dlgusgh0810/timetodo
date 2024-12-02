@@ -71,10 +71,13 @@ public class TaskController {
 
     // 특정 할 일을 업데이트하는 엔드포인트
     @PutMapping("/update/{id}")
-    public ResponseEntity<TaskEntity> updateTask(@RequestBody Long id, @RequestBody TaskRequestDto taskRequestDto, @RequestBody Long categoryId) {
+    public ResponseEntity<TaskEntity> updateTask(
+            @RequestBody TaskRequestDto taskRequestDto,
+            @RequestBody Long categoryId) {
         // 경로 변수로 전달된 id에 해당하는 할 일을 찾아,
         // 사용자가 보낸 데이터로 업데이트하고 그 결과를 반환합니다.
-        TaskEntity updatedTask = taskService.updateTask(id, taskRequestDto, categoryId);
+
+        TaskEntity updatedTask = taskService.updateTask(taskRequestDto, categoryId);
         return ResponseEntity.ok(updatedTask); // 성공 시 업데이트된 할 일을 반환
     }
 
