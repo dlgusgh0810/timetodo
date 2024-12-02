@@ -1,61 +1,75 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './Todo.module.css';
 import AddModal from '../add/AddModal';
+import axios from "axios";
 
 function Todo() {
     const [todos, setTodos] = useState([
         { id: 1, title: '친구 생일선물 사기', date: '2024-11-20', label: '선물', priority: '중요', status: false },
         { id: 2, title: '과제하기', date: '2024-11-15', label: '공부', priority: '일반', status: false }
     ]);
-
     const [showModal, setShowModal] = useState(false);
+    const [labelOptions, setLabelOptions] = useState([]); // 라벨 옵션 상태 추가
 
-    // 할 일 추가 함수 (모달에서 전달된 데이터를 목록에 추가)
+    // 라벨 데이터 가져오기
+    useEffect(() => {
+        const fetchLabels = async () => {
+            try {
+                const response = await fetch("http://localhost:8085/api/categories/all", {
+                    method: "GET",
+                    credentials: "include", // 쿠키 포함
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch categories');
+                }
+                const categories = await response.json();
+                const formattedCategories = categories.map((category) => ({
+                    id: category.categoryId,
+                    name: category.categoryName,
+                    color: category.color || '#808080',
+                }));
+                setLabelOptions(formattedCategories);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+        fetchLabels();
+    }, []);
+
+    // 할 일 추가 함수
     const addTodo = (newTodo) => {
         const todoItem = {
-            id: Date.now(), // 고유 ID 생성
+            id: newTodo.id, // 서버에서 반환된 ID
             title: newTodo.title,
             date: newTodo.deadline ? newTodo.deadline.split('T')[0] : null, // 날짜를 YYYY-MM-DD 형식으로 추출
-            label: newTodo.selectedLabel || '라벨 없음',
+            label: labelOptions.find((label) => label.id === newTodo.categoryId)?.name || '라벨 없음', // 카테고리 이름 매핑
             priority: newTodo.priority || '우선순위 없음',
-            status: false, // 초기 상태는 미완료로 설정
+            repeatType: newTodo.repeatType || null, // 반복 설정
+            status: newTodo.status || '미완료', // 상태 추가
         };
-        setTodos([...todos, todoItem]); // 상태 업데이트
-        setShowModal(false); // 모달 닫기
-    };
 
-    // 할 일 상태 업데이트 함수 (체크박스로 완료 여부 변경)
-    const updateStatus = (id) => {
-        setTodos(todos.map(todo => (todo.id === id ? { ...todo, status: !todo.status } : todo)));
+        setTodos((prevTodos) => [...prevTodos, todoItem]); // 상태 업데이트
+        setShowModal(false); // 모달 닫기
     };
 
     return (
         <div className={styles.container}>
             <h2 className={styles.title}>할 일 목록</h2>
             <ul className={styles.todoList}>
-                {todos.map(todo => (
+                {todos.map((todo) => (
                     <li key={todo.id} className={styles.todoItem}>
-                        <label className={styles.checkboxContainer}>
-                            <input
-                                type="checkbox"
-                                checked={todo.status}
-                                onChange={() => updateStatus(todo.id)}
-                            />
-                            <span className={styles.customCheckbox}></span>
-                        </label>
                         <div className={styles.todoDetails}>
-                            <span className={todo.status ? styles.completed : ''}>{todo.title}</span>
+                            <span>{todo.title}</span>
                             <div className={styles.metadata}>
-                                {todo.date && <span className={styles.dueDate}>📅 {todo.date}</span>}
-                                {todo.label && <span className={styles.label}>🏷️ {todo.label}</span>}
-                                {todo.priority && <span className={styles.priority}>⚡ {todo.priority}</span>}
+                                {todo.date && <span>📅 {todo.date}</span>}
+                                {todo.label && <span>🏷️ {todo.label}</span>}
+                                {todo.priority && <span>⚡ {todo.priority}</span>}
                             </div>
                         </div>
                     </li>
                 ))}
             </ul>
 
-            {/* 할 일 추가 모달 열기 버튼 */}
             <button
                 onClick={() => setShowModal(true)}
                 className={styles.addButton}
@@ -63,12 +77,13 @@ function Todo() {
                 할 일 추가하기
             </button>
 
-            {/* 모달 컴포넌트 */}
+            {/* AddModal에 labelOptions 전달 */}
             <AddModal
                 isOpen={showModal}
                 onRequestClose={() => setShowModal(false)}
-                onSave={addTodo} // 부모 컴포넌트의 상태 업데이트
-                defaultTab="할 일" // 할 일 탭을 기본값으로 설정
+                onSave={addTodo}
+                defaultTab="할 일"
+                labelOptions={labelOptions} // 라벨 옵션 전달
             />
         </div>
     );

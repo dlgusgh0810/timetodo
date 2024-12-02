@@ -56,8 +56,35 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
     }, [isOpen]);
 
+
+    const handleAddLabel = async (newLabel) => {
+        try {
+            if (!newLabel.name || !newLabel.color) {
+                alert("라벨 이름과 색상을 입력해주세요.");
+                return;
+            }
+
+            const duplicate = labelOptions.some((label) => label.name === newLabel.name);
+            if (duplicate) {
+                alert("이미 존재하는 라벨입니다.");
+                return;
+            }
+
+            const response = await axios.post("/api/categories/add", {
+                categoryName: newLabel.name,
+                color: newLabel.color,
+            });
+
+            const savedLabel = response.data;
+            setLabelOptions((prevOptions) => [...prevOptions, savedLabel]);
+            setIsLabelModalOpen(false);
+        } catch (error) {
+            console.error("라벨 추가 실패:", error);
+            alert("라벨 추가에 실패했습니다.");
+        }
+    };
     const handleSaveTask = async () => {
-      
+
         const formatDateTime = (date) => {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -68,43 +95,48 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
 
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         };
-      
+
         const newTask = {
-            type: "task", // 할 일 타입 추가
             title: title.trim(),
             description: description || null,
             deadline: formatDateTime(deadline),
-            priority,
-            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080',
+            priority: priority || '우선순위 없음',
+            status: '보류 중',
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 추가
+            categoryId: selectedCategoryId,
         };
 
         try {
-            const response = await axios.post(`http://localhost:8085/api/tasks/add`, newTask, {
+            const response = await axios.post(`http://localhost:8085/api/task/add`, newTask, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
+                body: JSON.stringify(newTask),
+                credentials: "include",
             });
 
             if (!response || !response.data) {
-                throw new Error('응답 데이터가 없습니다.');
+                throw new Error("응답 데이터가 없습니다.");
             }
 
             const savedData = response.data;
+
+            // 부모 컴포넌트로 전달
             onSave({
                 ...newTask,
-                id: savedData.id,
+                id: savedData.id, // 서버에서 반환된 ID 사용
             });
 
             resetForm();
             onRequestClose();
         } catch (error) {
-            console.error('할 일 저장 오류:', error);
-            alert('할 일을 저장하는 중 문제가 발생했습니다.');
+            console.error("할 일 저장 오류:", error);
+            alert("할 일을 저장하는 중 문제가 발생했습니다.");
         }
     };
 
     const handleSaveEvent = async () => {
-        
-       
+
+
 
         if (!title.trim()) {
             alert("제목을 입력하세요.");
@@ -300,6 +332,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                     />
                 </label>
 
+
                 {/*반복*/}
                 <label className={styles.label}>
                     <FaSyncAlt className={styles.icon} />
@@ -347,6 +380,11 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             </form>
 
 
+            <AddLabelModal
+                isOpen={isLabelModalOpen}
+                onRequestClose={() => setIsLabelModalOpen(false)}
+                onSave={handleAddLabel}
+            />
 
         </Modal>
     );
