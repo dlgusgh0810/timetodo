@@ -17,7 +17,7 @@ public class CalendarDTO {
     private String description;     // 일정 설명
     private LocalDateTime startTime; // 일정 시작 시간
 
-//    @JsonProperty("end_time") // OpenAI JSON 키와 매핑
+    @JsonProperty("end_time") // OpenAI JSON 키와 매핑
     private LocalDateTime endTime;   // 일정 종료 시간
 
     private String location;        // 일정 장소

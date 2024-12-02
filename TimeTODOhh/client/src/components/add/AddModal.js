@@ -84,7 +84,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newEvent),
-                credentials: "include",
+                credentials: "include"
             });
 
             if (!response.ok) {
