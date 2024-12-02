@@ -67,36 +67,70 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
     };
 
     // 저장 함수 (비동기)
-    const saveEventOrTask = async () => {
+    let isSavingTask = false; // 중복 저장 방지 플래그 (할 일)
+    let isSavingEvent = false; // 중복 저장 방지 플래그 (일정)
+
+    const handleSaveTask = async () => {
         if (!title.trim()) {
             alert("제목을 입력하세요.");
             return;
         }
 
-        let newEvent;
-        if (activeTab === '일정') {
-            newEvent = {
-                title: title.trim(),
-                description: description || null,
-                startTime: formatDateTime(startDate),
-                endTime: formatDateTime(endDate),
-                location: selectedLabel || '기본 장소',
-                repeatType: repeat === '반복 없음' ? null : repeat,
-                color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080',
-            };
-        } else {
-            newEvent = {
-                title: title.trim(),
-                description: description || null,
-                deadline: formatDateTime(deadline),
-                priority,
-                color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080',
-            };
-        }
+        const newTask = {
+            type: "task", // 할 일 타입 추가
+            title: title.trim(),
+            description: description || null,
+            deadline: formatDateTime(deadline),
+            priority,
+            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080',
+        };
 
         try {
-            const endpoint = activeTab === '일정' ? '/api/calendar/add' : '/api/tasks/add';
-            const response = await axios.post(`http://localhost:8085${endpoint}`, newEvent, {
+            const response = await axios.post(`http://localhost:8085/api/tasks/add`, newTask, {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true,
+            });
+
+            if (!response || !response.data) {
+                throw new Error('응답 데이터가 없습니다.');
+            }
+
+            const savedData = response.data;
+            onSave({
+                ...newTask,
+                id: savedData.id,
+            });
+
+            resetForm();
+            onRequestClose();
+        } catch (error) {
+            console.error('할 일 저장 오류:', error);
+            alert('할 일을 저장하는 중 문제가 발생했습니다.');
+        }
+    };
+
+    const handleSaveEvent = async () => {
+        if (isSavingEvent) return; // 이미 저장 중이면 종료
+        isSavingEvent = true; // 저장 시작
+
+        if (!title.trim()) {
+            alert("제목을 입력하세요.");
+            isSavingEvent = false;
+            return;
+        }
+
+        const newEvent = {
+            title: title.trim(),
+            description: description || null,
+            startTime: formatDateTime(startDate),
+            endTime: formatDateTime(endDate),
+            location: selectedLabel || '기본 장소',
+            repeatType: repeat === '반복 없음' ? null : repeat,
+            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080',
+        };
+
+        try {
+            const response = await axios.post("http://localhost:8085/api/calendar/add", newEvent, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
             });
@@ -109,20 +143,24 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             onSave({
                 id: savedData.id,
                 ...newEvent,
+                type: 'event',
             });
 
             resetForm();
             onRequestClose();
         } catch (error) {
-            console.error('데이터 저장 오류:', error);
-            alert('데이터 저장에 실패했습니다.');
+            console.error('일정 저장 오류:', error);
+            alert('일정 저장에 실패했습니다.');
+        } finally {
+            isSavingEvent = false; // 저장 완료
         }
     };
 
+
     // 저장 버튼 핸들러
-    const handleSaveClick = () => {
-        saveEventOrTask(); // 비동기 함수 호출
-    };
+    // const handleSaveClick = () => {
+    //     saveEventOrTask(); // 비동기 함수 호출
+    // };
 
     // 폼 초기화
     const resetForm = () => {
@@ -251,9 +289,17 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                     />
                 </label>
 
-                <button type="button" onClick={handleSaveClick} className={styles.saveButton}>
-                    저장
-                </button>
+                {activeTab === '할 일' && (
+                    <button type="button" onClick={handleSaveTask} className={styles.saveButton}>
+                        할 일 저장
+                    </button>
+                )}
+
+                {activeTab === '일정' && (
+                    <button type="button" onClick={handleSaveEvent} className={styles.saveButton}>
+                        일정 저장
+                    </button>
+                )}
             </form>
 
             <AddLabelModal
