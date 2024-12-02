@@ -119,11 +119,12 @@ public class CalendarController {
     // 특정 일정을 업데이트하는 엔드포인트
     @PutMapping("/update")
     public ResponseEntity<CalendarEntity> updateCalendar(
+            @RequestBody Long calendarId,
             @RequestBody CalendarRequestDto calendarRequestDto,
-            @RequestParam Long categoryId) {
+            @RequestBody Long categoryId) {
         // 경로 변수로 전달된 id에 해당하는 일정을 찾아,
         // 사용자가 보낸 데이터로 업데이트하고 그 결과를 반환합니다.
-        CalendarEntity updatedCalendar = calendarService.updateCalendar( calendarRequestDto, categoryId);
+        CalendarEntity updatedCalendar = calendarService.updateCalendar(calendarId, calendarRequestDto, categoryId);
         return ResponseEntity.ok(updatedCalendar); // 성공 시 업데이트된 일정을 반환
     }
 

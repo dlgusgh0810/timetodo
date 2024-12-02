@@ -57,7 +57,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
     }, [isOpen]);
 
     const handleSaveTask = async () => {
-
+      
         const formatDateTime = (date) => {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -68,7 +68,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
 
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         };
-
+      
         const newTask = {
             type: "task", // 할 일 타입 추가
             title: title.trim(),
@@ -103,8 +103,8 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
     };
 
     const handleSaveEvent = async () => {
-
-
+        
+       
 
         if (!title.trim()) {
             alert("제목을 입력하세요.");
