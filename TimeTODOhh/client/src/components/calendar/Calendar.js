@@ -29,7 +29,7 @@ function Calendar() {
         //
         // }
         {
-            id: 1,
+            id: 10,
             title: '팀 미팅',
             start: '2024-11-30T10:00:00',
             end: '2024-11-30T12:00:00',
@@ -37,7 +37,7 @@ function Calendar() {
             location: '회의실 A',
         },
         {
-            id: 2,
+            id: 20,
             title: '코드 리뷰',
             start: '2024-12-01T15:00:00',
             end: '2024-12-01T16:30:00',
@@ -45,7 +45,7 @@ function Calendar() {
             location: '회의실 B',
         },
         {
-            id: 3,
+            id: 30,
             title: '데드라인 제출',
             start: '2024-12-02T00:00:00',
             end: '2024-12-03T00:00:00',
@@ -60,7 +60,10 @@ function Calendar() {
 
     const fetchEvents = async () => {
         try {
-            const response = await fetch('http://localhost:8085/api/calendar/find');
+            const response = await fetch("http://localhost:8085/api/calendar/find", {
+                method: "GET",
+                credentials: "include", // 쿠키 포함
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch events');
             }
@@ -132,6 +135,7 @@ function Calendar() {
         try {
             const response = await fetch('http://localhost:8085/api/calendar/add', {
                 method: 'POST',
+                credentials: "include",
                 headers: {
                     'Content-Type': 'application/json',
                 },

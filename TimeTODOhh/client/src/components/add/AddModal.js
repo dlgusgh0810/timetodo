@@ -50,33 +50,47 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
     }, [isOpen]);
 
-    // 저장 핸들러
     const handleSave = async () => {
         if (!title.trim()) {
             alert("제목을 입력하세요.");
             return;
         }
+        // 'YYYY-MM-DDTHH:mm:ss' 형식으로 변환하는 함수
+        const formatDateTime = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        };
 
         // 데이터 구성
         const newEvent = {
-            title,
+            title: title.trim(),
             description: description || null,
-            startTime: startDate.toISOString(),
-            endTime: endDate.toISOString(),
-            location: selectedLabel, // 선택된 라벨을 location으로 사용 (필요 시 수정 가능)
+            startTime: formatDateTime(startDate), // 밀리초 제외한 포맷
+            endTime: formatDateTime(endDate),     // 밀리초 제외한 포맷
+            location: selectedLabel || '기본 장소', // 기본 값 설정
             repeatType: repeat === '반복 없음' ? null : repeat, // 반복 없음은 null로 처리
             color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080', // 라벨 색상
         };
 
         try {
+            // API 요청
             const response = await fetch('http://localhost:8085/api/calendar/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newEvent),
+                credentials: "include",
             });
 
             if (!response.ok) {
-                throw new Error('Failed to save data to backend');
+                const errorData = await response.json(); // 서버에서 반환하는 오류 메시지 확인
+                console.error('Server Error:', errorData);
+                throw new Error(errorData.error || 'Failed to save data to backend');
             }
 
             const savedEvent = await response.json();
@@ -95,12 +109,13 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             });
 
             resetForm();
-            onRequestClose();
+            onRequestClose(); // 모달 닫기
         } catch (error) {
             console.error('Error saving data:', error);
             alert('데이터 저장에 실패했습니다.');
         }
     };
+
 
 
     // 폼 초기화

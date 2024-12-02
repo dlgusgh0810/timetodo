@@ -50,7 +50,7 @@ public class CalendarService {
             case "NONE":
                 //반복없음
                 break;
-            case "DAILY":
+            case "매일":
                 // 매일 반복 설정 로직 (예: 매일 일정 생성)
                 break;
             case "WEEKLY":
