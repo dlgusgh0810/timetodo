@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.timetodo.dto.CalendarDTO;
 import org.timetodo.dto.CalendarRequestDto;
 import org.timetodo.entity.CalendarEntity;
-import org.timetodo.entity.CategoryEntity;
 import org.timetodo.service.CalendarService;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -88,7 +87,7 @@ public class CalendarController {
 
     // 로그인한 유저의 일정을 전체 조회하는 엔드포인트
     @GetMapping("/find")
-    public List<CalendarEntity> getUserCalendars(HttpServletRequest request) {
+    public List<CalendarDTO> getUserCalendars(HttpServletRequest request) {
         try {
             Cookie[] cookies = request.getCookies();
             if (cookies == null) {
@@ -107,7 +106,6 @@ public class CalendarController {
             Long userId = Long.parseLong(userCookie.getValue());
             log.info("UserId from cookie: {}", userId);
 
-            // userId에 해당하는 일정만 조회
             return calendarService.getCalendarsByUserId(userId);
         } catch (Exception e) {
             log.error("Error in getUserCalendars:", e);

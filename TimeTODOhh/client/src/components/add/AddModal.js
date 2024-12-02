@@ -56,8 +56,35 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
     }, [isOpen]);
 
+
+    const handleAddLabel = async (newLabel) => {
+        try {
+            if (!newLabel.name || !newLabel.color) {
+                alert("라벨 이름과 색상을 입력해주세요.");
+                return;
+            }
+
+            const duplicate = labelOptions.some((label) => label.name === newLabel.name);
+            if (duplicate) {
+                alert("이미 존재하는 라벨입니다.");
+                return;
+            }
+
+            const response = await axios.post("/api/categories/add", {
+                categoryName: newLabel.name,
+                color: newLabel.color,
+            });
+
+            const savedLabel = response.data;
+            setLabelOptions((prevOptions) => [...prevOptions, savedLabel]);
+            setIsLabelModalOpen(false);
+        } catch (error) {
+            console.error("라벨 추가 실패:", error);
+            alert("라벨 추가에 실패했습니다.");
+        }
+    };
     const handleSaveTask = async () => {
-      
+
         const formatDateTime = (date) => {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -68,7 +95,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
 
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         };
-      
+
         const newTask = {
             type: "task", // 할 일 타입 추가
             title: title.trim(),
@@ -103,8 +130,8 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
     };
 
     const handleSaveEvent = async () => {
-        
-       
+
+
 
         if (!title.trim()) {
             alert("제목을 입력하세요.");
@@ -283,7 +310,10 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 <label>라벨</label>
                 <CustomDropdown
                     options={labelOptions}
-                    onLabelSelect={handleLabelSelect}
+                    onLabelSelect={(label) => {
+                        setSelectedLabel(label.name);
+                        setSelectedCategoryId(label.id);
+                    }}
                     onAddLabel={() => setIsLabelModalOpen(true)}
                 />
 
@@ -326,9 +356,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             <AddLabelModal
                 isOpen={isLabelModalOpen}
                 onRequestClose={() => setIsLabelModalOpen(false)}
-
-                onSave={(label) => setLabelOptions([...labelOptions, label])}
-
+                onSave={handleAddLabel}
             />
         </Modal>
     );
