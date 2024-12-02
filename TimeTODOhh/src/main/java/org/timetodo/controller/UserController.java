@@ -47,10 +47,10 @@ public class UserController {
         UserEntity authenticatedUser = userService.authenticateUser(userDTO.getUsername(), userDTO.getPassword());
 
         // userId 쿠키 설정
-        response.setHeader("Set-Cookie", "userId=" + authenticatedUser.getUserId() + "; Path=/; SameSite=None; Secure; HttpOnly");
+        response.setHeader("Set-Cookie", "userId=" + authenticatedUser.getUserId() + "; Path=/; SameSite=None;");
 
         // username 쿠키 추가 설정
-        response.addHeader("Set-Cookie", "username=" + authenticatedUser.getUsername() + "; Path=/; SameSite=None; Secure");
+        response.addHeader("Set-Cookie", "username=" + authenticatedUser.getUsername() + "; Path=/; SameSite=None;");
 
         log.info("쿠키에 저장한 UserId : {}", authenticatedUser.getUserId());
         log.info("쿠키에 저장한 Username : {}", authenticatedUser.getUsername());

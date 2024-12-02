@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.timetodo.dto.CalendarDTO;
@@ -28,42 +29,91 @@ public class CalendarController {
 
     // 새로운 일정을 추가하는 엔드포인트
     @PostMapping("/add")
-    public ResponseEntity<String> addCalendar(
+    public ResponseEntity<?> addCalendar(
             @RequestBody CalendarRequestDto calendarRequestDto,
             HttpServletRequest request) {
-        Long userId = 0L;
+        Long userId = null;
+
         try {
-            Cookie userCookie = Arrays.stream(request.getCookies())
+            // 쿠키에서 userId 가져오기
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("쿠키가 존재하지 않습니다.");
+            }
+
+            // userId 쿠키 검색
+            Cookie userCookie = Arrays.stream(cookies)
                     .filter(cookie -> cookie.getName().equals("userId"))
                     .findAny()
                     .orElse(null);
-            userId = Long.valueOf(userCookie.getValue());
+
+            if (userCookie == null || userCookie.getValue() == null || userCookie.getValue().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("userId 쿠키가 없거나 비어 있습니다.");
+            }
+
+            // userId 파싱
+            try {
+                userId = Long.valueOf(userCookie.getValue());
+            } catch (NumberFormatException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("userId 쿠키 값이 올바르지 않습니다.");
+            }
+
             log.info("세션에서 가져온 UserId : {}", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("쿠키 처리 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("쿠키 처리 중 오류가 발생했습니다.");
         }
 
-        // Calendar 생성
-        calendarRequestDto.setUserId(userId);
-        CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId);
+        try {
+            // Calendar 생성
+            calendarRequestDto.setUserId(userId);
+            CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId);
 
+            log.info("생성된 Calendar: {}", calendar);
 
-        return ResponseEntity.ok("캘린더 생성 성공");
-
+            // 성공적으로 생성된 CalendarDTO를 반환
+            return ResponseEntity.ok(calendar);
+        } catch (Exception e) {
+            log.error("캘린더 생성 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("캘린더 생성 중 오류가 발생했습니다.");
+        }
     }
+
 
     // 로그인한 유저의 일정을 전체 조회하는 엔드포인트
     @GetMapping("/find")
     public List<CalendarEntity> getUserCalendars(HttpServletRequest request) {
-        Long userId = 0L;
-        Cookie userCookie = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("userId"))
-                .findAny()
-                .orElse(null);
-        userId = Long.valueOf(userCookie.getValue());
-        // userId에 해당하는 일정만 조회
-        return calendarService.getCalendarsByUserId(userId); // 성공 시 일정 목록을 반환
+        try {
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null) {
+                throw new IllegalStateException("쿠키가 존재하지 않습니다.");
+            }
+
+            Cookie userCookie = Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals("userId"))
+                    .findAny()
+                    .orElse(null);
+
+            if (userCookie == null || userCookie.getValue() == null || userCookie.getValue().isEmpty()) {
+                throw new IllegalStateException("userId 쿠키가 없거나 비어 있습니다.");
+            }
+
+            Long userId = Long.parseLong(userCookie.getValue());
+            log.info("UserId from cookie: {}", userId);
+
+            // userId에 해당하는 일정만 조회
+            return calendarService.getCalendarsByUserId(userId);
+        } catch (Exception e) {
+            log.error("Error in getUserCalendars:", e);
+            throw new RuntimeException("캘린더 조회 중 오류가 발생했습니다.");
+        }
     }
+
 
     // 특정 일정을 업데이트하는 엔드포인트
     @PutMapping("/update/{id}")

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import {useEffect} from "react";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -6,10 +7,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
 import styles from './Calendar.module.css';
 
-function Calendar({ events }) {
+function Calendar() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
-// <<<<<<< NewFile
     const calendarRef = useRef(null);
     const [events, setEvents] = useState([
         // {
@@ -29,7 +29,7 @@ function Calendar({ events }) {
         //
         // }
         {
-            id: 1,
+            id: 10,
             title: '팀 미팅',
             start: '2024-11-30T10:00:00',
             end: '2024-11-30T12:00:00',
@@ -37,7 +37,7 @@ function Calendar({ events }) {
             location: '회의실 A',
         },
         {
-            id: 2,
+            id: 20,
             title: '코드 리뷰',
             start: '2024-12-01T15:00:00',
             end: '2024-12-01T16:30:00',
@@ -45,13 +45,12 @@ function Calendar({ events }) {
             location: '회의실 B',
         },
         {
-            id: 3,
+            id: 30,
             title: '데드라인 제출',
             start: '2024-12-02T00:00:00',
             end: '2024-12-03T00:00:00',
             description: '프로젝트 최종 결과물 제출',
             location: '온라인 제출',
-            color: '#808080'
         }
     ]);
 
@@ -61,7 +60,10 @@ function Calendar({ events }) {
 
     const fetchEvents = async () => {
         try {
-            const response = await fetch('http://localhost:8085/api/calendar/find');
+            const response = await fetch("http://localhost:8085/api/calendar/find", {
+                method: "GET",
+                credentials: "include", // 쿠키 포함
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch events');
             }
@@ -79,9 +81,6 @@ function Calendar({ events }) {
             console.error('Error fetching events:', error);
         }
     };
-// =======
-//     const calendarRef = useRef(null); // FullCalendar의 ref 생성
-// >>>>>>> main
 
     // 날짜 클릭 이벤트
     const handleDateClick = (arg) => {
@@ -136,6 +135,7 @@ function Calendar({ events }) {
         try {
             const response = await fetch('http://localhost:8085/api/calendar/add', {
                 method: 'POST',
+                credentials: "include",
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -201,7 +201,8 @@ function Calendar({ events }) {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 onSave={handleSave}  // 추가된 onSave prop
-                selectedDate={selectedDate}
+                selectedDate={selectedDate} // 선택된 날짜 전달
+                defaultTab="일정" // 기본 탭 전달
             />
         </div>
     );
