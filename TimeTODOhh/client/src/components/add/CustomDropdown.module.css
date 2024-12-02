@@ -1,14 +1,15 @@
 .dropdownContainer {
     position: relative;
-    width: 200px; /* 원하는 크기로 설정 */
+    width: 200px;
 }
 
 .selectedLabel {
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     color: #817a7a; /* 기본 텍스트 색상 */
+    font-size: 14px;
     text-align: center;
     background-color: #ffffff; /* 초기 배경색 (라벨 없음) */
     transition: background-color 0.3s ease, color 0.3s ease; /* 애니메이션 효과 */
@@ -55,3 +56,4 @@
 .addLabelButton:hover {
     background-color: #f0f0f0;
 }
+

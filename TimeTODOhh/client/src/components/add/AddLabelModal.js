@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import styles from './AddLabelModal.module.css';
+import {FaTimes} from "react-icons/fa";
 
 function AddLabelModal({ isOpen, onRequestClose, onSave }) {
     const [newLabelName, setNewLabelName] = useState('');
@@ -29,7 +30,16 @@ function AddLabelModal({ isOpen, onRequestClose, onSave }) {
             className={styles.labelModal}
             overlayClassName={styles.labelModalOverlay}
         >
-            <h2>라벨 추가</h2>
+            <h2 className={styles.h2}>라벨 추가</h2>
+
+            {/*닫기 아이콘*/}
+            <div className={styles.closeIcon}>
+                <FaTimes
+                    onClick={onRequestClose}
+                />
+            </div>
+
+
             <input
                 type="text"
                 value={newLabelName}
@@ -37,8 +47,7 @@ function AddLabelModal({ isOpen, onRequestClose, onSave }) {
                 placeholder="라벨 이름"
             />
 
-            <div className={styles.colorOptions}>
-                <p>라벨 색상 선택:</p>
+            <div className={styles.colorPicker}>
                 {colorOptions.map((color) => (
                     <button
                         key={color}
@@ -46,7 +55,7 @@ function AddLabelModal({ isOpen, onRequestClose, onSave }) {
                             backgroundColor: color,
                             width: '30px',
                             height: '30px',
-                            border: color === newLabelColor ? '2px solid black' : 'none',
+                            border: color === newLabelColor ? '2px solid #808080' : 'none',
                             borderRadius: '50%',
                             margin: '5px',
                             cursor: 'pointer',
@@ -57,7 +66,9 @@ function AddLabelModal({ isOpen, onRequestClose, onSave }) {
                 ))}
             </div>
 
-            <button onClick={handleSave}>저장</button>
+            <div className={styles.center}>
+                <button onClick={handleSave} className={styles.saveButton}>저장</button>
+            </div>
         </Modal>
     );
 }
