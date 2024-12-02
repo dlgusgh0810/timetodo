@@ -31,7 +31,8 @@ public class CalendarController {
     @PostMapping("/add")
     public ResponseEntity<?> addCalendar(
             @RequestBody CalendarRequestDto calendarRequestDto,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            @RequestBody Long categoryId) {
         Long userId = null;
 
         try {
@@ -71,7 +72,7 @@ public class CalendarController {
         try {
             // Calendar 생성
             calendarRequestDto.setUserId(userId);
-            CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId);
+            CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId, categoryId);
 
             log.info("생성된 Calendar: {}", calendar);
 
@@ -116,17 +117,20 @@ public class CalendarController {
 
 
     // 특정 일정을 업데이트하는 엔드포인트
-    @PutMapping("/update/{id}")
-    public ResponseEntity<CalendarEntity> updateCalendar(@PathVariable Long id, @RequestBody CalendarRequestDto calendarRequestDto) {
+    @PutMapping("/update")
+    public ResponseEntity<CalendarEntity> updateCalendar(
+            @RequestBody Long calendarId,
+            @RequestBody CalendarRequestDto calendarRequestDto,
+            @RequestBody Long categoryId) {
         // 경로 변수로 전달된 id에 해당하는 일정을 찾아,
         // 사용자가 보낸 데이터로 업데이트하고 그 결과를 반환합니다.
-        CalendarEntity updatedCalendar = calendarService.updateCalendar(id, calendarRequestDto);
+        CalendarEntity updatedCalendar = calendarService.updateCalendar(calendarId, calendarRequestDto, categoryId);
         return ResponseEntity.ok(updatedCalendar); // 성공 시 업데이트된 일정을 반환
     }
 
     // 특정 일정을 삭제하는 엔드포인트
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteCalendar(@PathVariable Long id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteCalendar(@RequestBody Long id) {
         // 경로 변수로 전달된 id에 해당하는 일정을 삭제합니다.
         calendarService.deleteCalendar(id);
         return ResponseEntity.noContent().build(); // 성공 시 응답 본문 없이 204 상태코드 반환
@@ -135,10 +139,10 @@ public class CalendarController {
     // 일정 검색 엔드포인트
     @GetMapping("/search")
     public ResponseEntity<List<CalendarEntity>> searchEvents(
-            @RequestParam String title,
-            @RequestParam String description,
-            @RequestParam Long categoryId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime) {
+            @RequestBody String title,
+            @RequestBody String description,
+            @RequestBody Long categoryId,
+            @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime) {
         List<CalendarEntity> events = calendarService.searchEvents(title, description, categoryId, startTime);
         return ResponseEntity.ok(events);
     }
