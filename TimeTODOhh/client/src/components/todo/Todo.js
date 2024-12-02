@@ -13,15 +13,12 @@ function Todo() {
     // 할 일 추가 함수 (모달에서 전달된 데이터를 목록에 추가)
     const addTodo = (newTodo) => {
         const todoItem = {
-            id: Date.now(), // 고유 ID 생성
-            title: newTodo.title,
-            date: newTodo.deadline ? newTodo.deadline.split('T')[0] : null, // 날짜를 YYYY-MM-DD 형식으로 추출
-            label: newTodo.selectedLabel || '라벨 없음',
-            priority: newTodo.priority || '우선순위 없음',
-            status: false, // 초기 상태는 미완료로 설정
+            id: Date.now(),
+            ...newTodo,
+            status: false // 초기 상태는 미완료로 설정
         };
-        setTodos([...todos, todoItem]); // 상태 업데이트
-        setShowModal(false); // 모달 닫기
+        setTodos([...todos, todoItem]);
+        setShowModal(false);
     };
 
     // 할 일 상태 업데이트 함수 (체크박스로 완료 여부 변경)
@@ -67,8 +64,7 @@ function Todo() {
             <AddModal
                 isOpen={showModal}
                 onRequestClose={() => setShowModal(false)}
-                onSave={addTodo} // 부모 컴포넌트의 상태 업데이트
-                defaultTab="할 일" // 할 일 탭을 기본값으로 설정
+                onSave={addTodo}
             />
         </div>
     );
