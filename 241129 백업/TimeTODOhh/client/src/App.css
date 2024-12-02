@@ -1,0 +1,13 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh; /* 전체 화면 높이 */
+}
