@@ -10,33 +10,33 @@ function Calendar() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
     const calendarRef = useRef(null);
-    const [events, setEvents] = useState([
-        {
-            id: 10,
-            title: '팀 미팅',
-            start: '2024-11-30T10:00:00',
-            end: '2024-11-30T12:00:00',
-            description: '프로젝트 논의를 위한 팀 미팅',
-            location: '회의실 A',
-        },
-        {
-            id: 20,
-            title: '코드 리뷰',
-            start: '2024-12-01T15:00:00',
-            end: '2024-12-01T16:30:00',
-            description: '동료와 코드 리뷰 세션',
-            location: '회의실 B',
-        },
-        {
-            id: 30,
-            title: '데드라인 제출',
-            start: '2024-12-02T00:00:00',
-            end: '2024-12-03T00:00:00',
-            description: '프로젝트 최종 결과물 제출',
-            location: '온라인 제출',
-        },
-    ]);
+    const [labelOptions, setLabelOptions] = useState([]);
+    const [events, setEvents] = useState([]);
+    // 카테고리 데이터 불러오기
+    useEffect(() => {
+        const fetchLabels = async () => {
+            try {
+                const response = await fetch("http://localhost:8085/api/categories/all", {
+                    method: "GET",
+                    credentials: "include", // 쿠키 포함
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch categories');
+                }
+                const categories = await response.json();
+                const formattedCategories = categories.map((category) => ({
+                    id: category.categoryId,
+                    name: category.categoryName,
+                    color: category.color || '#808080',
+                }));
+                setLabelOptions(formattedCategories);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
 
+        fetchLabels();
+    }, []);
     useEffect(() => {
         fetchEvents(); // 컴포넌트 로드 시 일정 데이터를 불러옴
     }, []);
@@ -51,19 +51,24 @@ function Calendar() {
                 throw new Error('Failed to fetch events');
             }
             const data = await response.json(); // CalendarDTO 형식 데이터
-            const fullCalendarEvents = data.map((event) => ({
-                id: event.calendarId,
-                title: event.title,
-                start: event.startTime,
-                end: event.endTime,
-                description: event.description,
-                location: event.location,
-            }));
+            const fullCalendarEvents = data.map((event) => {
+                const categoryColor = labelOptions.find(label => label.id === event.categoryId)?.color || '#808080';
+                return {
+                    id: event.calendarId,
+                    title: event.title,
+                    start: event.startTime,
+                    end: event.endTime,
+                    description: event.description,
+                    location: event.location,
+                    color: categoryColor, // categoryId로 색상 결정
+                };
+            });
             setEvents(fullCalendarEvents);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
     };
+
 
     // 날짜 클릭 이벤트
     const handleDateClick = (arg) => {

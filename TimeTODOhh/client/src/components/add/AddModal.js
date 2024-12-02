@@ -108,7 +108,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
 
         if (!title.trim()) {
             alert("제목을 입력하세요.");
-            isSavingEvent = false;
+        }
 
         const formatDateTime = (date) => {
             const year = date.getFullYear();
@@ -142,16 +142,19 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         try {
             const response = await fetch('http://localhost:8085/api/calendar/add', {
                 method: 'POST',
-
                 headers: { 'Content-Type': 'application/json' },
-                withCredentials: true,
+                body: JSON.stringify(newEvent),
+                credentials: "include"
             });
 
-            if (!response || !response.data) {
-                throw new Error('응답 데이터가 없습니다.');
-            }
+
+
+
 
             const savedEvent = await response.json();
+            if (!savedEvent) {
+                throw new Error('응답 데이터가 없습니다.');
+            }
             onSave({
                 id: savedEvent.calendarId,
                 title: savedEvent.title,
