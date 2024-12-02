@@ -121,13 +121,15 @@ public class CalendarService {
     }
 
     // 특정 일정을 업데이트
-    public CalendarEntity updateCalendar(Long calendarId, CalendarRequestDto calendarRequestDto, Long categoryId) {
+    public CalendarEntity updateCalendar(CalendarRequestDto calendarRequestDto, Long categoryId) {
         // 기존 일정 조회
+        Long calendarId = calendarRequestDto.getCalendarId(); //calendar 아이디 불러오기
         CalendarEntity existingCalendar = calendarRepository.findById(calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정이 없습니다."));
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("할당된 카테고리 ID가 없습니다."));
         // 기존 일정을 새로운 데이터로 업데이트
+
         existingCalendar.setTitle(calendarRequestDto.getTitle());
         existingCalendar.setDescription(calendarRequestDto.getDescription());
         existingCalendar.setStartTime(calendarRequestDto.getStartTime());

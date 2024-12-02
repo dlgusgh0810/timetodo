@@ -44,15 +44,25 @@ public class TaskService{
         task.setTitle(taskRequestDto.getTitle()); //타이틀
         task.setDueDate(taskRequestDto.getDueDate()); //마감기한
         task.setPriority(taskRequestDto.getPriority()); //우선순위
+        switch (taskRequestDto.getPriority()){
+            case "우선순위 없음":
+                break;
+            case "중요":
+                break;
+            case "일반":
+                break;
+            default:
+                throw new IllegalArgumentException("오류 Invalid Status type: " + taskRequestDto.getPriority());
+        }
         task.setStatus(taskRequestDto.getStatus()); // 진행상태
         switch (taskRequestDto.getStatus()){
-            case "PENDING":
-                //보류 중, 진행 중, 완료
+            case "보류중":
+                //보류 중
                 break;
-            case "IN_PROGRESS":
+            case "진행중":
                 //진행중
                 break;
-            case "DONE" :
+            case "완료" :
                 //완료
                 break;
             default:
@@ -60,19 +70,19 @@ public class TaskService{
         }
         task.setRepeatType(taskRequestDto.getRepeatType()); //반복일정 여부
         switch (taskRequestDto.getRepeatType()) {
-            case "NONE":
+            case "반복 없음":
                 //반복없음
                 break;
-            case "DAILY":
+            case "매일":
                 // 매일 반복 설정 로직 (예: 매일 일정 생성)
                 break;
-            case "WEEKLY":
+            case "매주":
                 // 매주 반복 설정 로직
                 break;
-            case "MONTHLY":
+            case "매월":
                 // 매월 반복 설정 로직
                 break;
-            case "YEARLY":
+            case "매년":
                 // 매년 반복 설정 로직
                 break;
             default:
@@ -129,9 +139,10 @@ public class TaskService{
         return taskRepository.findAllByUserId(user);
     }
 
-    public TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto, Long categoryId) {
+    public TaskEntity updateTask(TaskRequestDto taskRequestDto, Long categoryId) {
         // 기존 할 일 조회
-        TaskEntity existingTask = taskRepository.findById(id)
+        Long taskId = taskRequestDto.getTaskId(); //task 아이디 불러오기
+        TaskEntity existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 할 일이 없습니다."));
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("할당된 카테고리 ID가 없습니다."));
