@@ -197,7 +197,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 id: savedEvent.calendarId,
                 title: savedEvent.title,
                 start: savedEvent.startTime,
-                end: savedEvent.endTime,
+                end: savedEvent.end_time,
                 description: savedEvent.description,
                 location: savedEvent.location, // FullCalendar에 로케이션 전달
                 color: labelOptions.find((label) => label.id === savedEvent.categoryId)?.color || '#808080',
