@@ -11,23 +11,27 @@ import styles from './AddModal.module.css';
 Modal.setAppElement("#root");
 
 function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
-    // 공통 상태
+    //region 공통 상태
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('우선순위 없음');
     const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
     const [labelOptions, setLabelOptions] = useState([{ name: '라벨 없음', color: '#808080' }]);
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
+    //endregion
 
-    // 일정 관련 상태
+    //region 일정 관련 상태
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [reminder, setReminder] = useState('30분 전');
     const [repeat, setRepeat] = useState('반복 없음');
+    //endregion
 
-    // 할 일 관련 상태
+    //region 할 일 관련 상태
     const [deadline, setDeadline] = useState(new Date());
+    //endregion
 
+    // 디폴트 탭
     const [activeTab, setActiveTab] = useState(defaultTab || '일정');
 
     // 라벨 데이터 불러오기
@@ -195,8 +199,13 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                     </button>
                 </div>
 
+
+
+
+
                 {defaultTab === '일정' && (
                     <>
+                        {/*시작 시간*/}
                         <label className={styles.label}>
                             시작 시간
                             <ReactDatePicker
@@ -207,6 +216,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                                 className={styles.datePicker}
                             />
                         </label>
+                        {/*종료 시간*/}
                         <label className={styles.label}>
                             종료 시간
                             <ReactDatePicker
@@ -217,6 +227,8 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                                 className={styles.datePicker}
                             />
                         </label>
+
+                        {/*반복*/}
                         <label className={styles.label}>
                             <FaSyncAlt className={styles.icon}/>
                             <select
@@ -230,6 +242,8 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                                 <option value="매월">매월</option>
                             </select>
                         </label>
+
+                        {/*알림*/}
                         <label className={styles.label}>
                             <FaBell className={styles.icon}/>
                             <select
@@ -245,8 +259,12 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         </label>
                     </>
                 )}
+                {/*디폴트 일정*/}
+
+
 
                 {defaultTab === '할 일' && (
+                    // 마감 기한
                     <label className={styles.label}>
                         마감 기한
                         <ReactDatePicker
@@ -258,14 +276,18 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         />
                     </label>
                 )}
+                {/*디폴트 할 일*/}
 
+
+
+                {/*라벨*/}
                 <label>라벨</label>
                 <CustomDropdown
                     options={labelOptions}
                     onLabelSelect={(label) => setSelectedLabel(label.name)}
                     onAddLabel={() => setIsLabelModalOpen(true)}
                 />
-
+                {/*우선순위*/}
                 <label className={styles.label}>
                     <FaExclamationCircle className={styles.icon}/>
                     <select
@@ -278,7 +300,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         <option value="일반">일반</option>
                     </select>
                 </label>
-
+                {/*설명*/}
                 <label className={styles.label}>
                     <FaClipboardList className={styles.icon}/>
                     <textarea
@@ -288,7 +310,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         placeholder="설명을 입력하세요"
                     />
                 </label>
-
+                {/*저장 버튼*/}
                 <button type="button" onClick={handleSave} className={styles.saveButton}>
                     저장
                 </button>
