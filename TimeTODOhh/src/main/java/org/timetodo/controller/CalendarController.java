@@ -47,7 +47,7 @@ public class CalendarController {
         calendarRequestDto.setUserId(userId);
         CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId);
 
-
+        log.info("생성된 Calendar: {}", calendar);
         return ResponseEntity.ok("캘린더 생성 성공");
 
     }
@@ -55,12 +55,12 @@ public class CalendarController {
     // 로그인한 유저의 일정을 전체 조회하는 엔드포인트
     @GetMapping("/find")
     public List<CalendarEntity> getUserCalendars(HttpServletRequest request) {
-        Long userId = 0L;
+        long userId = 0L;
         Cookie userCookie = Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals("userId"))
                 .findAny()
                 .orElse(null);
-        userId = Long.valueOf(userCookie.getValue());
+        userId = Long.parseLong(userCookie.getValue());
         // userId에 해당하는 일정만 조회
         return calendarService.getCalendarsByUserId(userId); // 성공 시 일정 목록을 반환
     }
