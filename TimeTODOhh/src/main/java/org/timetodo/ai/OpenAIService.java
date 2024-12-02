@@ -450,7 +450,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
 
             log.info("로그, handleCalendar > CalendarRequestDto: {}", requestDto);
 
-            calendarService.addCalendar(requestDto, userId);
+            calendarService.addCalendar(requestDto, userId, null);
         } catch (Exception e) {
             log.error("handleCalendar 처리 중 오류 발생: {}", data, e);
             throw new RuntimeException("일정 처리 중 오류가 발생했습니다.", e);
@@ -481,7 +481,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
             log.info("로그 , handleTask > TaskRequestDto: {}", requestDto);
 
             // Task 생성
-            taskService.addTask(requestDto, userId);
+            taskService.addTask(requestDto, userId, null);
         } catch (Exception e) {
             log.error("handleTask 처리 중 오류 발생: {}", data, e);
             throw new RuntimeException("할 일 처리 중 오류가 발생했습니다.", e);

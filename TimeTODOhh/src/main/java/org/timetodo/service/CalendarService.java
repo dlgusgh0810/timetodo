@@ -32,11 +32,14 @@ public class CalendarService {
     private CategoryRepository categoryRepository;
 
     // 새로운 일정을 추가 (반복일정 로직추가 11/11)
-    public CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId) {
+    public CalendarDTO addCalendar(CalendarRequestDto calendarRequestDto, Long userId, Long categoryId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID(캘린더서비스) : " + userId));
+        CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID(캘린더 서비스) : " + categoryId));
 
-        log.info("CalendarSevice > addCalendar메소드 > userId 정보 : " + userId); //로그
+
+        log.info("CalendarSevice > addCalendar메소드 > userId, categoryId 정보 : " + userId + " , " + categoryId); //로그
 
         // 1. CalendarRequestDto를 CalendarEntity로 변환
         CalendarEntity calendar = new CalendarEntity();
@@ -66,8 +69,9 @@ public class CalendarService {
                 throw new IllegalArgumentException("Invalid repeat type: " + calendarRequestDto.getRepeatType());
         }
 
-        // 2. userId를 사용하여 UserEntity 조회 후 설정
+        // 2. userId를 사용하여 UserEntity 조회 후 설정 , categoryId를 사용하여 CategoryId 조회 후 설정
         calendar.setUserId(user);
+        calendar.setCategoryId(category);
 
         // 3. CalendarEntity 저장
         CalendarEntity savedCalendar = calendarRepository.save(calendar);
@@ -117,11 +121,12 @@ public class CalendarService {
     }
 
     // 특정 일정을 업데이트
-    public CalendarEntity updateCalendar(Long id, CalendarRequestDto calendarRequestDto) {
+    public CalendarEntity updateCalendar(Long calendarId, CalendarRequestDto calendarRequestDto, Long categoryId) {
         // 기존 일정 조회
-        CalendarEntity existingCalendar = calendarRepository.findById(id)
+        CalendarEntity existingCalendar = calendarRepository.findById(calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정이 없습니다."));
-
+        CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("할당된 카테고리 ID가 없습니다."));
         // 기존 일정을 새로운 데이터로 업데이트
         existingCalendar.setTitle(calendarRequestDto.getTitle());
         existingCalendar.setDescription(calendarRequestDto.getDescription());
@@ -129,6 +134,7 @@ public class CalendarService {
         existingCalendar.setEndTime(calendarRequestDto.getEndTime());
         existingCalendar.setLocation(calendarRequestDto.getLocation());
         existingCalendar.setRepeatType(calendarRequestDto.getRepeatType());
+        existingCalendar.setCategoryId(category);
 
         return calendarRepository.save(existingCalendar); // 업데이트 후 저장
     }
