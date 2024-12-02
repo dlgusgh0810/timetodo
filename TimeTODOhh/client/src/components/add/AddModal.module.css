@@ -35,14 +35,10 @@
     margin-bottom: 15px;
 }
 
-.h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-}
-
 .closeIcon {
+    position: absolute; /* 부모 요소 기준으로 위치 고정 */
+    top: 10px; /* 위쪽 여백 */
+    right: 10px; /* 오른쪽 여백 */
     font-size: 1.5rem;
     cursor: pointer;
     color: #333;
@@ -51,6 +47,36 @@
 
 .closeIcon:hover {
     color: #000;
+}
+
+/*제목 입력 부분*/
+.titleInput {
+    font-size: 300rem;
+    line-height: 300rem;
+    font-weight: bold;
+    color: #333;
+    padding: 3%;
+    border: 2px solid #6200ea;
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    height: 6vh;
+    margin-top: 20px;
+    /*margin-bottom: 20px; !* 아래 요소와의 간격 *!*/
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+}
+
+.titleInput:focus {
+    border-color: #3700b3; /* 포커스 시 테두리 색상 */
+    box-shadow: 0px 4px 8px rgba(98, 0, 234, 0.3); /* 포커스 시 그림자 강화 */
+    background-color: #f8f4ff; /* 포커스 시 배경 색상 */
+}
+
+.titleInput::placeholder {
+    color: #aaa;
+    font-weight: bold;
+    opacity: 1;
 }
 
 /* 폼 스타일 */
@@ -147,6 +173,7 @@ button[type="button"]:hover,
 .inactiveTab {
     background-color: lightgray;
     color: black;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1); /* 내부 그림자 */
 }
 
 .inactiveTab:hover {
@@ -232,4 +259,9 @@ button[type="button"]:hover,
     color: #888;
     margin-right: 8px;
     vertical-align: middle;
+}
+
+.flex{
+    display: flex;
+    align-items: center;
 }
