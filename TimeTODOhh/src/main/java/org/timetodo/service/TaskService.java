@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.timetodo.dto.TaskDto;
 import org.timetodo.dto.TaskRequestDto;
+import org.timetodo.entity.CategoryEntity;
 import org.timetodo.entity.ReminderEntity;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.entity.UserEntity;
+import org.timetodo.repository.CategoryRepository;
 import org.timetodo.repository.TaskRepository;
 import org.timetodo.repository.UserRepository;
 
@@ -26,10 +28,16 @@ public class TaskService{
     @Autowired
     private final UserRepository userRepository;  // UserRepository 주입
 
-    public TaskEntity addTask(TaskRequestDto taskRequestDto, Long userId) {
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    public TaskEntity addTask(TaskRequestDto taskRequestDto, Long userId, Long categoryId) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID(테스크서비스) : " + userId));
-        log.info("TaskSevice > addTask메소드 > userId 정보 : " + userId); //로그
+                .orElseThrow(() -> new RuntimeException("User not found with ID(테스크 서비스) : " + userId));
+        CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID(테스크 서비스) : " + categoryId));
+
+        log.info("TaskSevice > addTask메소드 > userId, categoryId 정보 : " + userId + " , " + categoryId); //로그
 
         // DTO로부터 받은 데이터를 TaskEntity로 변환하여 저장
         TaskEntity task = new TaskEntity();
@@ -70,8 +78,9 @@ public class TaskService{
             default:
                 throw new IllegalArgumentException("Invalid repeat type: " + taskRequestDto.getRepeatType());
         }
-        // 2. userId를 사용하여 UserEntity 조회 후 설정
+        // 2. userId를 사용하여 UserEntity 조회 후 설정, categoryId를 사용하여 CategoryId 조회 후 설정
         task.setUserId(user);
+        task.setCategoryId(category);
 
         // 3. CalendarEntity 저장
         TaskEntity saveTask = taskRepository.save(task);
@@ -95,7 +104,7 @@ public class TaskService{
         }
 
         // CategoryEntity의 ID를 설정
-        if(task.getCategoryId() != null) {
+        if(task.getTaskId() != null) {
             dto.setCategoryId(task.getCategoryId().getCategoryId());
         }
 
@@ -120,10 +129,12 @@ public class TaskService{
         return taskRepository.findAllByUserId(user);
     }
 
-    public TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto) {
+    public TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto, Long categoryId) {
         // 기존 할 일 조회
         TaskEntity existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 할 일이 없습니다."));
+        CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("할당된 카테고리 ID가 없습니다."));
 
         // 기존 할 일을 새로운 데이터로 업데이트
         existingTask.setTitle(taskRequestDto.getTitle());
@@ -131,6 +142,7 @@ public class TaskService{
         existingTask.setPriority(taskRequestDto.getPriority());
         existingTask.setStatus(taskRequestDto.getStatus());
         existingTask.setRepeatType(taskRequestDto.getRepeatType());
+        existingTask.setCategoryId(category);
 
         return taskRepository.save(existingTask); // 업데이트 후 저장
     }
