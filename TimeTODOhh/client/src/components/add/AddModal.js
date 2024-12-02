@@ -16,7 +16,8 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('우선순위 없음');
     const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
-    const [labelOptions, setLabelOptions] = useState([{ name: '라벨 없음', color: '#808080' }]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null); // 선택한 카테고리 ID
+    const [labelOptions, setLabelOptions] = useState([{ id: null, name: '라벨 없음', color: '#808080' }]);
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
 
     // 일정 관련 상태
@@ -38,6 +39,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                     const response = await axios.get("/api/categories/all");
                     const categories = response.data || [];
                     const formattedCategories = categories.map((category) => ({
+                        id: category.categoryId, // 카테고리 ID
                         name: category.categoryName,
                         color: category.color,
                     }));
@@ -50,24 +52,15 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
     }, [isOpen]);
 
-    let isSaving = false; // 중복 저장 방지 플래그
-
     const handleSave = async () => {
-        if (isSaving) return; // 이미 저장 중이라면 종료
-        isSaving = true; // 저장 시작
-
-        console.log("Start Date:", startDate); // 디버깅용
-        console.log("End Date:", endDate); // 디버깅용
-
         if (!title.trim()) {
             alert("제목을 입력하세요.");
-            isSaving = false;
             return;
         }
 
         const formatDateTime = (date) => {
             const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+            const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -76,21 +69,25 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         };
 
-        // 데이터 구성
+        // 선택한 카테고리 데이터 찾기
+        const selectedCategory = labelOptions.find((label) => label.id === selectedCategoryId);
+
+        if (!selectedCategory) {
+            alert("라벨을 선택하세요.");
+            return;
+        }
+
         const newEvent = {
             title: title.trim(),
             description: description || null,
-            startTime: formatDateTime(startDate), // 밀리초 제외한 포맷
-            end_time: formatDateTime(endDate),     // `end_time`으로 매핑
-            location: selectedLabel || '기본 장소', // 기본 값 설정
-            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 없음은 null로 처리
-            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080', // 라벨 색상
+            startTime: formatDateTime(startDate),
+            end_time: formatDateTime(endDate),
+            location: selectedCategory.name, // 로케이션 값을 라벨 이름으로 설정
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 추가
+            categoryId: selectedCategoryId, // 선택된 카테고리 ID 전송
         };
 
-        console.log("Payload being sent to server:", newEvent);
-
         try {
-            // API 요청
             const response = await fetch('http://localhost:8085/api/calendar/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -105,40 +102,32 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             }
 
             const savedEvent = await response.json();
-            console.log('Response from backend:', savedEvent);
-
-            // FullCalendar에 추가할 데이터 형식
             onSave({
                 id: savedEvent.calendarId,
                 title: savedEvent.title,
                 start: savedEvent.startTime,
                 end: savedEvent.endTime,
                 description: savedEvent.description,
-                location: savedEvent.location,
-                color: savedEvent.color,
-                repeatType: savedEvent.repeatType,
+                location: savedEvent.location, // FullCalendar에 로케이션 전달
+                color: labelOptions.find((label) => label.id === savedEvent.categoryId)?.color || '#808080',
+                repeatType: savedEvent.repeatType, // 반복 설정 전달
             });
 
             resetForm();
-            onRequestClose(); // 모달 닫기
+            onRequestClose();
         } catch (error) {
             console.error('Error saving data:', error);
             alert('데이터 저장에 실패했습니다.');
-        } finally {
-            isSaving = false; // 저장 완료
         }
     };
 
 
-
-
-
-    // 폼 초기화
     const resetForm = () => {
         setTitle('');
         setDescription('');
         setPriority('우선순위 없음');
         setSelectedLabel('라벨 없음');
+        setSelectedCategoryId(null);
         setStartDate(new Date());
         setEndDate(new Date());
         setReminder('30분 전');
@@ -146,34 +135,11 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         setDeadline(new Date());
     };
 
-    // 라벨 추가 핸들러
-    const handleAddLabel = async (newLabel) => {
-        try {
-            if (!newLabel.name || !newLabel.color) {
-                alert("라벨 이름과 색상을 입력해주세요.");
-                return;
-            }
-
-            const duplicate = labelOptions.some((label) => label.name === newLabel.name);
-            if (duplicate) {
-                alert("이미 존재하는 라벨입니다.");
-                return;
-            }
-
-            await axios.post("/api/categories/add", {
-                categoryName: newLabel.name,
-                color: newLabel.color,
-            });
-
-            setLabelOptions((prevOptions) => [...prevOptions, newLabel]);
-            setIsLabelModalOpen(false);
-        } catch (error) {
-            console.error("라벨 추가 실패:", error);
-            alert("라벨 추가에 실패했습니다.");
-        }
+    const handleLabelSelect = (label) => {
+        setSelectedLabel(label.name);
+        setSelectedCategoryId(label.id); // 선택한 카테고리 ID 저장
     };
 
-    // 렌더링
     return (
         <Modal
             isOpen={isOpen}
@@ -182,7 +148,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             overlayClassName={styles.eventModalOverlay}
         >
             <div className={styles.modalHeader}>
-                <FaTimes className={styles.closeIcon} onClick={onRequestClose} />
+                <FaTimes className={styles.closeIcon} onClick={onRequestClose}/>
             </div>
 
             <form className={styles.form}>
@@ -234,6 +200,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         </label>
                         <label className={styles.label}>
                             <FaSyncAlt className={styles.icon}/>
+                            반복 설정
                             <select
                                 className={styles.select}
                                 value={repeat}
@@ -243,41 +210,16 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                                 <option value="매일">매일</option>
                                 <option value="매주">매주</option>
                                 <option value="매월">매월</option>
-                            </select>
-                        </label>
-                        <label className={styles.label}>
-                            <FaBell className={styles.icon}/>
-                            <select
-                                className={styles.select}
-                                value={reminder}
-                                onChange={(e) => setReminder(e.target.value)}
-                            >
-                                <option value="알림 없음">알림 없음</option>
-                                <option value="30분 전">30분 전</option>
-                                <option value="1시간 전">1시간 전</option>
-                                <option value="1일 전">1일 전</option>
+                                <option value="매년">매년</option>
                             </select>
                         </label>
                     </>
                 )}
 
-                {defaultTab === '할 일' && (
-                    <label className={styles.label}>
-                        마감 기한
-                        <ReactDatePicker
-                            selected={deadline}
-                            onChange={(date) => setDeadline(date)}
-                            showTimeSelect
-                            dateFormat="yyyy-MM-dd h:mm aa"
-                            className={styles.datePicker}
-                        />
-                    </label>
-                )}
-
                 <label>라벨</label>
                 <CustomDropdown
                     options={labelOptions}
-                    onLabelSelect={(label) => setSelectedLabel(label.name)}
+                    onLabelSelect={handleLabelSelect}
                     onAddLabel={() => setIsLabelModalOpen(true)}
                 />
 
@@ -309,10 +251,11 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 </button>
             </form>
 
+
             <AddLabelModal
                 isOpen={isLabelModalOpen}
                 onRequestClose={() => setIsLabelModalOpen(false)}
-                onSave={handleAddLabel}
+                onSave={(label) => setLabelOptions([...labelOptions, label])}
             />
         </Modal>
     );
