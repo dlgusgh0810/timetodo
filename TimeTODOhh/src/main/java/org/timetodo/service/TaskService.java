@@ -46,13 +46,13 @@ public class TaskService{
         task.setPriority(taskRequestDto.getPriority()); //우선순위
         task.setStatus(taskRequestDto.getStatus()); // 진행상태
         switch (taskRequestDto.getStatus()){
-            case "PENDING":
+            case "보류 중":
                 //보류 중, 진행 중, 완료
                 break;
-            case "IN_PROGRESS":
+            case "진행중":
                 //진행중
                 break;
-            case "DONE" :
+            case "완료" :
                 //완료
                 break;
             default:
@@ -60,19 +60,19 @@ public class TaskService{
         }
         task.setRepeatType(taskRequestDto.getRepeatType()); //반복일정 여부
         switch (taskRequestDto.getRepeatType()) {
-            case "NONE":
+            case "반복 없음":
                 //반복없음
                 break;
-            case "DAILY":
+            case "매일":
                 // 매일 반복 설정 로직 (예: 매일 일정 생성)
                 break;
-            case "WEEKLY":
+            case "매주":
                 // 매주 반복 설정 로직
                 break;
-            case "MONTHLY":
+            case "매월":
                 // 매월 반복 설정 로직
                 break;
-            case "YEARLY":
+            case "매년":
                 // 매년 반복 설정 로직
                 break;
             default:

@@ -97,35 +97,40 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         };
 
         const newTask = {
-            type: "task", // 할 일 타입 추가
             title: title.trim(),
             description: description || null,
             deadline: formatDateTime(deadline),
-            priority,
-            color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080',
+            priority: priority || '우선순위 없음',
+            status: '보류 중',
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 추가
+            categoryId: selectedCategoryId,
         };
 
         try {
-            const response = await axios.post(`http://localhost:8085/api/tasks/add`, newTask, {
+            const response = await axios.post(`http://localhost:8085/api/task/add`, newTask, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
+                body: JSON.stringify(newTask),
+                credentials: "include",
             });
 
             if (!response || !response.data) {
-                throw new Error('응답 데이터가 없습니다.');
+                throw new Error("응답 데이터가 없습니다.");
             }
 
             const savedData = response.data;
+
+            // 부모 컴포넌트로 전달
             onSave({
                 ...newTask,
-                id: savedData.id,
+                id: savedData.id, // 서버에서 반환된 ID 사용
             });
 
             resetForm();
             onRequestClose();
         } catch (error) {
-            console.error('할 일 저장 오류:', error);
-            alert('할 일을 저장하는 중 문제가 발생했습니다.');
+            console.error("할 일 저장 오류:", error);
+            alert("할 일을 저장하는 중 문제가 발생했습니다.");
         }
     };
 
