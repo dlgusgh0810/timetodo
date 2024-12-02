@@ -31,8 +31,7 @@ public class CalendarController {
     @PostMapping("/add")
     public ResponseEntity<?> addCalendar(
             @RequestBody CalendarRequestDto calendarRequestDto,
-            HttpServletRequest request,
-            @RequestBody Long categoryId) {
+            HttpServletRequest request) {
         Long userId = null;
 
         try {
@@ -72,6 +71,7 @@ public class CalendarController {
         try {
             // Calendar 생성
             calendarRequestDto.setUserId(userId);
+            Long categoryId = calendarRequestDto.getCategoryId(); //카테고리 아이디 설정
             CalendarDTO calendar = calendarService.addCalendar(calendarRequestDto, userId, categoryId);
 
             log.info("생성된 Calendar: {}", calendar);

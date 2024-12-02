@@ -134,6 +134,7 @@ public class CalendarService {
         existingCalendar.setEndTime(calendarRequestDto.getEndTime());
         existingCalendar.setLocation(calendarRequestDto.getLocation());
         existingCalendar.setRepeatType(calendarRequestDto.getRepeatType());
+        existingCalendar.setCategoryId(category);
 
         return calendarRepository.save(existingCalendar); // 업데이트 후 저장
     }

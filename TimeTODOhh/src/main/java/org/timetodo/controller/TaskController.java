@@ -30,8 +30,7 @@ public class TaskController {
     @PostMapping("/add")
     public ResponseEntity<String> addTask(
             @RequestBody TaskRequestDto taskRequestDto,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletRequest request) {
         // 사용자가 보낸 할 일 데이터를 TaskService로 넘겨 새로운 할 일을 추가하고,
         // 그 결과를 응답으로 반환합니다.
         Long userId = 0L;
@@ -47,7 +46,8 @@ public class TaskController {
         }
         // Task 생성
         taskRequestDto.setUserId(userId);
-        TaskEntity task = taskService.addTask(taskRequestDto, userId);
+        Long categoryId = taskRequestDto.getCategoryId(); //카테고리 아이디 설정
+        TaskEntity task = taskService.addTask(taskRequestDto, userId, categoryId);
 
 
         return ResponseEntity.ok("할 일 생성 성공");
@@ -71,10 +71,10 @@ public class TaskController {
 
     // 특정 할 일을 업데이트하는 엔드포인트
     @PutMapping("/update/{id}")
-    public ResponseEntity<TaskEntity> updateTask(@PathVariable Long id, @RequestBody TaskRequestDto taskRequestDto) {
+    public ResponseEntity<TaskEntity> updateTask(@RequestBody Long id, @RequestBody TaskRequestDto taskRequestDto, @RequestBody Long categoryId) {
         // 경로 변수로 전달된 id에 해당하는 할 일을 찾아,
         // 사용자가 보낸 데이터로 업데이트하고 그 결과를 반환합니다.
-        TaskEntity updatedTask = taskService.updateTask(id, taskRequestDto);
+        TaskEntity updatedTask = taskService.updateTask(id, taskRequestDto, categoryId);
         return ResponseEntity.ok(updatedTask); // 성공 시 업데이트된 할 일을 반환
     }
 
