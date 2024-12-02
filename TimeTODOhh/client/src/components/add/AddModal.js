@@ -54,12 +54,21 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
     }, [isOpen]);
 
+    let isSaving = false; // 중복 저장 방지 플래그
+
     const handleSave = async () => {
+        if (isSaving) return; // 이미 저장 중이라면 종료
+        isSaving = true; // 저장 시작
+
+        console.log("Start Date:", startDate); // 디버깅용
+        console.log("End Date:", endDate); // 디버깅용
+
         if (!title.trim()) {
             alert("제목을 입력하세요.");
+            isSaving = false;
             return;
         }
-        // 'YYYY-MM-DDTHH:mm:ss' 형식으로 변환하는 함수
+
         const formatDateTime = (date) => {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
@@ -76,11 +85,13 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             title: title.trim(),
             description: description || null,
             startTime: formatDateTime(startDate), // 밀리초 제외한 포맷
-            endTime: formatDateTime(endDate),     // 밀리초 제외한 포맷
+            end_time: formatDateTime(endDate),     // `end_time`으로 매핑
             location: selectedLabel || '기본 장소', // 기본 값 설정
             repeatType: repeat === '반복 없음' ? null : repeat, // 반복 없음은 null로 처리
             color: labelOptions.find((label) => label.name === selectedLabel)?.color || '#808080', // 라벨 색상
         };
+
+        console.log("Payload being sent to server:", newEvent);
 
         try {
             // API 요청
@@ -92,7 +103,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             });
 
             if (!response.ok) {
-                const errorData = await response.json(); // 서버에서 반환하는 오류 메시지 확인
+                const errorData = await response.json();
                 console.error('Server Error:', errorData);
                 throw new Error(errorData.error || 'Failed to save data to backend');
             }
@@ -117,8 +128,12 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         } catch (error) {
             console.error('Error saving data:', error);
             alert('데이터 저장에 실패했습니다.');
+        } finally {
+            isSaving = false; // 저장 완료
         }
     };
+
+
 
 
 
