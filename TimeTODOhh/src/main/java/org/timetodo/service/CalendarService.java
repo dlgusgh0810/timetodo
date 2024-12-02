@@ -47,19 +47,19 @@ public class CalendarService {
         calendar.setLocation(calendarRequestDto.getLocation()); //위치
         calendar.setRepeatType(calendarRequestDto.getRepeatType()); //반복유형
         switch (calendarRequestDto.getRepeatType()) {
-            case "반복 없음":
+            case "NONE":
                 //반복없음
                 break;
             case "매일":
                 // 매일 반복 설정 로직 (예: 매일 일정 생성)
                 break;
-            case "매주":
+            case "WEEKLY":
                 // 매주 반복 설정 로직
                 break;
-            case "매월":
+            case "MONTHLY":
                 // 매월 반복 설정 로직
                 break;
-            case "매년":
+            case "YEARLY":
                 // 매년 반복 설정 로직
                 break;
             default:
