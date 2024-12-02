@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react';
-import {useEffect} from "react";
+import React, { useState, useRef, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -12,22 +11,6 @@ function Calendar() {
     const [selectedDate, setSelectedDate] = useState('');
     const calendarRef = useRef(null);
     const [events, setEvents] = useState([
-        // {
-        //     // calendarId;        // 일정 ID
-        //     // title;           // 일정 제목
-        //     // escription;     // 일정 설명
-        //     // startTime; // 일정 시작 시간
-        //     // endTime;   // 일정 종료 시간
-        //     // private String location;        // 일정 장소
-        //     // private String repeatType;      // 반복 일정 유형 (예: daily, weekly)
-        //     // private Long userId;            // 사용자 ID (UserEntity와의 관계를 ID로 표현)
-        //     // private Long categoryId;        // 카테고리 ID (CategoryEntity와의 관계를 ID로 표현)
-        //     //
-        //     // private List<Long> reminderIds; /
-        //
-        //
-        //
-        // }
         {
             id: 10,
             title: '팀 미팅',
@@ -51,7 +34,7 @@ function Calendar() {
             end: '2024-12-03T00:00:00',
             description: '프로젝트 최종 결과물 제출',
             location: '온라인 제출',
-        }
+        },
     ]);
 
     useEffect(() => {
@@ -93,77 +76,18 @@ function Calendar() {
         setModalOpen(false);
     };
 
+    // 저장 핸들러
+    const handleSave = (newEvent) => {
+        console.log("New Event Saved:", newEvent);
+        setEvents((prevEvents) => [...prevEvents, newEvent]); // 새 이벤트 추가
+        setModalOpen(false); // 모달 닫기
+    };
+
     // 보기 전환 이벤트
     const handleViewChange = (event) => {
         const newView = event.target.value; // 드롭다운에서 선택된 보기
         const calendarApi = calendarRef.current.getApi(); // FullCalendar API 호출
         calendarApi.changeView(newView); // 선택된 보기로 전환
-    };
-
-    // // 새로 추가한 onSave 함수
-    // const handleSave = async (newTodo) => {
-    //     console.log("New Todo Saved:", newTodo);
-    //
-    //     try {
-    //         // 백엔드로 POST 요청 전송
-    //         const response = await fetch('http://localhost:8085/api/calendar/add', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(newTodo),
-    //         });
-    //
-    //         if (!response.ok) {
-    //             throw new Error('Failed to save data to backend');
-    //         }
-    //
-    //         const data = await response.json();
-    //         console.log('Response from backend:', data);
-    //
-    //         // 성공적으로 저장되면 모달을 닫음
-    //         closeModal();
-    //     } catch (error) {
-    //         console.error('Error saving data:', error);
-    //         alert('데이터 저장에 실패했습니다.');
-    //     }
-    // };
-
-    const handleSave = async (newTodo) => {
-        console.log("New Todo Saved:", newTodo);
-
-        try {
-            const response = await fetch('http://localhost:8085/api/calendar/add', {
-                method: 'POST',
-                credentials: "include",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newTodo),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to save data to backend');
-            }
-
-            const data = await response.json();
-            console.log('Response from backend:', data);
-
-            // FullCalendar 형식으로 변환하여 상태 업데이트
-            const newEvent = {
-                id: data.calendarId,
-                title: data.title,
-                start: data.startTime,
-                end: data.endTime,
-                color: data.color || '#808080', // color 추가
-            };
-
-            setEvents((prevEvents) => [...prevEvents, newEvent]);
-            closeModal();
-        } catch (error) {
-            console.error('Error saving data:', error);
-            alert('데이터 저장에 실패했습니다.');
-        }
     };
 
     return (
@@ -200,7 +124,7 @@ function Calendar() {
             <AddModal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
-                onSave={handleSave}  // 추가된 onSave prop
+                onSave={handleSave} // onSave 핸들러 전달
                 selectedDate={selectedDate} // 선택된 날짜 전달
                 defaultTab="일정" // 기본 탭 전달
             />
