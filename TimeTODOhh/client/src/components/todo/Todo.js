@@ -56,8 +56,8 @@ function Todo() {
             taskId: newTask.id || Date.now(),
             title: newTask.title || '제목 없음',
             dueDate: newTask.dueDate || null,
-            label: newTask.categoryName || '라벨 없음', // 카테고리 이름
-            labelColor: newTask.categoryColor || '#808080', // 카테고리 색상
+            label: newTask.label || '라벨 없음', // 카테고리 이름
+            labelColor: newTask.labelColor || '#808080', // 카테고리 색상
             priority: newTask.priority || '중간',
             status: newTask.status || '보류 중',
         };

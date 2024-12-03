@@ -153,9 +153,9 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 repeatType: savedTask.repeatType,
                 status: savedTask.status || '보류 중',
                 taskId: savedTask.taskId, // 서버에서 반환된 Task ID
-                label: selectedCategory.name, // 카테고리 이름
+                label: labelOptions.find((label) => label.id === savedTask.categoryId)?.name || '라벨 없음', // 카테고리 이름
                 categoryId: selectedCategoryId,
-                labelColor: selectedCategory.color, // 카테고리 색상
+                labelColor: labelOptions.find((label) => label.id === savedTask.categoryId)?.color || '#808080',
             });
 
             // 폼 초기화 및 모달 닫기
