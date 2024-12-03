@@ -121,13 +121,18 @@ public class TaskService{
     }
 
 
-    public List<TaskEntity> getTasksByUserId(Long userId) {
+    public List<TaskDto> getTasksByUserId(Long userId) {
+        // User 엔티티를 조회
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
-        // 저장된 모든 할 일 조회
-        return taskRepository.findAllByUserId(user);
+        // 사용자와 연관된 할 일 엔티티 조회
+        List<TaskEntity> tasks = taskRepository.findAllByUserId(user);
+
+        // 할 일 엔티티를 DTO로 변환
+        return tasks.stream().map(this::convertTask).collect(Collectors.toList());
     }
+
 
     public TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto, Long categoryId) {
         // 기존 할 일 조회

@@ -89,17 +89,34 @@ public class TaskController {
 
     // 특정 user 의 모든 할 일을 조회하는 엔드포인트
     @GetMapping("/find")
-    public List<TaskEntity> getUserTasks(HttpServletRequest request) {
-        Long userId = 0L;
-        Cookie userCookie = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("userId"))
-                .findAny()
-                .orElse(null);
-        userId = Long.valueOf(userCookie.getValue());
-        // TaskService를 통해 저장된 모든 할 일을 조회하고,
-        // 그 결과를 응답으로 반환합니다.
-        return taskService.getTasksByUserId(userId); // 성공 시 할 일 목록을 반환
+    public List<TaskDto> getUserTasks(HttpServletRequest request) {
+        try {
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null) {
+                throw new IllegalStateException("쿠키가 존재하지 않습니다.");
+            }
+
+            // userId 쿠키 찾기
+            Cookie userCookie = Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals("userId"))
+                    .findAny()
+                    .orElse(null);
+
+            if (userCookie == null || userCookie.getValue() == null || userCookie.getValue().isEmpty()) {
+                throw new IllegalStateException("userId 쿠키가 없거나 비어 있습니다.");
+            }
+
+            Long userId = Long.parseLong(userCookie.getValue());
+            log.info("UserId from cookie: {}", userId);
+
+            // TaskService를 통해 저장된 모든 할 일을 조회하고 반환
+            return taskService.getTasksByUserId(userId);
+        } catch (Exception e) {
+            log.error("Error in getUserTasks:", e);
+            throw new RuntimeException("할 일 조회 중 오류가 발생했습니다.");
+        }
     }
+
 
     // 특정 할 일을 업데이트하는 엔드포인트
     @PutMapping("/update/{id}")

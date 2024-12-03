@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.json.JSONObject;
 import org.timetodo.ai.log.LogService;
-import org.timetodo.dto.CalendarDTO;
-import org.timetodo.dto.CalendarRequestDto;
-import org.timetodo.dto.ReminderRequestDto;
-import org.timetodo.dto.TaskRequestDto;
+import org.timetodo.dto.*;
 import org.timetodo.entity.CalendarEntity;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.service.CalendarService;
@@ -343,7 +340,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
     public String handleReminderSelectionFlow(String data, Long userId) {
         try {
             // 사용자에게 제공할 Task 및 Calendar 목록 조회
-            List<TaskEntity> tasks = taskService.getTasksByUserId(userId);
+            List<TaskDto> tasks = taskService.getTasksByUserId(userId);
             List<CalendarDTO> calendars = calendarService.getCalendarsByUserId(userId);
 
             // 보기 쉽게 포맷된 문자열 생성

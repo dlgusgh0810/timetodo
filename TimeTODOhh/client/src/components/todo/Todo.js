@@ -31,7 +31,7 @@ function Todo() {
                 setLabelOptions(formattedCategories);
 
                 // 2. 할 일 데이터 불러오기
-                const tasksResponse = await fetch("http://localhost:8085/api/task", {
+                const tasksResponse = await fetch("http://localhost:8085/api/task/find", {
                     method: "GET",
                     credentials: "include",
                 });
@@ -41,7 +41,21 @@ function Todo() {
                 }
 
                 const tasks = await tasksResponse.json();
-                setTodos(tasks);  // 할 일 목록 설정
+                console.log(tasks);
+                const formattedTasks = tasks.map((task) => {
+                    // 카테고리 색상 매칭
+                    return {
+                        taskId: task.taskId,
+                        title: task.title,
+                        dueDate: task.dueDate,
+                        label: task.label || '라벨 없음',
+                        labelColor: task.labelColor,
+                        priority: task.priority || '중간',
+                        status: task.status || '보류 중',
+                        repeatType: task.repeatType,
+                    };
+                });
+                setTodos(formattedTasks);  // 할 일 목록 설정
 
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -60,6 +74,7 @@ function Todo() {
             labelColor: newTask.labelColor || '#808080', // 카테고리 색상
             priority: newTask.priority || '중간',
             status: newTask.status || '보류 중',
+            repeatType: newTask.repeatType,
         };
 
         setTodos((prevTodos) => [...prevTodos, todoItem]);
