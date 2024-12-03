@@ -4,92 +4,72 @@ import AddModal from '../add/AddModal';
 import axios from "axios";
 
 function Todo() {
-    const [todos, setTodos] = useState([
-        {
-            taskId: 1,
-            title: 'taskTest',
-            dueDate: '2024-11-15',
-            priority: '우선순위 없음',
-            status: '미완료',
-            repeatType: '매일',
-            categoryId: 3,
-            label: '가짜라벨',
-            labelColor: '#808080' // 색상 값을 문자열로 처리
-        },
-        {
-            taskId: 2,
-            title: 'taskTest2',
-            dueDate: '2024-12-17',
-            priority: '우선순위 없음',
-            status: '미완료',
-            repeatType: '매일',
-            categoryId: 3,
-            label: '가짜라벨',
-            labelColor: '#808080' // 색상 값을 문자열로 처리
-        }
-    ]);
+    const [todos, setTodos] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [labelOptions, setLabelOptions] = useState([]); // 라벨 옵션 상태 추가
 
-    // 라벨 데이터 가져오기
+    // 라벨 데이터와 할 일 데이터 가져오기
     useEffect(() => {
-        const fetchLabels = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch("http://localhost:8085/api/categories/all", {
+                // 1. 카테고리 데이터 불러오기
+                const categoryResponse = await fetch("http://localhost:8085/api/categories/all", {
                     method: "GET",
-                    credentials: "include", // 쿠키 포함
+                    credentials: "include",
                 });
-                if (!response.ok) {
+
+                if (!categoryResponse.ok) {
                     throw new Error('Failed to fetch categories');
                 }
-                const categories = await response.json();
+
+                const categories = await categoryResponse.json();
                 const formattedCategories = categories.map((category) => ({
                     id: category.categoryId,
                     name: category.categoryName,
                     color: category.color || '#808080',
                 }));
                 setLabelOptions(formattedCategories);
+
+                // 2. 할 일 데이터 불러오기
+                const tasksResponse = await fetch("http://localhost:8085/api/task", {
+                    method: "GET",
+                    credentials: "include",
+                });
+
+                if (!tasksResponse.ok) {
+                    throw new Error('Failed to fetch tasks');
+                }
+
+                const tasks = await tasksResponse.json();
+                setTodos(tasks);  // 할 일 목록 설정
+
             } catch (error) {
-                console.error('Error fetching categories:', error);
+                console.error('Error fetching data:', error);
             }
         };
-        fetchLabels();
+
+        fetchData();
     }, []);
 
-    // 할 일 추가 함수
-    // const addTodo = (newTodo) => {
-    //     const todoItem = {
-    //         id: newTodo.id, // 서버에서 반환된 ID
-    //         title: newTodo.title,
-    //         date: newTodo.deadline ? newTodo.deadline.split('T')[0] : null, // 날짜를 YYYY-MM-DD 형식으로 추출
-    //         label: labelOptions.find((label) => label.id === newTodo.categoryId)?.name || '라벨 없음', // 카테고리 이름 매핑
-    //         priority: newTodo.priority || '우선순위 없음',
-    //         repeatType: newTodo.repeatType || null, // 반복 설정
-    //         status: newTodo.status || '미완료', // 상태 추가
-    //     };
-    //
-    //     setTodos((prevTodos) => [...prevTodos, todoItem]); // 상태 업데이트
-    //     setShowModal(false); // 모달 닫기
-    // };
-
-    const addTodo = (newTodo) => {
-        const selectedLabel = labelOptions.find((label) => label.id === newTodo.categoryId);
+    const addTodo = (newTask) => {
         const todoItem = {
-            taskId: newTodo.id || Date.now(),
-            title: newTodo.title || '제목 없음',
-            dueDate: newTodo.deadline ? newTodo.deadline.split('T')[0] : null,
-            label: selectedLabel?.name || '라벨 없음', // 라벨 이름
-            labelColor: selectedLabel?.color || '#808080', // 라벨 색상
-            priority: newTodo.priority || '중간',
-            status: newTodo.status || '미완료',
+            taskId: newTask.id || Date.now(),
+            title: newTask.title || '제목 없음',
+            dueDate: newTask.dueDate || null,
+            label: newTask.categoryName || '라벨 없음', // 카테고리 이름
+            labelColor: newTask.categoryColor || '#808080', // 카테고리 색상
+            priority: newTask.priority || '중간',
+            status: newTask.status || '보류 중',
         };
 
         setTodos((prevTodos) => [...prevTodos, todoItem]);
-        setShowModal(false);
+        setShowModal(false); // 모달 닫기
     };
 
-
-
+    const handleSaveTask = (newTask) => {
+        // 부모 컴포넌트로 받은 newTask를 addTodo로 목록에 추가
+        addTodo(newTask);
+    };
 
     return (
         <div className={styles.container}>
@@ -113,7 +93,8 @@ function Todo() {
                                             display: 'inline-block',
                                         }}
                                     >
-                                    {todo.label}</span>)}
+                                        {todo.label}
+                                    </span>)}
                                 {todo.priority && <span>⚡ {todo.priority}</span>}
                                 {todo.status && <span>✅ {todo.status}</span>}
                             </div>
@@ -121,7 +102,6 @@ function Todo() {
                     </li>
                 ))}
             </ul>
-
 
             <button
                 onClick={() => setShowModal(true)}
@@ -134,7 +114,7 @@ function Todo() {
             <AddModal
                 isOpen={showModal}
                 onRequestClose={() => setShowModal(false)}
-                onSave={addTodo}
+                onSave={handleSaveTask}
                 defaultTab="할 일"
                 labelOptions={labelOptions} // 라벨 옵션 전달
             />

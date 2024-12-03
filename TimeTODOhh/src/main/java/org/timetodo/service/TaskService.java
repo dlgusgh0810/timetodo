@@ -31,7 +31,7 @@ public class TaskService{
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public TaskEntity addTask(TaskRequestDto taskRequestDto, Long userId, Long categoryId) {
+    public TaskDto addTask(TaskRequestDto taskRequestDto, Long userId, Long categoryId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID(테스크 서비스) : " + userId));
         CategoryEntity category = categoryRepository.findById(categoryId)
@@ -86,10 +86,10 @@ public class TaskService{
         TaskEntity saveTask = taskRepository.save(task);
 
         // Category 및 User는 따로 설정 필요
-        return taskRepository.save(task); // 저장 후 반환
+        return convertTask(saveTask); // 저장 후 반환
     }
 
-    private TaskDto convertToDto(TaskEntity task) {
+    private TaskDto convertTask(TaskEntity task) {
         TaskDto dto = new TaskDto();
         dto.setTaskId(task.getTaskId());
         dto.setTitle(task.getTitle());

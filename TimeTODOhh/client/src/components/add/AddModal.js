@@ -98,57 +98,6 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
         }
     };
 
-    // const handleSaveTask = async () => {
-    //
-    //     const formatDateTime = (date) => {
-    //         const year = date.getFullYear();
-    //         const month = String(date.getMonth() + 1).padStart(2, '0');
-    //         const day = String(date.getDate()).padStart(2, '0');
-    //         const hours = String(date.getHours()).padStart(2, '0');
-    //         const minutes = String(date.getMinutes()).padStart(2, '0');
-    //         const seconds = String(date.getSeconds()).padStart(2, '0');
-    //
-    //         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-    //     };
-    //
-    //     const newTask = {
-    //         title: title.trim(),
-    //         description: description || null,
-    //         deadline: formatDateTime(deadline),
-    //         priority: priority || '우선순위 없음',
-    //         status: '보류 중',
-    //         repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 추가
-    //         categoryId: selectedCategoryId,
-    //     };
-    //
-    //     try {
-    //         const response = await axios.post(`http://localhost:8085/api/task/add`, newTask, {
-    //             headers: { 'Content-Type': 'application/json' },
-    //             withCredentials: true,
-    //             body: JSON.stringify(newTask),
-    //             credentials: "include",
-    //         });
-    //
-    //         if (!response || !response.data) {
-    //             throw new Error("응답 데이터가 없습니다.");
-    //         }
-    //
-    //         const savedData = response.data;
-    //
-    //         // 부모 컴포넌트로 전달
-    //         onSave({
-    //             ...newTask,
-    //             id: savedData.id, // 서버에서 반환된 ID 사용
-    //         });
-    //
-    //         resetForm();
-    //         onRequestClose();
-    //     } catch (error) {
-    //         console.error("할 일 저장 오류:", error);
-    //         alert("할 일을 저장하는 중 문제가 발생했습니다.");
-    //     }
-    // };
-
     const handleSaveTask = async () => {
         if (!title.trim()) {
             alert("제목을 입력하세요.");
@@ -166,31 +115,61 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         };
 
+        // 선택한 카테고리 정보 찾기
+        const selectedCategory = labelOptions.find((label) => label.id === selectedCategoryId);
+
+        if (!selectedCategory) {
+            alert("카테고리를 선택하세요.");
+            return;
+        }
+
         const newTask = {
             title: title.trim(),
-            dueDate: formatDateTime(deadline), // DTO에 맞게 변환
-            priority: priority || '중간',
-            status: '미완료',
-            repeatType: repeat === '반복 없음' ? null : repeat,
-            categoryId: selectedCategoryId, // 선택된 카테고리 ID 전송
+            dueDate: formatDateTime(deadline), // 마감 기한
+            priority: priority || '중간', // 우선순위
+            status: '보류 중', // 상태
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정
+            categoryId: selectedCategoryId, // 선택된 카테고리 ID
         };
 
         try {
-            const response = await axios.post(`http://localhost:8085/api/task/add`, newTask, {
+            const response = await fetch('http://localhost:8085/api/task/add', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTask),
+                credentials: "include"
             });
 
-            const savedTask = response.data;
+            const savedTask = await response.json();
+            if (!savedTask) {
+                throw new Error('응답 데이터가 없습니다.');
+            }
 
+            // 부모 컴포넌트로 전달: 카테고리 이름과 색상 포함
             onSave({
-                ...newTask,
-                id: savedTask.taskId, // 서버에서 반환된 ID 사용
+                title: savedTask.title,
+                dueDate: savedTask.dueDate || null,
+                priority: savedTask.priority,
+                repeatType: savedTask.repeatType,
+                status: savedTask.status || '보류 중',
+                taskId: savedTask.taskId, // 서버에서 반환된 Task ID
+                label: selectedCategory.name, // 카테고리 이름
+                categoryId: selectedCategoryId,
+                labelColor: selectedCategory.color, // 카테고리 색상
             });
+
+            // 폼 초기화 및 모달 닫기
+            resetForm();
+            onRequestClose();
         } catch (error) {
-            console.error("할 일 저장 오류:", error);
+            console.error("Error saving task:", error);
             alert("할 일을 저장하는 중 문제가 발생했습니다.");
         }
     };
+
+
+
+
 
 
     const handleSaveEvent = async () => {
