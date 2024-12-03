@@ -368,7 +368,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             <AddLabelModal
                 isOpen={isLabelModalOpen}
                 onRequestClose={() => setIsLabelModalOpen(false)}
-                onSave={(label) => setLabelOptions([...labelOptions, label])}
+                onSave={handleAddLabel}
             />
         </Modal>
     );

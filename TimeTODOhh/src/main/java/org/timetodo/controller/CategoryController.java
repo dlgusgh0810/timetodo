@@ -32,10 +32,10 @@ public class CategoryController {
 
     // 카테고리 추가
     @PostMapping("/add")
-    public ResponseEntity<String> addCategory(@RequestBody CategoryRequestDto categoryDto, HttpServletRequest request) {
+    public ResponseEntity<?> addCategory(@RequestBody CategoryRequestDto categoryDto, HttpServletRequest request) {
         Long userId = getUserIdFromCookies(request);
-        categoryService.createCategory(categoryDto, userId);
-        return ResponseEntity.ok("카테고리 생성 성공");
+        CategoryRequestDto category = categoryService.createCategory(categoryDto, userId);
+        return ResponseEntity.ok(category);
     }
 
     // 특정 사용자의 모든 카테고리 조회

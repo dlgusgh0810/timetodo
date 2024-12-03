@@ -13,4 +13,6 @@ public class CategoryRequestDto {
     private String color;
 
     private Long categoryId; // 카테고리 ID (삭제 시 필요)
+
+    private Long userId;
 }
