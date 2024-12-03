@@ -44,6 +44,16 @@ public class TaskService{
         task.setTitle(taskRequestDto.getTitle()); //타이틀
         task.setDueDate(taskRequestDto.getDueDate()); //마감기한
         task.setPriority(taskRequestDto.getPriority()); //우선순위
+        switch (taskRequestDto.getPriority()){
+            case "우선순위 없음":
+                break;
+            case "중요":
+                break;
+            case "일반":
+                break;
+            default:
+                throw new IllegalArgumentException("오류 Invalid Status type: " + taskRequestDto.getPriority());
+        }
         task.setStatus(taskRequestDto.getStatus()); // 진행상태
         switch (taskRequestDto.getStatus()){
             case "보류 중":
@@ -129,9 +139,10 @@ public class TaskService{
         return taskRepository.findAllByUserId(user);
     }
 
-    public TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto, Long categoryId) {
+    public TaskEntity updateTask(TaskRequestDto taskRequestDto, Long categoryId) {
+        Long taskId = taskRequestDto.getTaskId();
         // 기존 할 일 조회
-        TaskEntity existingTask = taskRepository.findById(id)
+        TaskEntity existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 할 일이 없습니다."));
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("할당된 카테고리 ID가 없습니다."));

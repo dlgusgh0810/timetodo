@@ -206,8 +206,9 @@ public class OpenAIService { //사용자 입력 파실 및 처리
                                 "    \"endTime\": \"\"\n" +
                                 "}\n" +
                                 "  * `title`, `description`, `location`, `repeatType`, `startTime`, `endTime`를 반드시 포함하세요.\n" +
-                                "  * `repeatType`은 NONE, DAILY, WEEKLY, MONTHLY, YEARLY 중 하나로 설정하세요.\n" +
+                                "  * `repeatType`은 반복 없음, 매일, 매주, 매월, 매년 중 하나로 설정하세요.\n" +
                                 "  * `startTime`과 `endTime`은 ISO 8601 LocalDateTime 형식(`yyyy-MM-dd'T'HH:mm:ss`)으로 반환하세요.\n" +
+                                "  * `endTime`의 값이 없을 경우 `startTime`에서 1시간을 더한 값을 반환하세요. \n" +
 
                                 "- `task` 요청의 경우:\n" +
                                 "{\n" +
@@ -219,10 +220,10 @@ public class OpenAIService { //사용자 입력 파실 및 처리
                                 "    \"repeatType\": \"\"\n" +
                                 "}\n" +
                                 "  * `title`, `dueDate`, `priority`, `status`, `repeatType`를 반드시 포함하세요.\n" +
-                                "  * `dueDate`는 ISO 8601 LocalDateTime 형식(`yyyy-MM-dd'T'HH:mm:ss`)으로 반환하세요.\n" +
-                                "  * `priority`는 LOW, MEDIUM, HIGH 중 하나로 설정하세요.\n" +
-                                "  * `status`는 PENDING, IN_PROGRESS, DONE 중 하나로 설정하세요.\n" +
-                                "  * `repeatType`은 NONE, DAILY, WEEKLY, MONTHLY, YEARLY 중 하나로 설정하세요.\n" +
+                                "  * `dueDate`는 ISO 8601 LocalDateTime 형식(`yyyy-MM-dd'T'HH:mm:ss`)으로 반환하세요, 만약 입력이 안되었다면 2000년 01월01일 00시로 설정해주라. \n" +
+                                "  * `priority`는 우선순위 없음, 중요, 일반 중 하나로 설정하세요. 기본값은 우선순위 없음 입니다.\n" +
+                                "  * `status`는 보류 중, 진행중, 완료 중 하나로 설정하세요, 기본값은 보류 중 입니다.\n" +
+                                "  * `repeatType`은 반복 없음, 매일, 매주, 매월, 매년 중 하나로 설정하세요, 기본값은 반복 없음 입니다.\n" +
 
                                 "- `reminder` 요청의 경우:\n" +
                                 "{\n" +
@@ -451,7 +452,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
 
             log.info("로그, handleCalendar > CalendarRequestDto: {}", requestDto);
 
-            calendarService.addCalendar(requestDto, userId, null);
+            calendarService.addCalendar(requestDto, userId, 1L);
         } catch (Exception e) {
             log.error("handleCalendar 처리 중 오류 발생: {}", data, e);
             throw new RuntimeException("일정 처리 중 오류가 발생했습니다.", e);
@@ -482,7 +483,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
             log.info("로그 , handleTask > TaskRequestDto: {}", requestDto);
 
             // Task 생성
-            taskService.addTask(requestDto, userId, null);
+            taskService.addTask(requestDto, userId, 1L);
         } catch (Exception e) {
             log.error("handleTask 처리 중 오류 발생: {}", data, e);
             throw new RuntimeException("할 일 처리 중 오류가 발생했습니다.", e);
