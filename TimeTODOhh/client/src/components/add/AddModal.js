@@ -79,9 +79,18 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 color: newLabel.color,
             });
 
+            // response에서 받아온 새로운 라벨 데이터 변환
             const savedLabel = response.data;
-            console.log("Saved Label:", savedLabel); // 디버깅: 저장된 라벨 데이터 확인
-            setLabelOptions((prevOptions) => [...prevOptions, savedLabel]);
+            // categoryId와 categoryName을 id와 name으로 변환
+            const transformedLabel = {
+                id: savedLabel.categoryId,
+                name: savedLabel.categoryName,
+                color: savedLabel.color,
+            };
+
+            console.log("Transformed Saved Label:", transformedLabel); // 디버깅: 변환된 라벨 데이터 확인
+
+            setLabelOptions((prevOptions) => [...prevOptions, transformedLabel]);
             setIsLabelModalOpen(false);
         } catch (error) {
             console.error("라벨 추가 실패:", error);
