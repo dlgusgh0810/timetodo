@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-@Controller // HTML 템플릿을 렌더링
+@RestController // HTML 템플릿을 렌더링
 @RequiredArgsConstructor // final 필드로 선언된 의존성(서비스)을 자동으로 주입하는 생성자를 생성해줍니다.
 @RequestMapping("/api/task") // 이 컨트롤러의 모든 엔드포인트는 "/task" 경로로 시작됩니다.
 public class TaskController {

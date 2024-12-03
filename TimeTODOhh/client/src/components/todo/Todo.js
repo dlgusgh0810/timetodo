@@ -43,13 +43,14 @@ function Todo() {
                 const tasks = await tasksResponse.json();
                 console.log(tasks);
                 const formattedTasks = tasks.map((task) => {
-                    // 카테고리 색상 매칭
+                    // 카테고리 ID에 맞는 label과 labelColor를 찾아서 설정
+                    const category = formattedCategories.find((category) => category.id === task.categoryId);
                     return {
                         taskId: task.taskId,
                         title: task.title,
                         dueDate: task.dueDate,
-                        label: task.label || '라벨 없음',
-                        labelColor: task.labelColor,
+                        label: category ? category.name : '라벨 없음',  // 카테고리 이름 설정
+                        labelColor: category ? category.color : '#808080',
                         priority: task.priority || '중간',
                         status: task.status || '보류 중',
                         repeatType: task.repeatType,
