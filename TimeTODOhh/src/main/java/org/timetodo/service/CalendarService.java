@@ -113,11 +113,16 @@ public class CalendarService {
     }
 
     // 모든 일정을 조회
-    public List<CalendarEntity> getCalendarsByUserId(Long userId) {
+    public List<CalendarDTO> getCalendarsByUserId(Long userId) {
+        // User 엔티티를 조회
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        // 저장된 모든 일정 조회
-        return calendarRepository.findAllByUserId(user);
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        // 사용자와 연관된 캘린더 엔티티 조회
+        List<CalendarEntity> calendars = calendarRepository.findByUserId(user);
+
+        // 캘린더 엔티티를 DTO로 변환
+        return calendars.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     // 특정 일정을 업데이트
