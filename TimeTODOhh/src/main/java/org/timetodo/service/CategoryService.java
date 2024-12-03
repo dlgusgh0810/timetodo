@@ -20,7 +20,7 @@ public class CategoryService {
     private UserRepository userRepository;
 
     // 카테고리 생성
-    public void createCategory(CategoryRequestDto categoryDto, Long userId) {
+    public CategoryRequestDto createCategory(CategoryRequestDto categoryDto, Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
@@ -28,9 +28,22 @@ public class CategoryService {
         category.setCategoryName(categoryDto.getCategoryName());
         category.setColor(categoryDto.getColor());
         category.setUserId(user);
-        categoryRepository.save(category);
+        CategoryEntity savedCategory = categoryRepository.save(category);
+
+        return convertcateDto(savedCategory);
     }
 
+    private CategoryRequestDto convertcateDto(CategoryEntity category) {
+        CategoryRequestDto categoryDto = new CategoryRequestDto();
+        categoryDto.setCategoryName(category.getCategoryName());
+        categoryDto.setColor(category.getColor());
+        categoryDto.setCategoryId(category.getCategoryId());
+
+        if (category.getUserId() != null) {
+            categoryDto.setUserId(categoryDto.getUserId());
+        }
+        return categoryDto;
+    }
     // 특정 사용자에 대한 카테고리 목록 조회
     public List<CategoryResponseDto> getCategoriesByUser(Long userId) {
         UserEntity user = userRepository.findById(userId)
