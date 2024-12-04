@@ -104,7 +104,7 @@ public class CalendarController {
             }
 
             Long userId = Long.parseLong(userCookie.getValue());
-            log.info("UserId from cookie: {}", userId);
+            log.info("캘린더 조회 성공, UserId from cookie: {}", userId);
 
             return calendarService.getCalendarsByUserId(userId);
         } catch (Exception e) {
@@ -117,12 +117,11 @@ public class CalendarController {
     // 특정 일정을 업데이트하는 엔드포인트
     @PutMapping("/update")
     public ResponseEntity<CalendarEntity> updateCalendar(
-            @RequestBody Long calendarId,
             @RequestBody CalendarRequestDto calendarRequestDto,
-            @RequestBody Long categoryId) {
+            @RequestParam Long categoryId) {
         // 경로 변수로 전달된 id에 해당하는 일정을 찾아,
         // 사용자가 보낸 데이터로 업데이트하고 그 결과를 반환합니다.
-        CalendarEntity updatedCalendar = calendarService.updateCalendar(calendarId, calendarRequestDto, categoryId);
+        CalendarEntity updatedCalendar = calendarService.updateCalendar(calendarRequestDto, categoryId);
         return ResponseEntity.ok(updatedCalendar); // 성공 시 업데이트된 일정을 반환
     }
 
