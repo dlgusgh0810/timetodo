@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa'; // 수정 아이콘 추가
-import styles from './Todo.module.css';
+import styles from './TodayTodo.module.css';
 import AddModal from '../add/AddModal';
 import TodoEditModal from '../edit/TodoEditModal'; // 수정 모달 추가
 import axios from "axios";
@@ -11,6 +11,7 @@ function Todo() {
     const [showEditModal, setShowEditModal] = useState(false); // 수정 모달 상태
     const [labelOptions, setLabelOptions] = useState([]);
     const [selectedTodo, setSelectedTodo] = useState(null); // 선택된 할 일
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -65,22 +66,53 @@ function Todo() {
         fetchData();
     }, []);
 
-    const handleStatusChange = (taskId) => {
+    // 오늘 날짜 구하기 (yyyy-mm-dd 형식)
+    const today = new Date().toLocaleDateString('en-CA'); // 'yyyy-mm-dd' 형식으로 오늘 날짜 반환
+
+    // 오늘 날짜에 해당하는 할 일만 필터링
+    const todosToday = todos.filter((todo) => {
+        const todoDueDate = new Date(todo.dueDate).toLocaleDateString('en-CA');
+        return todoDueDate === today; // 오늘 날짜와 비교
+    });
+
+    const handleStatusChange = async (taskId) => {
+        const targetTask = todos.find((todo) => todo.taskId === taskId);
+        if (!targetTask) {
+            alert("해당 할 일을 찾을 수 없습니다.");
+            return;
+        }
+
+        const newStatus =
+            targetTask.status === "보류 중"
+                ? "진행 중"
+                : targetTask.status === "진행 중"
+                    ? "완료"
+                    : "보류 중";
+
         setTodos((prevTodos) =>
             prevTodos.map((todo) =>
                 todo.taskId === taskId
-                    ? {
-                        ...todo,
-                        status:
-                            todo.status === "보류 중"
-                                ? "진행 중"
-                                : todo.status === "진행 중"
-                                    ? "완료"
-                                    : "보류 중",
-                    }
+                    ? { ...todo, status: newStatus }
                     : todo
             )
         );
+
+        const updateData = {
+            taskId: taskId, // 할 일 ID
+            status: newStatus, // 새로운 상태
+        };
+
+        try {
+            // 서버로 상태 업데이트 요청
+            const response = await axios.put("/api/task/updateStatus", updateData, {
+                headers: { "Content-Type": "application/json" },
+            });
+
+            console.log("Task status updated successfully:", response.data);
+        } catch (error) {
+            console.error("Failed to update task status:", error.response || error);
+            alert("상태 업데이트 중 오류가 발생했습니다.");
+        }
     };
 
     const handleEditTodo = (updatedTodo) => {
@@ -96,15 +128,16 @@ function Todo() {
     };
 
     const handleTodoClick = (todo) => {
+        console.log("Selected Todo:", todo);
         setSelectedTodo(todo);
         setShowEditModal(true);
     };
 
     return (
         <div className={styles.container}>
-            <h2>할 일 목록</h2>
+            <h2 className={styles.title}>오늘 할 일 목록</h2>
             <ul className={styles.todoList}>
-                {todos.map((todo) => (
+                {todosToday.map((todo) => (
                     <li key={todo.taskId} className={styles.todoItem}>
                         <div className={styles.todoDetails}>
                             <span>{todo.title || '제목 없음'}</span>
