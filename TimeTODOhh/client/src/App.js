@@ -8,10 +8,13 @@ import Stats from './components/stats/Stats';
 import Login from './components/login/Login';
 import SignUp from './components/signup/SignUp';
 import Profile from './components/sidebar/Profile';
+import Chatbot from './components/ai/Chatbot';
+import styles from './App.module.css';
 
 function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // 로그인 여부 관리
-    const [events, setEvents] = useState([]); // 일정 상태 추가
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [events, setEvents] = useState([]);
+    const [showChatbot, setShowChatbot] = useState(false);
 
     const handleLoginSuccess = () => {
         setIsAuthenticated(true); // 로그인 성공 시 true로 변경
@@ -27,66 +30,85 @@ function App() {
     };
 
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />} />
-                <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
-                <Route path="/signup" element={<SignUp />} />
+        <>
+            <Router>
+                <Routes>
+                    <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />} />
+                    <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+                    <Route path="/signup" element={<SignUp />} />
 
-                {isAuthenticated ? (
-                    <>
-                        <Route
-                            path="/home"
-                            element={
-                                <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} />
-                                    <div style={{ flex: 1, padding: '20px' }}>
-                                        <Home />
+                    {isAuthenticated ? (
+                        <>
+                            <Route
+                                path="/home"
+                                element={
+                                    <div style={{ display: 'flex' }}>
+                                        <Sidebar onAddEvent={addEvent} />
+                                        <div style={{ flex: 1, padding: '20px' }}>
+                                            <Home />
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                        />
-                        <Route
-                            path="/calendar"
-                            element={
-                                <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} />
-                                    <div style={{ flex: 1, padding: '20px' }}>
-                                        <Calendar events={events} />
+                                }
+                            />
+                            <Route
+                                path="/calendar"
+                                element={
+                                    <div style={{ display: 'flex' }}>
+                                        <Sidebar onAddEvent={addEvent} />
+                                        <div style={{ flex: 1, padding: '20px' }}>
+                                            <Calendar events={events} />
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                        />
-                        <Route
-                            path="/todo"
-                            element={
-                                <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} />
-                                    <div style={{ flex: 1, padding: '20px' }}>
-                                        <Todo />
+                                }
+                            />
+                            <Route
+                                path="/todo"
+                                element={
+                                    <div style={{ display: 'flex' }}>
+                                        <Sidebar onAddEvent={addEvent} />
+                                        <div style={{ flex: 1, padding: '20px' }}>
+                                            <Todo />
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                        />
-                        <Route
-                            path="/stats"
-                            element={
-                                <div style={{ display: 'flex' }}>
-                                    <Sidebar onAddEvent={addEvent} />
-                                    <div style={{ flex: 1, padding: '20px' }}>
-                                        <Stats />
+                                }
+                            />
+                            <Route
+                                path="/stats"
+                                element={
+                                    <div style={{ display: 'flex' }}>
+                                        <Sidebar onAddEvent={addEvent} />
+                                        <div style={{ flex: 1, padding: '20px' }}>
+                                            <Stats />
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                        />
-                    </>
-                ) : (
-                    <Route path="*" element={<Navigate to="/login" />} />
-                )}
+                                }
+                            />
+                        </>
+                    ) : (
+                        <Route path="*" element={<Navigate to="/login" />} />
+                    )}
 
-                <Route path="/profile" element={<Profile />} />
-            </Routes>
-        </Router>
+                    <Route path="/profile" element={<Profile />} />
+                </Routes>
+            </Router>
+
+            {isAuthenticated && (
+                <div className={styles.chatbotWrapper}>
+                    {/*챗봇 껐다켰다*/}
+                    <button
+                        className={styles.chatbotButton}
+                        onClick={() => setShowChatbot(!showChatbot)}
+                    >
+                        Ai
+                    </button>
+                    {showChatbot && (
+                        <div>
+                            <Chatbot/>
+                        </div>
+                    )}
+                </div>
+            )}
+        </>
     );
 }
 
