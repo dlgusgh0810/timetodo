@@ -1,31 +1,33 @@
-/*!* Chatbot.module.css *!*/
-.chatbotButton {
-    background-color: #0078d4;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
-    font-size: 1.5rem;
-    z-index: 10000;
-}
-
-/*.chatbotWindow {*/
-/*    position: absolute;*/
-/*    bottom: 70px;*/
-/*    right: 0;*/
-/*    width: 350px;*/
-/*    height: 500px;*/
-/*    border: 1px solid #ccc;*/
-/*    border-radius: 10px;*/
-/*    overflow: hidden;*/
-/*    background-color: #fff;*/
-/*    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
-/*}*/
-
 .chatbotWrapper {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    z-index: 9999; /* 다른 모든 요소들보다 앞에 오도록 높은 값 지정 */
+}
+
+/* 챗봇 버튼 스타일 */
+.chatbotButton {
+    width: 60px; /* 버튼 크기 */
+    height: 60px; /* 버튼 크기 */
+    background-color: #007bff; /* 파란색 배경 */
+    border: none;
+    border-radius: 50%; /* 원형 버튼 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white; /* 텍스트 색상 */
+    font-size: 22px; /* 텍스트 크기 */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    transition: all 0.3s ease; /* 호버 효과 */
+    z-index: 9999; /* 버튼이 항상 위에 표시되도록 높은 값 설정 */
+}
+
+.chatbotButton:hover {
+    background-color: #0056b3; /* 호버 시 배경색 */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 */
+}
+
+.chatbotButton:active {
+    transform: scale(0.95); /* 클릭 시 버튼 크기 축소 효과 */
 }
