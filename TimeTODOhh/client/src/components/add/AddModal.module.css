@@ -49,28 +49,27 @@
     color: #000;
 }
 
-/*제목 입력 부분*/
+/* 제목 입력 부분 */
 .titleInput {
-    font-size: 300rem;
-    line-height: 300rem;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
     font-weight: bold;
     color: #333;
     padding: 3%;
-    border: 2px solid #6200ea;
+    border: 2px solid #007bff; /* 파란색 테두리 */
     border-radius: 12px;
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
     height: 6vh;
     margin-top: 20px;
-    /*margin-bottom: 20px; !* 아래 요소와의 간격 *!*/
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
 }
 
 .titleInput:focus {
-    border-color: #3700b3; /* 포커스 시 테두리 색상 */
-    box-shadow: 0px 4px 8px rgba(98, 0, 234, 0.3); /* 포커스 시 그림자 강화 */
-    background-color: #f8f4ff; /* 포커스 시 배경 색상 */
+    border-color: #0056b3; /* 파란색 포커스 테두리 */
+    box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.3); /* 파란색 그림자 */
+    background-color: #f0f8ff; /* 밝은 파란색 배경 */
 }
 
 .titleInput::placeholder {
@@ -94,6 +93,7 @@
     overflow-y: auto;
 }
 
+/* 입력 필드, 셀렉트, 텍스트에 대한 포커스 스타일 */
 form input,
 form select,
 form textarea {
@@ -109,13 +109,8 @@ form textarea {
 form input:focus,
 form select:focus,
 form textarea:focus {
-    border-color: #6200ea;
-    box-shadow: 0 0 4px rgba(98, 0, 234, 0.3);
-}
-
-.textarea {
-    resize: none;
-    height: 80px;
+    border-color: #007bff; /* 파란색 테두리 */
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3); /* 파란색 그림자 */
 }
 
 /* 저장 버튼 */
@@ -124,7 +119,7 @@ button[type="button"],
     margin-top: 20px;
     padding: 12px;
     font-size: 16px;
-    background-color: #6200ea;
+    background-color: #007bff; /* 파란색 배경 */
     color: white;
     border: none;
     border-radius: 8px;
@@ -135,7 +130,7 @@ button[type="button"],
 
 button[type="button"]:hover,
 .saveButton:hover {
-    background-color: #3700b3;
+    background-color: #0056b3; /* 파란색 호버 시 색상 */
 }
 
 .saveButton {
@@ -164,7 +159,7 @@ button[type="button"]:hover,
 }
 
 .activeTab {
-    background-color: purple;
+    background-color: #007bff; /* 파란색 활성화 탭 */
     color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
@@ -184,84 +179,4 @@ button[type="button"]:hover,
 .scrollableLabelContainer {
     max-height: 200px;
     overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    position: relative;
-    padding-bottom: 40px;
-}
-
-.scrollableLabelContainer select {
-    width: 100%;
-    height: 120px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.addLabelButton {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #f7f7f7;
-    border: 1px solid #ccc;
-    border-top: none;
-    padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.addLabelButton:hover {
-    background-color: #e0e0e0;
-}
-
-/* 라벨 선택 메뉴 */
-.labelDropdown {
-    position: relative;
-    cursor: pointer;
-    margin-bottom: 15px;
-}
-
-.selectedLabel {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #fff;
-}
-
-.dropdownMenu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    background: #fff;
-    z-index: 10;
-    border-radius: 4px;
-}
-
-.dropdownItem {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.dropdownItem:hover {
-    background-color: #f0f0f0;
-}
-
-/* 아이콘 스타일 */
-.icon {
-    font-size: 16px;
-    color: #888;
-    margin-right: 8px;
-    vertical-align: middle;
-}
-
-.flex{
-    display: flex;
-    align-items: center;
 }

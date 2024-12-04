@@ -55,27 +55,35 @@
 }
 
 .addButton {
-    width: 100%;
-    background-color: #D9EFFF;
+    width: 120px; /* 버튼 크기 (길게) */
+    height: 40px; /* 버튼 높이 */
+    background-color: #4caf50; /* 배경색 (이미지에서 녹색) */
     border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 16px;
+    border-radius: 20px; /* 둥근 버튼 */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #007BFF;
+    color: white; /* 아이콘 및 텍스트 색상 */
+    font-size: 16px; /* 텍스트 크기 */
     cursor: pointer;
-    transition: background-color 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    transition: all 0.3s ease; /* 호버 효과 */
+    padding: 0 10px; /* 양 옆에 여백 추가 */
+}
+
+.addButton svg {
+    width: 20px; /* 아이콘 크기 */
+    height: 20px; /* 아이콘 크기 */
+    margin-right: 8px; /* 아이콘과 텍스트 사이에 여백 */
 }
 
 .addButton:hover {
-    background-color: #c9dfff;
+    background-color: #45a049; /* 호버 시 배경색 */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 */
 }
 
-.addIcon {
-    margin-right: 8px;
-    font-size: 20px;
+.addButton:active {
+    transform: scale(0.98); /* 클릭 시 버튼 크기 축소 효과 */
 }
 
 /* 네비게이션 메뉴 */
