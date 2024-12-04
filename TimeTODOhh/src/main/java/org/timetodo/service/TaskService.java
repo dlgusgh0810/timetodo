@@ -44,6 +44,16 @@ public class TaskService{
         task.setTitle(taskRequestDto.getTitle()); //타이틀
         task.setDueDate(taskRequestDto.getDueDate()); //마감기한
         task.setPriority(taskRequestDto.getPriority()); //우선순위
+        switch (taskRequestDto.getPriority()){
+            case "우선순위 없음":
+                break;
+            case "중요":
+                break;
+            case "일반":
+                break;
+            default:
+                throw new IllegalArgumentException("오류 Invalid Status type: " + taskRequestDto.getPriority());
+        }
         task.setStatus(taskRequestDto.getStatus()); // 진행상태
         switch (taskRequestDto.getStatus()){
             case "보류 중":
@@ -60,7 +70,7 @@ public class TaskService{
         }
         task.setRepeatType(taskRequestDto.getRepeatType()); //반복일정 여부
         switch (taskRequestDto.getRepeatType()) {
-            case "null":
+            case "반복 없음":
                 //반복없음
                 break;
             case "매일":
@@ -120,7 +130,6 @@ public class TaskService{
 
     }
 
-
     public List<TaskDto> getTasksByUserId(Long userId) {
         // User 엔티티를 조회
         UserEntity user = userRepository.findById(userId)
@@ -133,10 +142,10 @@ public class TaskService{
         return tasks.stream().map(this::convertTask).collect(Collectors.toList());
     }
 
-
-    public TaskEntity updateTask(Long id, TaskRequestDto taskRequestDto, Long categoryId) {
+    public TaskEntity updateTask(TaskRequestDto taskRequestDto, Long categoryId) {
+        Long taskId = taskRequestDto.getTaskId();
         // 기존 할 일 조회
-        TaskEntity existingTask = taskRepository.findById(id)
+        TaskEntity existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 할 일이 없습니다."));
         CategoryEntity category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("할당된 카테고리 ID가 없습니다."));

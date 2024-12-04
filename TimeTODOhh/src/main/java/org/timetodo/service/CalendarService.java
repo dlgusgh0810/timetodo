@@ -126,7 +126,8 @@ public class CalendarService {
     }
 
     // 특정 일정을 업데이트
-    public CalendarEntity updateCalendar(Long calendarId, CalendarRequestDto calendarRequestDto, Long categoryId) {
+    public CalendarEntity updateCalendar(CalendarRequestDto calendarRequestDto, Long categoryId) {
+        Long calendarId = calendarRequestDto.getCalendarId();
         // 기존 일정 조회
         CalendarEntity existingCalendar = calendarRepository.findById(calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정이 없습니다."));
