@@ -137,7 +137,7 @@ function Calendar() {
     const handleEventUpdate = (updatedEvent) => {
         console.log("Updating event:", updatedEvent);
         setEvents((prevEvents) => [...prevEvents, updatedEvent]); // 새 이벤트 추가
-        setEditModalOpen(false); // 모달 닫기
+        setAddModalOpen(false); // 모달 닫기
     };
 
 
@@ -156,7 +156,8 @@ function Calendar() {
         calendarApi.changeView(newView); // 선택된 보기로 전환
     };
 
-
+    console.log(isEditModalOpen);
+    console.log(selectedEvent); // 선택된 이벤트 데이터 확인
 
 
     return (
