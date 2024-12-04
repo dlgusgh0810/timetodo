@@ -102,7 +102,8 @@ function Calendar() {
 
             // 상태 업데이트
             setSelectedEvent(transformedClickedEvent);
-            setDetailModalOpen(true); // 모달 열기
+            // setEditModalOpen(true); // 모달 열기
+            setDetailModalOpen(true);
         } else {
             console.error("Event not found in the events array");
             alert("해당 이벤트를 찾을 수 없습니다."); // 사용자 알림 추가
