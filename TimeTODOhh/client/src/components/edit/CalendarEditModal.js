@@ -59,8 +59,8 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
             setDescription(selectedEvent.description || '');
             setSelectedLabel(selectedEvent.labelName || '라벨 없음');
             setSelectedCategoryId(selectedEvent.categoryId || null);
-            setStartDate(new Date(selectedEvent.start));
-            setEndDate(new Date(selectedEvent.end));
+            setStartDate(new Date());
+            setEndDate(new Date());
             setRepeat(selectedEvent.repeat || '반복 없음');
         } else {
             // 초기화
@@ -75,21 +75,49 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     }, [selectedEvent]);
 
     // 저장 핸들러
-    const handleSave = () => {
+    const handleSave = async () => {
+        if (!selectedEvent || !selectedEvent.id) {
+            alert("선택된 이벤트가 없습니다.");
+            return;
+        }
 
+        // 요청 데이터 구성
         const eventData = {
-            title: title.trim(),
-            description: description || null,
-            labelName: selectedLabel,
-            categoryId: selectedCategoryId,
-            start: formatDateTime(startDate),
-            end: formatDateTime(endDate),
-            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 추가
+            calendarId: selectedEvent.id, // 이벤트 ID
+            calendarRequestDto: {
+                title: title.trim(),
+                startTime: formatDateTime(startDate), // ISO8601 형식
+                end_time: formatDateTime(endDate), // ISO8601 형식
+                description: description || null,
+                repeatType: repeat === "반복 없음" ? null : repeat, // 반복 설정
+            },
+            categoryId: selectedCategoryId, // 카테고리 ID
         };
-        console.log("eventData Event:", eventData);
-        onSave(eventData); // 저장
-        onRequestClose();
+
+        console.log("Sending eventData to update:", eventData);
+
+        try {
+            // 서버로 업데이트 요청
+            const response = await axios.put(
+                "/api/calendar/update", // 엔드포인트
+                eventData, // 요청 본문
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            console.log("Update response:", response.data);
+            onSave(response.data); // 저장 후 상위 컴포넌트에 알림
+            onRequestClose(); // 모달 닫기
+        } catch (error) {
+            console.error("Failed to update the event:", error.response || error);
+            alert("일정 업데이트 중 오류가 발생했습니다.");
+        }
     };
+
+
 
     // 삭제 핸들러
     const handleDelete = () => {

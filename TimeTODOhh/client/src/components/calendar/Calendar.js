@@ -95,13 +95,11 @@ function Calendar() {
             console.log("Matched Event:", clickedEvent);
             // startTime과 endTime을 ISO8601 형식으로 변환
             const transformedClickedEvent = {
-                id: clickedEvent.calendarId,
+                id: clickedEvent.id,
                 title: clickedEvent.title,
                 start: null,
                 end: null,
                 description: clickedEvent.description,
-                location: clickedEvent.location,
-                color: labelOptions.find((label) => label.id === clickedEvent.categoryId)?.color || '#808080', // 라벨 색상
                 repeatType: clickedEvent.repeatType, // 반복 설정 전달
             };
 
