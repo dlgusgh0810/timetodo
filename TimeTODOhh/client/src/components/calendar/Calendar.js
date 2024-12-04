@@ -83,14 +83,14 @@ function Calendar() {
 
     // 일정 클릭 이벤트
     const handleEventClick = (clickInfo) => {
-        const clickedEvent = events.find((event) => event.id === clickInfo.event.id);
+        console.log("Clicked Event Info:", clickInfo.event); // 클릭된 이벤트의 전체 데이터
+        const clickedEvent = events.find((event) => String(event.id) === String(clickInfo.event.id));
         if (clickedEvent) {
 // <<<<<<< HEAD
 //             setSelectedEvent(clickedEvent);
 //             setDetailModalOpen(true);
 // =======
             console.log("Matched Event:", clickedEvent);
-            // startTime과 endTime을 ISO8601 형식으로 변환
             const transformedClickedEvent = {
                 id: clickedEvent.id,
                 title: clickedEvent.title,
