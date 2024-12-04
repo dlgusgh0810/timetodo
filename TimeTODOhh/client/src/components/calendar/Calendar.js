@@ -79,37 +79,27 @@ function Calendar() {
 
     // 일정 클릭 이벤트
     const handleEventClick = (clickInfo) => {
+        if (!events || events.length === 0) {
+            console.error("Events array is empty or not initialized");
+            alert("이벤트 데이터를 불러오지 못했습니다.");
+            return;
+        }
+
         console.log("Clicked Event Info:", clickInfo.event); // 클릭된 이벤트의 전체 데이터
+
+        // 클릭된 이벤트를 ID로 검색
         const clickedEvent = events.find((event) => String(event.id) === String(clickInfo.event.id));
-        console.log("Matched Event:", clickedEvent);
+
         if (clickedEvent) {
-            setSelectedEvent(clickedEvent); // 선택된 이벤트 데이터 설정
+            console.log("Matched Event:", clickedEvent); // 매칭된 이벤트 로그 출력
+            setSelectedEvent(clickedEvent); // 상태 업데이트
             setEditModalOpen(true); // 모달 열기
         } else {
             console.error("Event not found in the events array");
+            alert("해당 이벤트를 찾을 수 없습니다."); // 사용자 알림 추가
         }
     };
 
-    const categories = await categoryResponse.json();
-
-    const formattedCategories = categories.map((category) => ({
-        id: category.categoryId,
-        name: category.categoryName,
-        color: category.color || '#808080',
-    }));
-    setLabelOptions(formattedCategories);
-
-    const categoryColor = formattedCategories.find((label) => label.id === event.categoryId)?.color || '#808080';
-    const fullCalendarEvents = eventData.map((event) => ({
-        id: String(event.calendarId), // id를 문자열로 변환
-        title: event.title,
-        start: event.startTime,
-        end: event.endTime, // DTO의 키에 맞게 변경
-        description: event.description,
-        location: event.location,
-        color: categoryColor
-    }));
-    setEvents(fullCalendarEvents);
 
 
 
