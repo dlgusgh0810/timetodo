@@ -423,7 +423,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
      * @param userId 사용자 고유 ID
      * @return 처리 결과 메시지
      */
-    private void handleCalendar(Map<String, Object> data, Long userId) {
+    private String handleCalendar(Map<String, Object> data, Long userId) {
         try {
             CalendarRequestDto requestDto = new CalendarRequestDto();
 
@@ -450,6 +450,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
             log.info("로그, handleCalendar > CalendarRequestDto: {}", requestDto);
 
             calendarService.addCalendar(requestDto, userId, 1L);
+            return "일정이 성공적으로 생성되었습니다.";
         } catch (Exception e) {
             log.error("handleCalendar 처리 중 오류 발생: {}", data, e);
             throw new RuntimeException("일정 처리 중 오류가 발생했습니다.", e);
@@ -462,7 +463,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
      * @param data 파싱된 할 일 데이터
      * @param userId 사용자 고유 ID
      */
-    private void handleTask(Map<String, Object> data, Long userId) {
+    private String handleTask(Map<String, Object> data, Long userId) {
         try {
             TaskRequestDto requestDto = new TaskRequestDto();
 
@@ -481,6 +482,7 @@ public class OpenAIService { //사용자 입력 파실 및 처리
 
             // Task 생성
             taskService.addTask(requestDto, userId, 1L);
+            return "할 일이 성공적으로 생성되었습니다.";
         } catch (Exception e) {
             log.error("handleTask 처리 중 오류 발생: {}", data, e);
             throw new RuntimeException("할 일 처리 중 오류가 발생했습니다.", e);
