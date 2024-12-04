@@ -90,6 +90,15 @@ function Calendar() {
         }
     };
 
+    const categories = await categoryResponse.json();
+
+    const formattedCategories = categories.map((category) => ({
+        id: category.categoryId,
+        name: category.categoryName,
+        color: category.color || '#808080',
+    }));
+    setLabelOptions(formattedCategories);
+
     const categoryColor = formattedCategories.find((label) => label.id === event.categoryId)?.color || '#808080';
     const fullCalendarEvents = eventData.map((event) => ({
         id: String(event.calendarId), // id를 문자열로 변환
