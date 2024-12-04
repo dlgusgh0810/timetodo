@@ -134,14 +134,14 @@ function Calendar() {
         setAddModalOpen(false); // 모달 닫기
     };
 
-    const handleEditSave = (updatedEvent) => {
-        setEvents((prevEvents) =>
-            prevEvents.map((event) =>
-                event.id === updatedEvent.id ? { ...event, ...updatedEvent } : event
-            )
-        );
-        setEditModalOpen(false);
+    const handleEventUpdate = (updatedEvent) => {
+        console.log("Updating event:", updatedEvent);
+        setEvents((prevEvents) => [...prevEvents, updatedEvent]); // 새 이벤트 추가
+        setAddModalOpen(false); // 모달 닫기
     };
+
+
+
 
     // EditModal 삭제 핸들러
     const handleDelete = (eventId) => {
@@ -194,6 +194,7 @@ function Calendar() {
                 isOpen={isAddModalOpen}
                 onRequestClose={closeAddModal}
                 onSave={handleSave} // onSave 핸들러 전달
+
                 selectedDate={selectedDate} // 선택된 날짜 전달
                 defaultTab="일정" // 기본 탭 전달
             />
@@ -201,7 +202,7 @@ function Calendar() {
             <CalendarEditModal
                 isOpen={isEditModalOpen}
                 onRequestClose={closeEditModal}
-                onSave={handleEditSave}
+                onSave={handleEventUpdate}
                 onDelete={handleDelete}
                 selectedEvent={selectedEvent} // 선택된 이벤트 전달
             />
