@@ -62,3 +62,42 @@ input[type='checkbox'] {
 .addButton:hover {
     background-color: #3700b3;
 }
+
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.status.pending {
+    background-color: #f0f0f0; /* 보류 중 */
+    color: #808080;
+    border: 1px solid #d1d1d1;
+}
+
+.status.inProgress {
+    background-color: #cce5ff; /* 진행 중 */
+    color: #004085;
+    border: 1px solid #b8daff;
+}
+
+.status.completed {
+    background-color: #d4edda; /* 완료 */
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.label{
+    color: #ffffff;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-left: 8px;
+    display: inline-block;
+}
