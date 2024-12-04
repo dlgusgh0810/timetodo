@@ -21,7 +21,16 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     const [endDate, setEndDate] = useState(new Date());
     const [repeat, setRepeat] = useState('반복 없음');
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
+    const formatDateTime = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
 
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
     // 라벨 데이터 불러오기
     useEffect(() => {
         if (isOpen) {
@@ -50,8 +59,8 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
             setDescription(selectedEvent.description || '');
             setSelectedLabel(selectedEvent.labelName || '라벨 없음');
             setSelectedCategoryId(selectedEvent.categoryId || null);
-            setStartDate(new Date(selectedEvent.startDate));
-            setEndDate(new Date(selectedEvent.endDate));
+            setStartDate(new Date(selectedEvent.start));
+            setEndDate(new Date(selectedEvent.end));
             setRepeat(selectedEvent.repeat || '반복 없음');
         } else {
             // 초기화
@@ -67,15 +76,17 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
 
     // 저장 핸들러
     const handleSave = () => {
+
         const eventData = {
-            title,
-            description,
+            title: title.trim(),
+            description: description || null,
             labelName: selectedLabel,
             categoryId: selectedCategoryId,
-            startDate,
-            endDate,
-            repeat,
+            start: formatDateTime(startDate),
+            end: formatDateTime(endDate),
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 추가
         };
+        console.log("eventData Event:", eventData);
         onSave(eventData); // 저장
         onRequestClose();
     };

@@ -59,6 +59,7 @@ function Calendar() {
                         description: event.description,
                         location: event.location,
                         color: categoryColor,
+                        repeatType: event.repeatType,
                     };
                 });
 
@@ -91,14 +92,28 @@ function Calendar() {
         const clickedEvent = events.find((event) => String(event.id) === String(clickInfo.event.id));
 
         if (clickedEvent) {
-            console.log("Matched Event:", clickedEvent); // 매칭된 이벤트 로그 출력
-            setSelectedEvent(clickedEvent); // 상태 업데이트
+            console.log("Matched Event:", clickedEvent);
+            // startTime과 endTime을 ISO8601 형식으로 변환
+            const transformedClickedEvent = {
+                id: clickedEvent.calendarId,
+                title: clickedEvent.title,
+                start: null,
+                end: null,
+                description: clickedEvent.description,
+                location: clickedEvent.location,
+                color: labelOptions.find((label) => label.id === clickedEvent.categoryId)?.color || '#808080', // 라벨 색상
+                repeatType: clickedEvent.repeatType, // 반복 설정 전달
+            };
+
+            // 상태 업데이트
+            setSelectedEvent(transformedClickedEvent);
             setEditModalOpen(true); // 모달 열기
         } else {
             console.error("Event not found in the events array");
             alert("해당 이벤트를 찾을 수 없습니다."); // 사용자 알림 추가
         }
     };
+
 
 
 
