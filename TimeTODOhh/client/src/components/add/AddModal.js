@@ -326,7 +326,6 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                     <>
                         <label className={styles.label}>
                             <FaHourglass className={styles.icon}/>
-                            마감 기한
                             <ReactDatePicker
                                 selected={deadline}
                                 onChange={(date) => setDeadline(date)}
