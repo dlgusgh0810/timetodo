@@ -379,6 +379,8 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                     </select>
                 </label>
 
+
+                {activeTab === '일정' && (
                 <label className={styles.flex}>
                     <FaClipboardList className={styles.icon} />
                     <textarea
@@ -388,6 +390,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         className={styles.textarea}
                     />
                 </label>
+                )}
 
                 {activeTab === '할 일' && (
                     <button type="button" onClick={handleSaveTask} className={styles.saveButton}>

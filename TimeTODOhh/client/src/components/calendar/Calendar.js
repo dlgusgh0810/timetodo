@@ -5,22 +5,26 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
 import CalendarEditModal from "../edit/CalendarEditModal";
+import DetailModal from './DetailModal';
+import Modal from 'react-modal';
 import styles from './Calendar.module.css';
+
+Modal.setAppElement('#root');
 
 function Calendar() {
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const [isDetailModalOpen, setDetailModalOpen] = useState(false); // 세부 정보 모달 상태
     const [selectedDate, setSelectedDate] = useState('');
-    const [selectedEvent, setSelectedEvent] = useState(null); // 선택된 일정 데이터
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const calendarRef = useRef(null);
     const [labelOptions, setLabelOptions] = useState([]);
     const [events, setEvents] = useState([]);
 
-    // 카테고리와 이벤트 데이터를 로드
+    // 데이터 로드
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 1. 카테고리 데이터 불러오기
                 const categoryResponse = await fetch("http://localhost:8085/api/categories/all", {
                     method: "GET",
                     credentials: "include",
@@ -38,7 +42,6 @@ function Calendar() {
                 }));
                 setLabelOptions(formattedCategories);
 
-                // 2. 이벤트 데이터 불러오기
                 const eventsResponse = await fetch("http://localhost:8085/api/calendar/find", {
                     method: "GET",
                     credentials: "include",
@@ -80,18 +83,12 @@ function Calendar() {
 
     // 일정 클릭 이벤트
     const handleEventClick = (clickInfo) => {
-        if (!events || events.length === 0) {
-            console.error("Events array is empty or not initialized");
-            alert("이벤트 데이터를 불러오지 못했습니다.");
-            return;
-        }
-
-        console.log("Clicked Event Info:", clickInfo.event); // 클릭된 이벤트의 전체 데이터
-
-        // 클릭된 이벤트를 ID로 검색
-        const clickedEvent = events.find((event) => String(event.id) === String(clickInfo.event.id));
-
+        const clickedEvent = events.find((event) => event.id === clickInfo.event.id);
         if (clickedEvent) {
+// <<<<<<< HEAD
+//             setSelectedEvent(clickedEvent);
+//             setDetailModalOpen(true);
+// =======
             console.log("Matched Event:", clickedEvent);
             // startTime과 endTime을 ISO8601 형식으로 변환
             const transformedClickedEvent = {
@@ -105,15 +102,18 @@ function Calendar() {
 
             // 상태 업데이트
             setSelectedEvent(transformedClickedEvent);
-            setEditModalOpen(true); // 모달 열기
+            setDetailModalOpen(true); // 모달 열기
         } else {
             console.error("Event not found in the events array");
             alert("해당 이벤트를 찾을 수 없습니다."); // 사용자 알림 추가
         }
     };
 
-
-
+    // 세부 정보 모달 닫기
+    const closeDetailModal = () => {
+        setDetailModalOpen(false);
+        setSelectedEvent(null);
+    };
 
 
     // AddModal 닫기
@@ -124,15 +124,15 @@ function Calendar() {
     // EditModal 닫기
     const closeEditModal = () => {
         setEditModalOpen(false);
-        setSelectedEvent(null); // 선택된 이벤트 초기화
+        setSelectedEvent(null);
     };
 
     // 추가 모달 저장 핸들러
     const handleSave = (newEvent) => {
-        console.log("New Event Saved:", newEvent);
         setEvents((prevEvents) => [...prevEvents, newEvent]); // 새 이벤트 추가
         setAddModalOpen(false); // 모달 닫기
     };
+
 
     const handleEventUpdate = (updatedEvent) => {
         console.log("Updating event:", updatedEvent);
@@ -149,20 +149,16 @@ function Calendar() {
         setEditModalOpen(false);
     };
 
+
     // 보기 전환 이벤트
     const handleViewChange = (event) => {
-        const newView = event.target.value; // 드롭다운에서 선택된 보기
-        const calendarApi = calendarRef.current.getApi(); // FullCalendar API 호출
-        calendarApi.changeView(newView); // 선택된 보기로 전환
+        const newView = event.target.value;
+        const calendarApi = calendarRef.current.getApi();
+        calendarApi.changeView(newView);
     };
-
-    console.log(isEditModalOpen);
-    console.log(selectedEvent); // 선택된 이벤트 데이터 확인
-
 
     return (
         <div className={styles.calendarContainer}>
-            {/* 보기 전환 셀렉트 박스 */}
             <div className={styles.viewSelector}>
                 <label htmlFor="view-select">보기: </label>
                 <select id="view-select" onChange={handleViewChange}>
@@ -176,7 +172,7 @@ function Calendar() {
                 ref={calendarRef}
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
-                events={events} // 최신 상태의 이벤트 전달
+                events={events}
                 dateClick={handleDateClick}
                 eventClick={handleEventClick}
                 headerToolbar={{
@@ -190,15 +186,17 @@ function Calendar() {
                 height="100%"
             />
 
+            {/* 추가 모달 */}
             <AddModal
                 isOpen={isAddModalOpen}
                 onRequestClose={closeAddModal}
                 onSave={handleSave} // onSave 핸들러 전달
-
                 selectedDate={selectedDate} // 선택된 날짜 전달
                 defaultTab="일정" // 기본 탭 전달
+
             />
 
+            {/* 수정 모달 */}
             <CalendarEditModal
                 isOpen={isEditModalOpen}
                 onRequestClose={closeEditModal}
@@ -206,6 +204,18 @@ function Calendar() {
                 onDelete={handleDelete}
                 selectedEvent={selectedEvent} // 선택된 이벤트 전달
             />
+
+            <DetailModal
+                isOpen={isDetailModalOpen}
+                event={selectedEvent}
+                onRequestClose={closeDetailModal}
+                onEdit={() => {
+                    setDetailModalOpen(false);
+                    setEditModalOpen(true);
+                }}
+            />
+
+
 
         </div>
     );
