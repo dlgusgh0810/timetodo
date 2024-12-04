@@ -79,14 +79,28 @@ function Calendar() {
 
     // 일정 클릭 이벤트
     const handleEventClick = (clickInfo) => {
-        console.log("Selected Event:", selectedEvent);
-        const clickedEvent = events.find((event) => event.id === clickInfo.event.id);
+        console.log("Clicked Event Info:", clickInfo.event); // 클릭된 이벤트의 전체 데이터
+        const clickedEvent = events.find((event) => String(event.id) === String(clickInfo.event.id));
+        console.log("Matched Event:", clickedEvent);
         if (clickedEvent) {
             setSelectedEvent(clickedEvent); // 선택된 이벤트 데이터 설정
-            setEditModalOpen(true);
-
+            setEditModalOpen(true); // 모달 열기
+        } else {
+            console.error("Event not found in the events array");
         }
     };
+
+    const categoryColor = formattedCategories.find((label) => label.id === event.categoryId)?.color || '#808080';
+    const fullCalendarEvents = eventData.map((event) => ({
+        id: String(event.calendarId), // id를 문자열로 변환
+        title: event.title,
+        start: event.startTime,
+        end: event.endTime, // DTO의 키에 맞게 변경
+        description: event.description,
+        location: event.location,
+        color: categoryColor
+    }));
+    setEvents(fullCalendarEvents);
 
 
 
@@ -123,7 +137,6 @@ function Calendar() {
         setEditModalOpen(false);
     };
 
-
     // 보기 전환 이벤트
     const handleViewChange = (event) => {
         const newView = event.target.value; // 드롭다운에서 선택된 보기
@@ -147,14 +160,13 @@ function Calendar() {
                 </select>
             </div>
 
-            {/* FullCalendar 컴포넌트 */}
             <FullCalendar
                 ref={calendarRef}
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
-                events={events}
-                dateClick={handleDateClick} // 날짜 클릭 핸들러
-                eventClick={handleEventClick} // 일정 클릭 핸들러 추가
+                events={events} // 최신 상태의 이벤트 전달
+                dateClick={handleDateClick}
+                eventClick={handleEventClick}
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
@@ -166,9 +178,6 @@ function Calendar() {
                 height="100%"
             />
 
-
-
-            {/* 추가 모달 컴포넌트 */}
             <AddModal
                 isOpen={isAddModalOpen}
                 onRequestClose={closeAddModal}
@@ -184,9 +193,6 @@ function Calendar() {
                 onDelete={handleDelete}
                 selectedEvent={selectedEvent} // 선택된 이벤트 전달
             />
-
-
-
 
         </div>
     );
