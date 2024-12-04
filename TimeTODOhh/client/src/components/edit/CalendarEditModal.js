@@ -84,14 +84,11 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
         // 요청 데이터 구성
         const eventData = {
             calendarId: selectedEvent.id, // 이벤트 ID
-            calendarRequestDto: {
-                title: title.trim(),
-                startTime: formatDateTime(startDate), // ISO8601 형식
-                end_time: formatDateTime(endDate), // ISO8601 형식
-                description: description || null,
-                repeatType: repeat === "반복 없음" ? null : repeat, // 반복 설정
-            },
-            categoryId: selectedCategoryId, // 카테고리 ID
+            title: title.trim(),
+            startTime: formatDateTime(startDate), // ISO8601 형식
+            endTime: formatDateTime(endDate), // ISO8601 형식
+            description: description || null,
+            repeatType: repeat === "반복 없음" ? null : repeat, // 반복 설정
         };
 
         console.log("Sending eventData to update:", eventData);
@@ -99,7 +96,7 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
         try {
             // 서버로 업데이트 요청
             const response = await axios.put(
-                "/api/calendar/update", // 엔드포인트
+                "/api/calendar/update?categoryId=${selectedCategoryId}", // 엔드포인트
                 eventData, // 요청 본문
                 {
                     headers: {
