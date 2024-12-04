@@ -26,7 +26,6 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
     };
     const [repeat, setRepeat] = useState('반복 없음'); // repeat 필드 추가
 
-
     // 선택된 할 일 데이터를 모달 상태로 초기화
     useEffect(() => {
         if (task) {
@@ -48,11 +47,13 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
 
         // 요청 데이터 구성
         const taskData = {
+            taskId: task.taskId, // taskId를 추가하여 백엔드로 전달
             title: title.trim(),
             priority,
-            dueDate: deadline,
-            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 저장
-            };
+            dueDate: formatDateTime(deadline),
+            repeatType: repeat === '반복 없음' ? '' : repeat, // 반복 설정 저장
+            status: task.status|| '보류 중',
+        };
 
         console.log("Sending taskData to update:", taskData);
 
@@ -72,12 +73,14 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
 
             // 서버 응답 데이터를 반영
             const updatedTask = {
-                id: response.data.id,
+                taskId: response.data.taskId,
                 title: response.data.title,
                 priority: response.data.priority,
-                dueDate: response.data.dueDate,
+                dueDate: new Date(response.data.dueDate),
                 label: labelOptions.find((label) => label.id === selectedCategoryId)?.name || "라벨 없음",
                 labelColor: labelOptions.find((label) => label.id === selectedCategoryId)?.color || "#808080",
+                repeatType: response.data.repeatType || '반복 없음', // 반복 설정 반영
+                status: response.data.status|| '보류 중',
             };
 
             onSave(updatedTask); // 저장 후 상위 컴포넌트에 알림
