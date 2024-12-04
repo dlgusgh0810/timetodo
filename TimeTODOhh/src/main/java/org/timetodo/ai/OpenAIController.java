@@ -1,5 +1,7 @@
 package org.timetodo.ai;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +36,37 @@ public class OpenAIController {
      */
     @PostMapping("/add")
     public ResponseEntity<String> inputChat(@RequestBody String inputText,
-                                            @RequestParam Long userId) {
+                                            HttpServletRequest request) {
+
+        Long userId = 1L;
         try{
+            // 쿠키에서 userId 가져오기
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("쿠키가 존재하지 않습니다.");
+            }
+
+            // userId 쿠키 검색
+            Cookie userCookie = Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals("userId"))
+                    .findAny()
+                    .orElse(null);
+
+            if (userCookie == null || userCookie.getValue() == null || userCookie.getValue().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("userId 쿠키가 없거나 비어 있습니다.");
+            }
+
+            // userId 파싱
+            try {
+                userId = Long.valueOf(userCookie.getValue());
+            } catch (NumberFormatException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("userId 쿠키 값이 올바르지 않습니다.");
+            }
+
+            log.info("세션에서 가져온 UserId : {}", userId);
             log.info("input text: {}", inputText); // 요청 로그
             return ResponseEntity.ok(openAIService.OpenAIAPI_SelectProcessing(inputText, userId));
         }catch (Exception e){

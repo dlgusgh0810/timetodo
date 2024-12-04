@@ -91,10 +91,26 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        if(!task || !task.taskId) {
+            alert("삭제할 이벤트가 선택되지 않았습니다.")
+            return;
+        }
         if (window.confirm('정말로 이 할 일을 삭제하시겠습니까?')) {
-            onDelete(task.taskId);
-            onRequestClose();
+            try {
+                await axios.delete("/api/task/delete", {
+                    data: task.taskId,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                onDelete(task.taskId);
+                onRequestClose();
+            } catch (error){
+                console.error(error.response || error);
+                alert("할 일 삭제 중 오류가 발생했습니다.");
+            }
+
         }
     };
 

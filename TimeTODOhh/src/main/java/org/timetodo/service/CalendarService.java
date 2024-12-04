@@ -50,7 +50,7 @@ public class CalendarService {
         calendar.setLocation(calendarRequestDto.getLocation()); //위치
         calendar.setRepeatType(calendarRequestDto.getRepeatType()); //반복유형
         switch (calendarRequestDto.getRepeatType()) {
-            case "null":
+            case "반복 없음":
                 //반복없음
                 break;
             case "매일":

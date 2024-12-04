@@ -138,10 +138,10 @@ public class TaskController {
     }
 
     // 특정 할 일을 삭제하는 엔드포인트
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteTask(@RequestBody Long taskId) {
         // 경로 변수로 전달된 id에 해당하는 할 일을 삭제합니다.
-        taskService.deleteTask(id);
+        taskService.deleteTask(taskId);
         return ResponseEntity.noContent().build(); // 성공 시 응답 본문 없이 204 상태코드 반환
     }
 }

@@ -39,7 +39,7 @@ public class CalendarEntity {
     //@Column(nullable = false)
     private String location; // 일정 장소
 
-    //@Column(nullable = true)
+    @Column(nullable = true)
     private String repeatType; // 반복 일정 유형 (예: daily, weekly)
 
     //@JoinColumn(name = "category_id" )
