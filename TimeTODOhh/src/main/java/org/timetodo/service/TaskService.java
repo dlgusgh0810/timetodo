@@ -96,10 +96,10 @@ public class TaskService{
         TaskEntity saveTask = taskRepository.save(task);
 
         // Category 및 User는 따로 설정 필요
-        return taskRepository.save(task); // 저장 후 반환
+        return convertTask(saveTask); // 저장 후 반환
     }
 
-    private TaskDto convertToDto(TaskEntity task) {
+    private TaskDto convertTask(TaskEntity task) {
         TaskDto dto = new TaskDto();
         dto.setTaskId(task.getTaskId());
         dto.setTitle(task.getTitle());
@@ -130,13 +130,16 @@ public class TaskService{
 
     }
 
-
-    public List<TaskEntity> getTasksByUserId(Long userId) {
+    public List<TaskDto> getTasksByUserId(Long userId) {
+        // User 엔티티를 조회
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
-        // 저장된 모든 할 일 조회
-        return taskRepository.findAllByUserId(user);
+        // 사용자와 연관된 할 일 엔티티 조회
+        List<TaskEntity> tasks = taskRepository.findAllByUserId(user);
+
+        // 할 일 엔티티를 DTO로 변환
+        return tasks.stream().map(this::convertTask).collect(Collectors.toList());
     }
 
     public TaskEntity updateTask(TaskRequestDto taskRequestDto, Long categoryId) {
