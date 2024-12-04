@@ -60,7 +60,7 @@ public class TaskService{
         }
         task.setRepeatType(taskRequestDto.getRepeatType()); //반복일정 여부
         switch (taskRequestDto.getRepeatType()) {
-            case "반복 없음":
+            case "null":
                 //반복없음
                 break;
             case "매일":
