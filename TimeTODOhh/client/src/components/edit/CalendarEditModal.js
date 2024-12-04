@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import axios from "axios";
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaTimes, FaTag, FaSyncAlt, FaClipboardList, FaClock } from 'react-icons/fa';
@@ -18,72 +17,69 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const [labelOptions, setLabelOptions] = useState([{ id: null, name: '라벨 없음', color: '#808080' }]);
     const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(null);
     const [repeat, setRepeat] = useState('반복 없음');
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
 
     // 라벨 데이터 불러오기
     useEffect(() => {
         if (isOpen) {
-            const fetchLabels = async () => {
-                try {
-                    const response = await axios.get("/api/categories/all");
-                    const categories = response.data || [];
+            fetch("/api/categories/all")
+                .then((res) => res.json())
+                .then((categories) => {
                     const formattedCategories = categories.map((category) => ({
                         id: category.categoryId,
                         name: category.categoryName,
                         color: category.color,
                     }));
                     setLabelOptions(formattedCategories);
-                } catch (error) {
-                    console.error("라벨 불러오기 실패:", error);
-                }
-            };
-            fetchLabels();
+                })
+                .catch((error) => console.error("라벨 불러오기 실패:", error));
         }
     }, [isOpen]);
 
-    // 선택된 이벤트 데이터를 초기화
+    // selectedEvent 데이터로 상태 초기화
     useEffect(() => {
         if (selectedEvent) {
             setTitle(selectedEvent.title || '');
             setDescription(selectedEvent.description || '');
+            setStartDate(new Date(selectedEvent.start));
+            setEndDate(selectedEvent.end ? new Date(selectedEvent.end) : null);
             setSelectedLabel(selectedEvent.labelName || '라벨 없음');
             setSelectedCategoryId(selectedEvent.categoryId || null);
-            setStartDate(new Date(selectedEvent.startDate));
-            setEndDate(new Date(selectedEvent.endDate));
-            setRepeat(selectedEvent.repeat || '반복 없음');
-        } else {
-            // 초기화
-            setTitle('');
-            setDescription('');
-            setSelectedLabel('라벨 없음');
-            setSelectedCategoryId(null);
-            setStartDate(new Date());
-            setEndDate(new Date());
-            setRepeat('반복 없음');
+            setRepeat(selectedEvent.repeatType || '반복 없음');
         }
     }, [selectedEvent]);
 
     // 저장 핸들러
     const handleSave = () => {
-        const eventData = {
+        if (!title.trim()) {
+            alert('제목을 입력하세요.');
+            return;
+        }
+
+        if (startDate && endDate && startDate > endDate) {
+            alert('시작 날짜는 종료 날짜보다 빨라야 합니다.');
+            return;
+        }
+
+        onSave({
+            ...selectedEvent,
             title,
             description,
             labelName: selectedLabel,
             categoryId: selectedCategoryId,
-            startDate,
-            endDate,
-            repeat,
-        };
-        onSave(eventData); // 저장
+            start: startDate.toISOString(),
+            end: endDate ? endDate.toISOString() : null,
+            repeatType: repeat,
+        });
         onRequestClose();
     };
 
     // 삭제 핸들러
     const handleDelete = () => {
         if (window.confirm("정말로 삭제하시겠습니까?")) {
-            onDelete(selectedEvent.id); // 삭제
+            onDelete(selectedEvent.id);
             onRequestClose();
         }
     };
