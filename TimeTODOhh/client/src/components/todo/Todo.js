@@ -56,6 +56,12 @@ function Todo() {
                         repeatType: task.repeatType,
                     };
                 });
+                // 날짜 기준으로 정렬
+                // const sortedTasks = formattedTasks.sort((a, b) => {
+                //     const dateA = new Date(a.dueDate);
+                //     const dateB = new Date(b.dueDate);
+                //     return dateA - dateB; // 날짜 오름차순 정렬
+                // });
                 setTodos(formattedTasks);  // 할 일 목록 설정
 
             } catch (error) {
