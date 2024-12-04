@@ -12,6 +12,7 @@ function Todo() {
     const [labelOptions, setLabelOptions] = useState([]);
     const [selectedTodo, setSelectedTodo] = useState(null); // 선택된 할 일
 
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -96,6 +97,7 @@ function Todo() {
     };
 
     const handleTodoClick = (todo) => {
+        console.log("Selected Todo:", todo);
         setSelectedTodo(todo);
         setShowEditModal(true);
     };

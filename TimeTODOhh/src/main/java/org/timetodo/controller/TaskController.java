@@ -119,7 +119,7 @@ public class TaskController {
 
 
     // 특정 할 일을 업데이트하는 엔드포인트
-    @PutMapping("/update/{id}")
+    @PutMapping("/update")
     public ResponseEntity<TaskEntity> updateTask(
             @RequestBody TaskRequestDto taskRequestDto,
             @RequestParam Long categoryId) {

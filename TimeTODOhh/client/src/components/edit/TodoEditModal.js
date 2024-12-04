@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import axios from "axios";
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaTimes, FaExclamationCircle, FaHourglass, FaTag } from 'react-icons/fa';
@@ -14,10 +15,20 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
     const [deadline, setDeadline] = useState(new Date());
     const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const formatDateTime = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
 
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    };
     // 선택된 할 일 데이터를 모달 상태로 초기화
     useEffect(() => {
         if (task) {
+            console.log("Received Task:", task); // task 객체 확인
             setTitle(task.title || '');
             setPriority(task.priority || '우선순위 없음');
             setDeadline(task.dueDate ? new Date(task.dueDate) : new Date());
@@ -26,25 +37,55 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
         }
     }, [task]);
 
-    const handleSave = () => {
-        if (!title.trim()) {
-            alert('제목을 입력하세요.');
+    const handleSave = async () => {
+        if (!task || !task.taskId) {
+            alert("선택된 할 일이 없습니다.");
             return;
         }
 
-        const updatedTask = {
-            ...task,
+        // 요청 데이터 구성
+        const taskData = {
             title: title.trim(),
             priority,
-            dueDate: deadline,
-            categoryId: selectedCategoryId,
-            label: labelOptions.find((label) => label.id === selectedCategoryId)?.name || '라벨 없음',
-            labelColor: labelOptions.find((label) => label.id === selectedCategoryId)?.color || '#808080',
+            dueDate: formatDateTime(deadline),
         };
 
-        onSave(updatedTask);
-        onRequestClose();
+        console.log("Sending taskData to update:", taskData);
+
+        try {
+            // 서버로 업데이트 요청
+            const response = await axios.put(
+                `/api/task/update?categoryId=${encodeURIComponent(selectedCategoryId)}`, // 경로 변수 및 쿼리 파라미터 포함
+                taskData, // 요청 본문
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            console.log("Update response:", response.data);
+
+            // 서버 응답 데이터를 반영
+            const updatedTask = {
+                id: response.data.id,
+                title: response.data.title,
+                priority: response.data.priority,
+                dueDate: response.data.dueDate,
+                label: labelOptions.find((label) => label.id === selectedCategoryId)?.name || "라벨 없음",
+                labelColor: labelOptions.find((label) => label.id === selectedCategoryId)?.color || "#808080",
+            };
+
+            onSave(updatedTask); // 저장 후 상위 컴포넌트에 알림
+            onRequestClose(); // 모달 닫기
+        } catch (error) {
+            console.error("Failed to update the task:", error.response || error);
+            alert("테스크 업데이트 중 오류가 발생했습니다.");
+        }
     };
+
+
+
 
     const handleDelete = () => {
         if (window.confirm('정말로 이 할 일을 삭제하시겠습니까?')) {
