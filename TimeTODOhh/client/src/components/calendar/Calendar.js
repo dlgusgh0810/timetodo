@@ -79,12 +79,16 @@ function Calendar() {
 
     // 일정 클릭 이벤트
     const handleEventClick = (clickInfo) => {
+        console.log("Selected Event:", selectedEvent);
         const clickedEvent = events.find((event) => event.id === clickInfo.event.id);
         if (clickedEvent) {
-            setSelectedEvent(clickedEvent); // 클릭한 일정 데이터 설정
+            setSelectedEvent(clickedEvent); // 선택된 이벤트 데이터 설정
             setEditModalOpen(true);
+
         }
     };
+
+
 
     // AddModal 닫기
     const closeAddModal = () => {
@@ -127,6 +131,10 @@ function Calendar() {
         calendarApi.changeView(newView); // 선택된 보기로 전환
     };
 
+    console.log(isEditModalOpen);
+    console.log(selectedEvent); // 선택된 이벤트 데이터 확인
+
+
     return (
         <div className={styles.calendarContainer}>
             {/* 보기 전환 셀렉트 박스 */}
@@ -141,21 +149,24 @@ function Calendar() {
 
             {/* FullCalendar 컴포넌트 */}
             <FullCalendar
-                ref={calendarRef} // FullCalendar에 ref 연결
+                ref={calendarRef}
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth" // 초기 보기는 월간으로 설정
+                initialView="dayGridMonth"
                 events={events}
-                dateClick={handleDateClick}
+                dateClick={handleDateClick} // 날짜 클릭 핸들러
+                eventClick={handleEventClick} // 일정 클릭 핸들러 추가
                 headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
-                    right: '' // 보기 선택 메뉴 비활성화
+                    right: '',
                 }}
                 locale="ko"
                 editable={true}
                 selectable={true}
                 height="100%"
             />
+
+
 
             {/* 추가 모달 컴포넌트 */}
             <AddModal
@@ -173,6 +184,8 @@ function Calendar() {
                 onDelete={handleDelete}
                 selectedEvent={selectedEvent} // 선택된 이벤트 전달
             />
+
+
 
 
         </div>
