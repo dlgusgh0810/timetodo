@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from "axios";
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { FaTimes, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt } from 'react-icons/fa';
+import { FaTimes, FaBell, FaExclamationCircle, FaClipboardList, FaSyncAlt, FaClock, FaHourglass, FaTag } from 'react-icons/fa';
 import CustomDropdown from './CustomDropdown';
 import AddLabelModal from './AddLabelModal';
 import styles from './AddModal.module.css';
@@ -168,10 +168,6 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
     };
 
 
-
-
-
-
     const handleSaveEvent = async () => {
 
 
@@ -276,8 +272,11 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 <FaTimes className={styles.closeIcon} onClick={onRequestClose}/>
             </div>
 
+
+
             <form className={styles.form}>
                 <input
+                    className={styles.titleInput}
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -303,39 +302,42 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
 
                 {activeTab === '일정' && (
                     <>
-                        <label className={styles.label}>시작 시간</label>
-                        <ReactDatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            showTimeSelect
-                            dateFormat="yyyy-MM-dd h:mm aa"
-                            className={styles.datePicker}
-                        />
-
-                        <label className={styles.label}>종료 시간</label>
-                        <ReactDatePicker
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            showTimeSelect
-                            dateFormat="yyyy-MM-dd h:mm aa"
-                            className={styles.datePicker}
-                        />
+                        <label>
+                            <FaClock className={styles.icon}/>
+                            <ReactDatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                showTimeSelect
+                                dateFormat="yyyy-MM-dd h:mm aa"
+                                className={styles.datePicker}
+                            />
+                            <ReactDatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                showTimeSelect
+                                dateFormat="yyyy-MM-dd h:mm aa"
+                                className={styles.datePicker}
+                            />
+                        </label>
                     </>
                 )}
 
                 {activeTab === '할 일' && (
                     <>
-                        <label className={styles.label}>마감 기한</label>
-                        <ReactDatePicker
-                            selected={deadline}
-                            onChange={(date) => setDeadline(date)}
-                            showTimeSelect
-                            dateFormat="yyyy-MM-dd h:mm aa"
-                            className={styles.datePicker}
-                        />
+                        <label className={styles.label}>
+                            <FaHourglass className={styles.icon}/>
+                            마감 기한
+                            <ReactDatePicker
+                                selected={deadline}
+                                onChange={(date) => setDeadline(date)}
+                                showTimeSelect
+                                dateFormat="yyyy-MM-dd h:mm aa"
+                                className={styles.datePicker}
+                            />
+                        </label>
 
                         <label className={styles.label}>
-                            우선순위
+                            <FaExclamationCircle className={styles.icon} />
                             <select
                                 value={priority}
                                 onChange={(e) => setPriority(e.target.value)}
@@ -350,8 +352,9 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                 )}
 
 
-                <label>라벨</label>
-                <CustomDropdown
+                <label className={styles.flex}>
+                    <FaTag className={styles.icon} />
+                    <CustomDropdown
                     options={labelOptions}
                     onLabelSelect={(label) => {
                         console.log("Selected Label Object:", label);
@@ -359,22 +362,26 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         setSelectedCategoryId(label.id);
                     }}
                     onAddLabel={() => setIsLabelModalOpen(true)}
-                />
+                    />
+                </label>
 
-                <label className={styles.label}>반복</label>
-                <select
-                    value={repeat}
-                    onChange={(e) => setRepeat(e.target.value)}
-                    className={styles.select}
-                >
-                    <option value="반복 없음">반복 없음</option>
-                    <option value="매일">매일</option>
-                    <option value="매주">매주</option>
-                    <option value="매월">매월</option>
-                </select>
 
                 <label className={styles.label}>
-                    설명
+                    <FaSyncAlt className={styles.icon} />
+                    <select
+                        value={repeat}
+                        onChange={(e) => setRepeat(e.target.value)}
+                        className={styles.select}
+                    >
+                        <option value="반복 없음">반복 없음</option>
+                        <option value="매일">매일</option>
+                        <option value="매주">매주</option>
+                        <option value="매월">매월</option>
+                    </select>
+                </label>
+
+                <label className={styles.flex}>
+                    <FaClipboardList className={styles.icon} />
                     <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
