@@ -31,7 +31,7 @@ public class TaskService{
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public TaskEntity addTask(TaskRequestDto taskRequestDto, Long userId, Long categoryId) {
+    public TaskDto addTask(TaskRequestDto taskRequestDto, Long userId, Long categoryId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID(테스크 서비스) : " + userId));
         CategoryEntity category = categoryRepository.findById(categoryId)
