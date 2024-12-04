@@ -4,11 +4,14 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
+import CalendarEditModal from "../edit/CalendarEditModal";
 import styles from './Calendar.module.css';
 
 function Calendar() {
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isAddModalOpen, setAddModalOpen] = useState(false);
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState('');
+    const [selectedEvent, setSelectedEvent] = useState(null); // 선택된 일정 데이터
     const calendarRef = useRef(null);
     const [labelOptions, setLabelOptions] = useState([]);
     const [events, setEvents] = useState([]);
@@ -71,20 +74,51 @@ function Calendar() {
     // 날짜 클릭 이벤트
     const handleDateClick = (arg) => {
         setSelectedDate(arg.dateStr);
-        setModalOpen(true);
+        setAddModalOpen(true);
     };
 
-    // 모달 닫기
-    const closeModal = () => {
-        setModalOpen(false);
+    // 일정 클릭 이벤트
+    const handleEventClick = (clickInfo) => {
+        const clickedEvent = events.find((event) => event.id === clickInfo.event.id);
+        if (clickedEvent) {
+            setSelectedEvent(clickedEvent); // 클릭한 일정 데이터 설정
+            setEditModalOpen(true);
+        }
     };
 
-    // 저장 핸들러
+    // AddModal 닫기
+    const closeAddModal = () => {
+        setAddModalOpen(false);
+    };
+
+    // EditModal 닫기
+    const closeEditModal = () => {
+        setEditModalOpen(false);
+        setSelectedEvent(null); // 선택된 이벤트 초기화
+    };
+
+    // 추가 모달 저장 핸들러
     const handleSave = (newEvent) => {
         console.log("New Event Saved:", newEvent);
         setEvents((prevEvents) => [...prevEvents, newEvent]); // 새 이벤트 추가
-        setModalOpen(false); // 모달 닫기
+        setAddModalOpen(false); // 모달 닫기
     };
+
+    const handleEditSave = (updatedEvent) => {
+        setEvents((prevEvents) =>
+            prevEvents.map((event) =>
+                event.id === updatedEvent.id ? { ...event, ...updatedEvent } : event
+            )
+        );
+        setEditModalOpen(false);
+    };
+
+    // EditModal 삭제 핸들러
+    const handleDelete = (eventId) => {
+        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
+        setEditModalOpen(false);
+    };
+
 
     // 보기 전환 이벤트
     const handleViewChange = (event) => {
@@ -123,14 +157,24 @@ function Calendar() {
                 height="100%"
             />
 
-            {/* 모달 컴포넌트 */}
+            {/* 추가 모달 컴포넌트 */}
             <AddModal
-                isOpen={isModalOpen}
-                onRequestClose={closeModal}
+                isOpen={isAddModalOpen}
+                onRequestClose={closeAddModal}
                 onSave={handleSave} // onSave 핸들러 전달
                 selectedDate={selectedDate} // 선택된 날짜 전달
                 defaultTab="일정" // 기본 탭 전달
             />
+
+            <CalendarEditModal
+                isOpen={isEditModalOpen}
+                onRequestClose={closeEditModal}
+                onSave={handleEditSave}
+                onDelete={handleDelete}
+                selectedEvent={selectedEvent} // 선택된 이벤트 전달
+            />
+
+
         </div>
     );
 }
