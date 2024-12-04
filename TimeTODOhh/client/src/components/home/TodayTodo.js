@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa'; // 수정 아이콘 추가
-import styles from './Todo.module.css';
+import styles from './TodayTodo.module.css';
 import AddModal from '../add/AddModal';
 import TodoEditModal from '../edit/TodoEditModal'; // 수정 모달 추가
 import axios from "axios";
@@ -66,6 +66,15 @@ function Todo() {
         fetchData();
     }, []);
 
+    // 오늘 날짜 구하기 (yyyy-mm-dd 형식)
+    const today = new Date().toLocaleDateString('en-CA'); // 'yyyy-mm-dd' 형식으로 오늘 날짜 반환
+
+    // 오늘 날짜에 해당하는 할 일만 필터링
+    const todosToday = todos.filter((todo) => {
+        const todoDueDate = new Date(todo.dueDate).toLocaleDateString('en-CA');
+        return todoDueDate === today; // 오늘 날짜와 비교
+    });
+
     const handleStatusChange = async (taskId) => {
         const targetTask = todos.find((todo) => todo.taskId === taskId);
         if (!targetTask) {
@@ -106,7 +115,6 @@ function Todo() {
         }
     };
 
-
     const handleEditTodo = (updatedTodo) => {
         setTodos((prevTodos) =>
             prevTodos.map((todo) => (todo.taskId === updatedTodo.taskId ? updatedTodo : todo))
@@ -127,9 +135,9 @@ function Todo() {
 
     return (
         <div className={styles.container}>
-            <h2>할 일 목록</h2>
+            <h2 className={styles.title}>오늘 할 일 목록</h2>
             <ul className={styles.todoList}>
-                {todos.map((todo) => (
+                {todosToday.map((todo) => (
                     <li key={todo.taskId} className={styles.todoItem}>
                         <div className={styles.todoDetails}>
                             <span>{todo.title || '제목 없음'}</span>
