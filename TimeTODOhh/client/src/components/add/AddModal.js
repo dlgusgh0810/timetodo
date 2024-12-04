@@ -273,7 +273,6 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
             </div>
 
 
-
             <form className={styles.form}>
                 <input
                     className={styles.titleInput}
@@ -336,7 +335,7 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                         </label>
 
                         <label className={styles.label}>
-                            <FaExclamationCircle className={styles.icon} />
+                            <FaExclamationCircle className={styles.icon}/>
                             <select
                                 value={priority}
                                 onChange={(e) => setPriority(e.target.value)}
@@ -352,21 +351,21 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
 
 
                 <label className={styles.flex}>
-                    <FaTag className={styles.icon} />
+                    <FaTag className={styles.icon}/>
                     <CustomDropdown
-                    options={labelOptions}
-                    onLabelSelect={(label) => {
-                        console.log("Selected Label Object:", label);
-                        setSelectedLabel(label.name);
-                        setSelectedCategoryId(label.id);
-                    }}
-                    onAddLabel={() => setIsLabelModalOpen(true)}
+                        options={labelOptions}
+                        onLabelSelect={(label) => {
+                            console.log("Selected Label Object:", label);
+                            setSelectedLabel(label.name);
+                            setSelectedCategoryId(label.id);
+                        }}
+                        onAddLabel={() => setIsLabelModalOpen(true)}
                     />
                 </label>
 
 
                 <label className={styles.label}>
-                    <FaSyncAlt className={styles.icon} />
+                    <FaSyncAlt className={styles.icon}/>
                     <select
                         value={repeat}
                         onChange={(e) => setRepeat(e.target.value)}
@@ -379,17 +378,32 @@ function AddModal({ isOpen, onRequestClose, onSave, defaultTab }) {
                     </select>
                 </label>
 
+                <label className={styles.label}>
+                    <FaBell className={styles.icon}/>
+                    <select
+                        value={repeat}
+                        onChange={(e) => setRepeat(e.target.value)}
+                        className={styles.select}
+                    >
+                        <option value="알림설정 없음">알림설정 없음</option>
+                        <option value="시작 시간에">시작 시간에</option>
+                        <option value="30분 전">30분 전</option>
+                        <option value="1시간 전">1시간 전</option>
+                        <option value="24시간 전">24시간 전</option>
+                    </select>
+                </label>
+
 
                 {activeTab === '일정' && (
-                <label className={styles.flex}>
-                    <FaClipboardList className={styles.icon} />
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="설명을 입력하세요"
-                        className={styles.textarea}
-                    />
-                </label>
+                    <label className={styles.flex}>
+                        <FaClipboardList className={styles.icon}/>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="설명을 입력하세요"
+                            className={styles.textarea}
+                        />
+                    </label>
                 )}
 
                 {activeTab === '할 일' && (
