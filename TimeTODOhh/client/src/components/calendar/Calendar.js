@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import AddModal from '../add/AddModal';
 import CalendarEditModal from "../edit/CalendarEditModal";
+import DetailModal from './DetailModal';
 import Modal from 'react-modal';
 import styles from './Calendar.module.css';
 
@@ -81,12 +82,10 @@ function Calendar() {
 
     // 일정 클릭 이벤트
     const handleEventClick = (clickInfo) => {
-        const clickedEvent = events.find((event) => String(event.id) === String(clickInfo.event.id));
+        const clickedEvent = events.find((event) => event.id === clickInfo.event.id);
         if (clickedEvent) {
-            setSelectedEvent(clickedEvent); // 선택된 이벤트 저장
-            setDetailModalOpen(true); // 세부 정보 모달 열기
-        } else {
-            console.error("Event not found in the events array");
+            setSelectedEvent(clickedEvent);
+            setDetailModalOpen(true);
         }
     };
 
@@ -176,45 +175,18 @@ function Calendar() {
                 selectedEvent={selectedEvent}
             />
 
-            {/* 세부 정보 모달 */}
-            {selectedEvent && (
-                <Modal
-                    isOpen={isDetailModalOpen}
-                    onRequestClose={closeDetailModal}
-                    style={{
-                        content: {
-                            maxWidth: '500px',
-                            margin: 'auto',
-                            padding: '20px',
-                            borderRadius: '10px',
-                        },
-                    }}
-                >
-                    <h2>{selectedEvent.title}</h2>
-                    <p>
-                        <strong>Start:</strong> {new Date(selectedEvent.start).toLocaleString()}
-                    </p>
-                    <p>
-                        <strong>End:</strong>{' '}
-                        {selectedEvent.end ? new Date(selectedEvent.end).toLocaleString() : 'N/A'}
-                    </p>
-                    <p>
-                        <strong>Description:</strong> {selectedEvent.description || 'No description'}
-                    </p>
-                    <p>
-                        <strong>Location:</strong> {selectedEvent.location || 'No location'}
-                    </p>
-                    <button
-                        onClick={() => {
-                            setDetailModalOpen(false);
-                            setEditModalOpen(true);
-                        }}
-                    >
-                        Edit
-                    </button>
-                    <button onClick={closeDetailModal}>Close</button>
-                </Modal>
-            )}
+            <DetailModal
+                isOpen={isDetailModalOpen}
+                event={selectedEvent}
+                onRequestClose={closeDetailModal}
+                onEdit={() => {
+                    setDetailModalOpen(false);
+                    setEditModalOpen(true);
+                }}
+            />
+
+
+
         </div>
     );
 }
