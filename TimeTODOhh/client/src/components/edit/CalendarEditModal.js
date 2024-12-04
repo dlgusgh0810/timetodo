@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import axios from "axios";
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaTimes, FaTag, FaSyncAlt, FaClipboardList, FaClock } from 'react-icons/fa';
 import CustomDropdown from '../add/CustomDropdown';
 import AddLabelModal from '../add/AddLabelModal';
 import styles from '../add/AddModal.module.css';
-import axios from "axios";
 
 Modal.setAppElement("#root");
 
@@ -18,7 +18,7 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const [labelOptions, setLabelOptions] = useState([{ id: null, name: '라벨 없음', color: '#808080' }]);
     const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(null);
+    const [endDate, setEndDate] = useState(new Date());
     const [repeat, setRepeat] = useState('반복 없음');
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
     const formatDateTime = (date) => {
@@ -34,27 +34,29 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     // 라벨 데이터 불러오기
     useEffect(() => {
         if (isOpen) {
-            fetch("/api/categories/all")
-                .then((res) => res.json())
-                .then((categories) => {
+            const fetchLabels = async () => {
+                try {
+                    const response = await axios.get("/api/categories/all");
+                    const categories = response.data || [];
                     const formattedCategories = categories.map((category) => ({
                         id: category.categoryId,
                         name: category.categoryName,
                         color: category.color,
                     }));
                     setLabelOptions(formattedCategories);
-                })
-                .catch((error) => console.error("라벨 불러오기 실패:", error));
+                } catch (error) {
+                    console.error("라벨 불러오기 실패:", error);
+                }
+            };
+            fetchLabels();
         }
     }, [isOpen]);
 
-    // selectedEvent 데이터로 상태 초기화
+    // 선택된 이벤트 데이터를 초기화
     useEffect(() => {
         if (selectedEvent) {
             setTitle(selectedEvent.title || '');
             setDescription(selectedEvent.description || '');
-            setStartDate(new Date(selectedEvent.start));
-            setEndDate(selectedEvent.end ? new Date(selectedEvent.end) : null);
             setSelectedLabel(selectedEvent.labelName || '라벨 없음');
             setSelectedCategoryId(selectedEvent.categoryId || null);
             setStartDate(new Date());
@@ -104,8 +106,21 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
             );
 
             console.log("Update response:", response.data);
+// FullCalendar 형식으로 변환
+            const fullCalendarEvent = {
+                id: response.data.calendarId, // FullCalendar의 이벤트 ID
+                title: response.data.title,
+                start: response.data.startTime, // FullCalendar의 start 형식
+                end: response.data.endTime,    // FullCalendar의 end 형식
+                description: response.data.description,
+                color: labelOptions.find((label) => label.id === selectedCategoryId)?.color || '#808080', // 색상
+                repeatType: response.data.repeatType,
+            };
 
-            onSave(response.data); // 저장 후 상위 컴포넌트에 알림
+            console.log("Converted FullCalendar Event:", fullCalendarEvent);
+
+            onSave(fullCalendarEvent);
+            // 저장 후 상위 컴포넌트에 알림
             onRequestClose(); // 모달 닫기
         } catch (error) {
             console.error("Failed to update the event:", error.response || error);
@@ -118,7 +133,7 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     // 삭제 핸들러
     const handleDelete = () => {
         if (window.confirm("정말로 삭제하시겠습니까?")) {
-            onDelete(selectedEvent.id);
+            onDelete(selectedEvent.id); // 삭제
             onRequestClose();
         }
     };
