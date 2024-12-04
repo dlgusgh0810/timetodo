@@ -4,7 +4,7 @@ import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/home/Home';
 import Calendar from './components/calendar/Calendar';
 import Todo from './components/todo/Todo';
-import Stats from './components/stats/Stats';
+import TTDStats from './components/stats/TTDStats';
 import Login from './components/login/Login';
 import SignUp from './components/signup/SignUp';
 import Profile from './components/sidebar/Profile';
@@ -78,7 +78,7 @@ function App() {
                                     <div style={{ display: 'flex' }}>
                                         <Sidebar onAddEvent={addEvent} />
                                         <div style={{ flex: 1, padding: '20px' }}>
-                                            <Stats />
+                                            <TTDStats />
                                         </div>
                                     </div>
                                 }
