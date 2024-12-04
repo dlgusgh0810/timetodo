@@ -1,23 +1,45 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import axios from 'axios';
 import styles from './TTDStats.module.css';  // 스타일을 제대로 임포트
 
 // Chart.js 구성 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function TTDStats() {
-    // 예시 데이터: 각 할 일의 상태 (보류 중, 진행 중, 완료)
-    const todoData = [
-        { id: 1, title: '할 일 1', status: '보류 중' },
-        { id: 2, title: '할 일 2', status: '진행 중' },
-        { id: 3, title: '할 일 3', status: '완료' },
-        { id: 4, title: '할 일 4', status: '진행 중' },
-        { id: 5, title: '할 일 5', status: '보류 중' },
-        { id: 6, title: '할 일 6', status: '완료' },
-        { id: 7, title: '할 일 7', status: '진행 중' },
-        { id: 8, title: '할 일 8', status: '완료' },
-    ];
+    const [todoData, setTodoData] = useState([ // 할 일 데이터를 상태로 저장
+
+    ]);
+    useEffect(() => {
+        const fetchTodoData = async () => {
+            try {
+                const response = await axios.get("http://localhost:8085/api/task/find", {
+                    // API URL에 맞게 수정
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    withCredentials: true,
+                });
+
+                if (response.status === 200) {
+                    // taskId, title, status만 추출
+                    const tasks = response.data.map(task => ({
+                        Id: task.taskId,
+                        title: task.title,
+                        status: task.status,
+                    }));
+                    setTodoData(tasks); // 받아온 데이터를 상태에 저장
+                } else {
+                    console.error('Failed to fetch task data');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchTodoData(); // 컴포넌트 마운트 시 데이터 fetch
+    }, []);
 
     // 상태별 할 일 개수 계산
     const statusCount = {
