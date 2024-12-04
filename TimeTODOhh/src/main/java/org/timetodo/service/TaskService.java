@@ -59,7 +59,7 @@ public class TaskService{
             case "보류 중":
                 //보류 중, 진행 중, 완료
                 break;
-            case "진행중":
+            case "진행 중":
                 //진행중
                 break;
             case "완료" :
@@ -160,6 +160,20 @@ public class TaskService{
 
         return taskRepository.save(existingTask); // 업데이트 후 저장
     }
+
+    public void updateTaskStatus(Long taskId, String status) {
+        // 기존 할 일 조회
+        TaskEntity existingTask = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 할 일이 없습니다."));
+
+        // 상태 업데이트
+        existingTask.setStatus(status);
+
+        // 업데이트된 할 일을 저장
+        taskRepository.save(existingTask);
+    }
+
+
 
     public void deleteTask(Long id) {
         // 특정 할 일 삭제

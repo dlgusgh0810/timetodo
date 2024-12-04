@@ -1,18 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { FaEdit } from 'react-icons/fa'; // 수정 아이콘 추가
 import styles from './Todo.module.css';
 import AddModal from '../add/AddModal';
+import TodoEditModal from '../edit/TodoEditModal'; // 수정 모달 추가
 import axios from "axios";
 
 function Todo() {
     const [todos, setTodos] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [labelOptions, setLabelOptions] = useState([]); // 라벨 옵션 상태 추가
+    const [showEditModal, setShowEditModal] = useState(false); // 수정 모달 상태
+    const [labelOptions, setLabelOptions] = useState([]);
+    const [selectedTodo, setSelectedTodo] = useState(null); // 선택된 할 일
 
-    // 라벨 데이터와 할 일 데이터 가져오기
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 1. 카테고리 데이터 불러오기
                 const categoryResponse = await fetch("http://localhost:8085/api/categories/all", {
                     method: "GET",
                     credentials: "include",
@@ -30,7 +33,6 @@ function Todo() {
                 }));
                 setLabelOptions(formattedCategories);
 
-                // 2. 할 일 데이터 불러오기
                 const tasksResponse = await fetch("http://localhost:8085/api/task/find", {
                     method: "GET",
                     credentials: "include",
@@ -41,29 +43,21 @@ function Todo() {
                 }
 
                 const tasks = await tasksResponse.json();
-                console.log(tasks);
                 const formattedTasks = tasks.map((task) => {
-                    // 카테고리 ID에 맞는 label과 labelColor를 찾아서 설정
                     const category = formattedCategories.find((category) => category.id === task.categoryId);
                     return {
                         taskId: task.taskId,
                         title: task.title,
                         dueDate: task.dueDate,
-                        label: category ? category.name : '라벨 없음',  // 카테고리 이름 설정
+                        label: category ? category.name : '라벨 없음',
                         labelColor: category ? category.color : '#808080',
                         priority: task.priority || '중간',
                         status: task.status || '보류 중',
                         repeatType: task.repeatType,
+                        categoryId: task.categoryId,
                     };
                 });
-                // 날짜 기준으로 정렬
-                // const sortedTasks = formattedTasks.sort((a, b) => {
-                //     const dateA = new Date(a.dueDate);
-                //     const dateB = new Date(b.dueDate);
-                //     return dateA - dateB; // 날짜 오름차순 정렬
-                // });
-                setTodos(formattedTasks);  // 할 일 목록 설정
-
+                setTodos(formattedTasks);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -72,25 +66,63 @@ function Todo() {
         fetchData();
     }, []);
 
-    const addTodo = (newTask) => {
-        const todoItem = {
-            taskId: newTask.id || Date.now(),
-            title: newTask.title || '제목 없음',
-            dueDate: newTask.dueDate || null,
-            label: newTask.label || '라벨 없음', // 카테고리 이름
-            labelColor: newTask.labelColor || '#808080', // 카테고리 색상
-            priority: newTask.priority || '중간',
-            status: newTask.status || '보류 중',
-            repeatType: newTask.repeatType,
+    const handleStatusChange = async (taskId) => {
+        const targetTask = todos.find((todo) => todo.taskId === taskId);
+        if (!targetTask) {
+            alert("해당 할 일을 찾을 수 없습니다.");
+            return;
+        }
+
+        const newStatus =
+            targetTask.status === "보류 중"
+                ? "진행 중"
+                : targetTask.status === "진행 중"
+                    ? "완료"
+                    : "보류 중";
+
+        setTodos((prevTodos) =>
+            prevTodos.map((todo) =>
+                todo.taskId === taskId
+                    ? { ...todo, status: newStatus }
+                    : todo
+            )
+        );
+
+        const updateData = {
+            taskId: taskId, // 할 일 ID
+            status: newStatus, // 새로운 상태
         };
 
-        setTodos((prevTodos) => [...prevTodos, todoItem]);
-        setShowModal(false); // 모달 닫기
+        try {
+            // 서버로 상태 업데이트 요청
+            const response = await axios.put("/api/task/updateStatus", updateData, {
+                headers: { "Content-Type": "application/json" },
+            });
+
+            console.log("Task status updated successfully:", response.data);
+        } catch (error) {
+            console.error("Failed to update task status:", error.response || error);
+            alert("상태 업데이트 중 오류가 발생했습니다.");
+        }
     };
 
-    const handleSaveTask = (newTask) => {
-        // 부모 컴포넌트로 받은 newTask를 addTodo로 목록에 추가
-        addTodo(newTask);
+
+    const handleEditTodo = (updatedTodo) => {
+        setTodos((prevTodos) =>
+            prevTodos.map((todo) => (todo.taskId === updatedTodo.taskId ? updatedTodo : todo))
+        );
+        setShowEditModal(false);
+    };
+
+    const handleDeleteTodo = (taskId) => {
+        setTodos((prevTodos) => prevTodos.filter((todo) => todo.taskId !== taskId));
+        setShowEditModal(false);
+    };
+
+    const handleTodoClick = (todo) => {
+        console.log("Selected Todo:", todo);
+        setSelectedTodo(todo);
+        setShowEditModal(true);
     };
 
     return (
@@ -102,7 +134,7 @@ function Todo() {
                         <div className={styles.todoDetails}>
                             <span>{todo.title || '제목 없음'}</span>
                             <div className={styles.metadata}>
-                                {todo.dueDate && <span>📅 {todo.dueDate}</span>}
+                                {todo.dueDate && <span>📅 {new Date(todo.dueDate).toLocaleString()}</span>}
                                 {todo.label && (
                                     <span
                                         style={{
@@ -116,29 +148,59 @@ function Todo() {
                                         }}
                                     >
                                         {todo.label}
-                                    </span>)}
+                                    </span>
+                                )}
                                 {todo.priority && <span>⚡ {todo.priority}</span>}
-                                {todo.status && <span>✅ {todo.status}</span>}
+                                <span
+                                    className={`${styles.status} ${
+                                        todo.status === "보류 중"
+                                            ? styles.pending
+                                            : todo.status === "진행 중"
+                                                ? styles.inProgress
+                                                : styles.completed
+                                    }`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleStatusChange(todo.taskId);
+                                    }}
+                                >
+                                    {todo.status}
+                                </span>
+                                {/* 수정 아이콘 */}
+                                <FaEdit
+                                    className={styles.editIcon}
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // 부모 이벤트 전파 방지
+                                        handleTodoClick(todo);
+                                    }}
+                                />
                             </div>
                         </div>
                     </li>
                 ))}
             </ul>
 
-            <button
-                onClick={() => setShowModal(true)}
-                className={styles.addButton}
-            >
+            <button onClick={() => setShowModal(true)} className={styles.addButton}>
                 할 일 추가하기
             </button>
 
-            {/* AddModal에 labelOptions 전달 */}
+            {/* AddModal */}
             <AddModal
                 isOpen={showModal}
                 onRequestClose={() => setShowModal(false)}
-                onSave={handleSaveTask}
+                onSave={(newTask) => setTodos((prevTodos) => [...prevTodos, newTask])}
                 defaultTab="할 일"
-                labelOptions={labelOptions} // 라벨 옵션 전달
+                labelOptions={labelOptions}
+            />
+
+            {/* TodoEditModal */}
+            <TodoEditModal
+                isOpen={showEditModal}
+                onRequestClose={() => setShowEditModal(false)}
+                onSave={handleEditTodo}
+                onDelete={handleDeleteTodo}
+                task={selectedTodo}
+                labelOptions={labelOptions}
             />
         </div>
     );

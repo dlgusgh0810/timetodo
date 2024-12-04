@@ -86,7 +86,7 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
             calendarId: selectedEvent.id, // 이벤트 ID
             title: title.trim(),
             startTime: formatDateTime(startDate), // ISO8601 형식
-            endTime: formatDateTime(endDate), // ISO8601 형식
+            end_time: formatDateTime(endDate), // ISO8601 형식
             description: description || null,
             repeatType: repeat === "반복 없음" ? null : repeat, // 반복 설정
         };
@@ -96,7 +96,7 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
         try {
             // 서버로 업데이트 요청
             const response = await axios.put(
-                "/api/calendar/update?categoryId=${selectedCategoryId}", // 엔드포인트
+                `/api/calendar/update?categoryId=${encodeURIComponent(selectedCategoryId)}`, // 엔드포인트
                 eventData, // 요청 본문
                 {
                     headers: {
@@ -106,7 +106,21 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
             );
 
             console.log("Update response:", response.data);
-            onSave(response.data); // 저장 후 상위 컴포넌트에 알림
+// FullCalendar 형식으로 변환
+            const fullCalendarEvent = {
+                id: response.data.calendarId, // FullCalendar의 이벤트 ID
+                title: response.data.title,
+                start: response.data.startTime, // FullCalendar의 start 형식
+                end: response.data.endTime,    // FullCalendar의 end 형식
+                description: response.data.description,
+                color: labelOptions.find((label) => label.id === selectedCategoryId)?.color || '#808080', // 색상
+                repeatType: response.data.repeatType,
+            };
+
+            console.log("Converted FullCalendar Event:", fullCalendarEvent);
+
+            onSave(fullCalendarEvent);
+            // 저장 후 상위 컴포넌트에 알림
             onRequestClose(); // 모달 닫기
         } catch (error) {
             console.error("Failed to update the event:", error.response || error);
@@ -115,14 +129,32 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     };
 
 
+    const handleDelete = async () => {
+        if (!selectedEvent || !selectedEvent.id) {
+            alert("삭제할 이벤트가 선택되지 않았습니다.");
+            return;
+        }
 
-    // 삭제 핸들러
-    const handleDelete = () => {
         if (window.confirm("정말로 삭제하시겠습니까?")) {
-            onDelete(selectedEvent.id); // 삭제
-            onRequestClose();
+            try {
+                // 서버로 삭제 요청
+                await axios.delete("/api/calendar/delete", {
+                    data: selectedEvent.id, // 요청 본문으로 전달
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                onDelete(selectedEvent.id);
+
+                onRequestClose();
+            } catch (error) {
+                console.error("Failed to delete the event:", error.response || error);
+                alert("일정 삭제 중 오류가 발생했습니다.");
+            }
         }
     };
+    // 삭제 핸들러
+
 
     return (
         <Modal
