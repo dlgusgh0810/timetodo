@@ -109,7 +109,7 @@ function Todo() {
                         <div className={styles.todoDetails}>
                             <span>{todo.title || '제목 없음'}</span>
                             <div className={styles.metadata}>
-                                {todo.dueDate && <span>📅 {todo.dueDate}</span>}
+                                {todo.dueDate && <span>📅 {new Date(todo.dueDate).toLocaleString()}</span>}
                                 {todo.label && (
                                     <span
                                         style={{
