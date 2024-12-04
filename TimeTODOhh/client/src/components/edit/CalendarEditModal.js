@@ -129,14 +129,32 @@ function CalendarEditModal({ isOpen, onRequestClose, onSave, onDelete, selectedE
     };
 
 
+    const handleDelete = async () => {
+        if (!selectedEvent || !selectedEvent.id) {
+            alert("삭제할 이벤트가 선택되지 않았습니다.");
+            return;
+        }
 
-    // 삭제 핸들러
-    const handleDelete = () => {
         if (window.confirm("정말로 삭제하시겠습니까?")) {
-            onDelete(selectedEvent.id); // 삭제
-            onRequestClose();
+            try {
+                // 서버로 삭제 요청
+                await axios.delete("/api/calendar/delete", {
+                    data: selectedEvent.id, // 요청 본문으로 전달
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                onDelete(selectedEvent.id);
+
+                onRequestClose();
+            } catch (error) {
+                console.error("Failed to delete the event:", error.response || error);
+                alert("일정 삭제 중 오류가 발생했습니다.");
+            }
         }
     };
+    // 삭제 핸들러
+
 
     return (
         <Modal
