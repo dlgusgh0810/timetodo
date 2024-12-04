@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from "axios";
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { FaTimes, FaExclamationCircle, FaHourglass, FaTag } from 'react-icons/fa';
+import { FaTimes, FaExclamationCircle, FaHourglass, FaTag, FaSyncAlt } from 'react-icons/fa';
 import CustomDropdown from '../add/CustomDropdown'; // 라벨 드롭다운
 import styles from './TodoEditModal.module.css';
 
@@ -22,9 +22,11 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const seconds = String(date.getSeconds()).padStart(2, '0');
-
         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     };
+    const [repeat, setRepeat] = useState('반복 없음'); // repeat 필드 추가
+
+
     // 선택된 할 일 데이터를 모달 상태로 초기화
     useEffect(() => {
         if (task) {
@@ -34,6 +36,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
             setDeadline(task.dueDate ? new Date(task.dueDate) : new Date());
             setSelectedLabel(task.label || '라벨 없음');
             setSelectedCategoryId(task.categoryId || null);
+            setRepeat(task.repeatType || '반복 없음'); // 반복 설정 초기화
         }
     }, [task]);
 
@@ -47,8 +50,9 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
         const taskData = {
             title: title.trim(),
             priority,
-            dueDate: formatDateTime(deadline),
-        };
+            dueDate: deadline,
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 저장
+            };
 
         console.log("Sending taskData to update:", taskData);
 
@@ -83,9 +87,6 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
             alert("테스크 업데이트 중 오류가 발생했습니다.");
         }
     };
-
-
-
 
     const handleDelete = () => {
         if (window.confirm('정말로 이 할 일을 삭제하시겠습니까?')) {
@@ -152,6 +153,20 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
                         }}
                         selectedLabel={selectedLabel}
                     />
+                </label>
+
+                <label>
+                    반복 설정
+                    <select
+                        value={repeat}
+                        onChange={(e) => setRepeat(e.target.value)}
+                        className={styles.select}
+                    >
+                        <option value="반복 없음">반복 없음</option>
+                        <option value="매일">매일</option>
+                        <option value="매주">매주</option>
+                        <option value="매월">매월</option>
+                    </select>
                 </label>
             </div>
 
