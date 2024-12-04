@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { FaTimes, FaExclamationCircle, FaHourglass, FaTag } from 'react-icons/fa';
+import { FaTimes, FaExclamationCircle, FaHourglass, FaTag, FaSyncAlt } from 'react-icons/fa';
 import CustomDropdown from '../add/CustomDropdown'; // 라벨 드롭다운
 import styles from './TodoEditModal.module.css';
 
@@ -14,6 +14,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
     const [deadline, setDeadline] = useState(new Date());
     const [selectedLabel, setSelectedLabel] = useState('라벨 없음');
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [repeat, setRepeat] = useState('반복 없음'); // repeat 필드 추가
 
     // 선택된 할 일 데이터를 모달 상태로 초기화
     useEffect(() => {
@@ -23,6 +24,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
             setDeadline(task.dueDate ? new Date(task.dueDate) : new Date());
             setSelectedLabel(task.label || '라벨 없음');
             setSelectedCategoryId(task.categoryId || null);
+            setRepeat(task.repeatType || '반복 없음'); // 반복 설정 초기화
         }
     }, [task]);
 
@@ -37,6 +39,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
             title: title.trim(),
             priority,
             dueDate: deadline,
+            repeatType: repeat === '반복 없음' ? null : repeat, // 반복 설정 저장
             categoryId: selectedCategoryId,
             label: labelOptions.find((label) => label.id === selectedCategoryId)?.name || '라벨 없음',
             labelColor: labelOptions.find((label) => label.id === selectedCategoryId)?.color || '#808080',
@@ -111,6 +114,20 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
                         }}
                         selectedLabel={selectedLabel}
                     />
+                </label>
+
+                <label>
+                    반복 설정
+                    <select
+                        value={repeat}
+                        onChange={(e) => setRepeat(e.target.value)}
+                        className={styles.select}
+                    >
+                        <option value="반복 없음">반복 없음</option>
+                        <option value="매일">매일</option>
+                        <option value="매주">매주</option>
+                        <option value="매월">매월</option>
+                    </select>
                 </label>
             </div>
 
