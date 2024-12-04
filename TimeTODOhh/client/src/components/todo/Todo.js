@@ -66,23 +66,46 @@ function Todo() {
         fetchData();
     }, []);
 
-    const handleStatusChange = (taskId) => {
+    const handleStatusChange = async (taskId) => {
+        const targetTask = todos.find((todo) => todo.taskId === taskId);
+        if (!targetTask) {
+            alert("해당 할 일을 찾을 수 없습니다.");
+            return;
+        }
+
+        const newStatus =
+            targetTask.status === "보류 중"
+                ? "진행 중"
+                : targetTask.status === "진행 중"
+                    ? "완료"
+                    : "보류 중";
+
         setTodos((prevTodos) =>
             prevTodos.map((todo) =>
                 todo.taskId === taskId
-                    ? {
-                        ...todo,
-                        status:
-                            todo.status === "보류 중"
-                                ? "진행 중"
-                                : todo.status === "진행 중"
-                                    ? "완료"
-                                    : "보류 중",
-                    }
+                    ? { ...todo, status: newStatus }
                     : todo
             )
         );
+
+        const updateData = {
+            taskId: taskId, // 할 일 ID
+            status: newStatus, // 새로운 상태
+        };
+
+        try {
+            // 서버로 상태 업데이트 요청
+            const response = await axios.put("/api/task/updateStatus", updateData, {
+                headers: { "Content-Type": "application/json" },
+            });
+
+            console.log("Task status updated successfully:", response.data);
+        } catch (error) {
+            console.error("Failed to update task status:", error.response || error);
+            alert("상태 업데이트 중 오류가 발생했습니다.");
+        }
     };
+
 
     const handleEditTodo = (updatedTodo) => {
         setTodos((prevTodos) =>

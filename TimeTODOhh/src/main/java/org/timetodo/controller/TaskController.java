@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.timetodo.dto.TaskDto;
 import org.timetodo.dto.TaskRequestDto;
+import org.timetodo.dto.TaskStatusUpdateDto;
 import org.timetodo.entity.TaskEntity;
 import org.timetodo.service.TaskService;
 
@@ -127,6 +128,13 @@ public class TaskController {
         // 사용자가 보낸 데이터로 업데이트하고 그 결과를 반환합니다.
         TaskEntity updatedTask = taskService.updateTask(taskRequestDto, categoryId);
         return ResponseEntity.ok(updatedTask); // 성공 시 업데이트된 할 일을 반환
+    }
+
+
+    @PutMapping("/updateStatus")
+    public ResponseEntity<TaskEntity> updateTaskStatus(@RequestBody TaskStatusUpdateDto taskStatusUpdateDto) {
+        taskService.updateTaskStatus(taskStatusUpdateDto.getTaskId(), taskStatusUpdateDto.getStatus());
+        return ResponseEntity.ok().build(); // 상태 업데이트 완료 후 OK 응답
     }
 
     // 특정 할 일을 삭제하는 엔드포인트
