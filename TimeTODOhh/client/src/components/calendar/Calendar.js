@@ -177,9 +177,9 @@ function Calendar() {
                 dateClick={handleDateClick}
                 eventClick={handleEventClick}
                 headerToolbar={{
-                    left: 'prev,next today',
+                    left: '',
                     center: 'title',
-                    right: '',
+                    right: 'prev,next today',
                 }}
                 locale="ko"
                 editable={true}

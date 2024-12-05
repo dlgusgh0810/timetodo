@@ -2,13 +2,16 @@
 
 /* 전체 캘린더 컨테이너 */
 .calendarContainer {
-    width: 10000vh;
+    /*width: 10000vh;*/
     height: 100vh;
-    max-width: 1000px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
-    overflow: hidden; /* 스크롤 문제 해결 */
+    flex: 1 1 100%;
+    /*overflow: hidden; !* 스크롤 문제 해결 *!*/
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    overflow-x: hidden; /* 가로 스크롤 비활성화 */
 }
 
 /* 보기 선택 드롭다운 스타일 */
