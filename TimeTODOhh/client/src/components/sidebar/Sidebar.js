@@ -68,7 +68,7 @@ const Sidebar = ({ onAddEvent }) => {
                             transition: 'transform 0.3s'
                         }}
                     />
-                    <FaBell className={styles.notificationIcon}/>
+                    {/*<FaBell className={styles.notificationIcon}/>*/}
                 </div>
             </div>
 

@@ -26,7 +26,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
     };
     const [repeat, setRepeat] = useState('반복 없음'); // repeat 필드 추가
 
-    // 선택된 할 일 데이터를 모달 상태로 초기화
+    // 선택된 할 일 데이터를 모달 상태로 초기화t
     useEffect(() => {
         if (task) {
             console.log("Received Task:", task); // task 객체 확인

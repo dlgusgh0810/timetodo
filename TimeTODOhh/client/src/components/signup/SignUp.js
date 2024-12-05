@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // axios를 사용하여 서버로 데이터를 보냅니다.
+import styles from './SignUp.module.css';
+import { Link } from 'react-router-dom'; // 페이지 이동을 위한 Link 컴포넌트
 
 function SignUp() {
     const [formData, setFormData] = useState({
@@ -29,40 +31,52 @@ function SignUp() {
     };
 
     return (
-        <div>
-            <h2>회원가입</h2>
+        <div className={styles.container}>
+            <h2 className={styles.title}>회원가입</h2>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username:</label>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Username:</label>
                     <input
                         type="text"
                         name="username"
                         value={formData.username}
                         onChange={handleChange}
+                        className={styles.input}
                         required
                     />
                 </div>
-                <div>
-                    <label>Email:</label>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Email:</label>
                     <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
+                        className={styles.input}
                         required
                     />
                 </div>
-                <div>
-                    <label>Password:</label>
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>Password:</label>
                     <input
                         type="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
+                        className={styles.input}
                         required
                     />
                 </div>
-                <button type="submit">Sign Up</button>
+                <button type="submit" className={styles.button}>
+                    Sign Up
+                </button>
+                {/*{error && <p className={styles.error}>{error}</p>}*/}
+                <div className={styles.linkContainer}>
+                    <p>이미 계정이 있으신가요?</p>
+                    <Link to="/login" className={styles.link}>
+                        로그인 페이지로 이동
+                    </Link>
+                </div>
             </form>
         </div>
     );
