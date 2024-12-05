@@ -112,20 +112,10 @@
     position: relative;
 }
 
-.editIcon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1rem;
-    color: #666;
-    cursor: pointer;
-    visibility: hidden; /* 기본적으로 숨김 */
-    transition: visibility 0.2s, opacity 0.2s ease;
-    opacity: 0; /* 숨김 상태 */
+.icon {
+    font-size: 20px; /* 아이콘 크기 */
+    color: #757575; /* 기본 아이콘 색상 */
+    margin-right: 8px; /* 텍스트와의 간격 */
+    vertical-align: middle; /* 텍스트와 세로 정렬 */
+    transition: color 0.3s ease, transform 0.2s ease; /* 색상과 크기 전환 효과 */
 }
-
-.todoItem:hover .editIcon {
-    visibility: visible; /* 호버 시 보이도록 설정 */
-    opacity: 1; /* 투명도 조정 */
-}
-

@@ -26,7 +26,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
     };
     const [repeat, setRepeat] = useState('반복 없음'); // repeat 필드 추가
 
-    // 선택된 할 일 데이터를 모달 상태로 초기화
+    // 선택된 할 일 데이터를 모달 상태로 초기화t
     useEffect(() => {
         if (task) {
             console.log("Received Task:", task); // task 객체 확인
@@ -128,7 +128,6 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
 
             <div className={styles.modalBody}>
                 <label>
-                    제목
                     <input
                         type="text"
                         value={title}
@@ -139,7 +138,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
                 </label>
 
                 <label>
-                    마감 기한
+                    <FaHourglass className={styles.icon}/>
                     <ReactDatePicker
                         selected={deadline}
                         onChange={(date) => setDeadline(date)}
@@ -150,7 +149,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
                 </label>
 
                 <label>
-                    우선순위
+                    <FaExclamationCircle className={styles.icon}/>
                     <select
                         value={priority}
                         onChange={(e) => setPriority(e.target.value)}
@@ -163,7 +162,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
                 </label>
 
                 <label>
-                    라벨
+                    <FaTag className={styles.icon}/>
                     <CustomDropdown
                         options={labelOptions}
                         onLabelSelect={(label) => {
@@ -175,7 +174,7 @@ function TodoEditModal({ isOpen, onRequestClose, onSave, onDelete, task, labelOp
                 </label>
 
                 <label>
-                    반복 설정
+                    <FaSyncAlt className={styles.icon}/>
                     <select
                         value={repeat}
                         onChange={(e) => setRepeat(e.target.value)}
