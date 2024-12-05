@@ -9,7 +9,7 @@ const Profile = ({ handleLogout }) => {
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
-    const toggleDarkMode = () => setIsDarkMode((prevMode) => !prevMode);
+    // const toggleDarkMode = () => setIsDarkMode((prevMode) => !prevMode);
 
     useEffect(() => {
         if (isDarkMode) {

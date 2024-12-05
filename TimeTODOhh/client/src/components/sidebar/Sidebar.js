@@ -55,7 +55,11 @@ const Sidebar = ({ onAddEvent }) => {
 
             {/* 사용자 프로필 섹션 */}
             <div className={styles.profileSection} onClick={toggleProfile}>
-                <img src="https://via.placeholder.com/50" alt="profile" className={styles.profileImage}/>
+                <img
+                    src={require('./blank-profile-picture-973460_1280.png')}
+                    alt="profile"
+                    className={styles.profileImage}
+                />
                 <div className={styles.profileInfo}>
                     {/* userID를 바로 표시 */}
                     <span className={styles.username}>
